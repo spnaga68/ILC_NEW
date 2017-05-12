@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import realmstudy.R;
@@ -43,7 +44,7 @@ public class ScoreBoardFragment extends Fragment {
 
     private TextView current_bowler_name, current_bowler_overs, current_bowler_runs, next_bowler_name, next_bowler_overs, next_bowler_runs;
     private LinearLayout last_twelve_balls;
-    private TextView score, home_wicket_u, wicket_home, overs;
+    private TextView score, crr, wicket_home, overs;
 
     private TextView  away_wicket_u, wicket_away,  match_status_quote;
     private TextView shot;
@@ -59,7 +60,7 @@ public class ScoreBoardFragment extends Fragment {
     public void initialize(View v) {
 
         score = (TextView) v.findViewById(realmstudy.R.id.score);
-        home_wicket_u = (TextView) v.findViewById(realmstudy.R.id.home_wicket_u);
+        crr = (TextView) v.findViewById(realmstudy.R.id.crr);
         wicket_home = (TextView) v.findViewById(realmstudy.R.id.wicket_home);
         overs = (TextView) v.findViewById(realmstudy.R.id.overs);
 
@@ -108,7 +109,7 @@ public class ScoreBoardFragment extends Fragment {
         non_striker_balls.setText(String.valueOf(current_score_data.getNonStrikerBalls()));
         striker_name.setText(current_score_data.getStrikerName() + "*");
         non_striker_name.setText(current_score_data.getNonStrikerName());
-        team_name.setText(current_score_data.getHomeTeam());
+        team_name.setText(current_score_data.isHomeTeamBatting()?current_score_data.getHomeTeam():current_score_data.getAwayTeam());
         if (current_score_data.getCurrentBowlerName() != null) {
             current_bowler_name.setText(current_score_data.getCurrentBowlerName());
             current_bowler_overs.setText(current_score_data.getCurrentBowlerOver());
@@ -137,7 +138,7 @@ public class ScoreBoardFragment extends Fragment {
             non_striker_name.setText(current_score_data.getStrikerName());
             // Toast.makeText(getActivity(), "switching1", Toast.LENGTH_SHORT).show();
         }
-        System.out.println("_______________" + current_score_data.getWicket());
+        System.out.println("_______________sss" + current_score_data.getWicket()+"__"+current_score_data.isBatsmanSwitched());
 
         if (current_score_data.getWicket() != null) {
             if (current_score_data.getNextBatsmanName() != null) {
@@ -160,9 +161,10 @@ public class ScoreBoardFragment extends Fragment {
             }
         }
         int wicket=(current_score_data.getTotal_wicket());
-        score.setText(String.valueOf(current_score_data.getTotalRuns())+(wicket!=0?"/"+wicket:""));
+        score.setText(String.valueOf(current_score_data.getTotalRuns())+("/"+wicket));
         overs.setText("(" + String.valueOf(current_score_data.getTotalOver()) + ")");
-
+        float balls=Float.parseFloat(current_score_data.getTotalOver());
+        crr.setText(CommanData.currentRunRate(current_score_data.getTotalRuns(),balls));
         wicket_away.setText(String.valueOf(current_score_data.getfirstIinningsWicket()));
 //        if (current_score_data.isHomeTeamBatting()) {
 //            //home_total.setText(current_score_data.getTotalOver());

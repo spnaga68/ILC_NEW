@@ -203,8 +203,9 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
         System.out.println("_________________prev"+prev);
         if (prev != null) {
             System.out.println("_________________prevrr"+prev);
-            ft.remove(prev);
             ((DialogFragment)prev).dismiss();
+            ft.remove(prev);
+
         }
     }
 

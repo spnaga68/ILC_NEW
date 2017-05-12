@@ -51,9 +51,11 @@ public class SelectPlayerDialog extends DialogFragment {
     private Player current_bowler;
     private int assignTo;
 
-
+    static SelectPlayerDialog f;
     public static SelectPlayerDialog newInstance(int match_id, boolean ishomeTeam, int current_bowler_id, String title,int assignTo) {
-        SelectPlayerDialog f = new SelectPlayerDialog();
+        if(f!=null)
+            f.dismiss();
+        f= new SelectPlayerDialog();
 
         // Supply input as an argument.
         Bundle args = new Bundle();

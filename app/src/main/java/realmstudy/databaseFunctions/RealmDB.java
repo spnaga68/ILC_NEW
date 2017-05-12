@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import realmstudy.R;
 import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.BatingProfile;
@@ -686,14 +687,14 @@ public class RealmDB {
 //        float over = (lastInningsDataItem.getOver() - Math.floor(lastInningsDataItem.getOver())) >= 0.5 ? (float) (Math.ceil(lastInningsDataItem.getOver())) : CommanData.round2(((float) (lastInningsDataItem.getOver() + .1)), 1);
 //        if (lastInningsDataItem.getOver() == 0)
 //            over = (float) 0.1;
-        int overs= realm.where(InningsData.class).equalTo("match_id",matchDetails.getMatch_id())
-                .equalTo("firstInnings",!matchDetails.isFirstInningsCompleted()).notEqualTo("delivery",0).findAll().size();
+        int balls= realm.where(InningsData.class).equalTo("match_id",matchDetails.getMatch_id())
+                .equalTo("firstInnings",!matchDetails.isFirstInningsCompleted()).notEqualTo("delivery",0).findAllSorted("delivery", Sort.ASCENDING).last().getDelivery();
         int wide= realm.where(InningsData.class).equalTo("match_id",matchDetails.getMatch_id())
                 .equalTo("ballType",CommanData.BALL_WIDE).equalTo("firstInnings",!matchDetails.isFirstInningsCompleted()).findAll().size();
         int noBall= realm.where(InningsData.class).equalTo("match_id",matchDetails.getMatch_id())
                 .equalTo("ballType",CommanData.BALL_NO_BALL) .equalTo("firstInnings",!matchDetails.isFirstInningsCompleted()).findAll().size();
-
-        return ballsToOver(overs-(wide+noBall));
+        System.out.println("_____________"+balls);
+        return ballsToOver((balls-(wide+noBall)));
     }
 
     private static Float ballsToOver(int balls) {

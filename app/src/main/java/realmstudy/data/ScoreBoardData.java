@@ -10,7 +10,7 @@ public class ScoreBoardData {
     int totalBalls;
     int firstIinningsWicket = 0;
     int firstInningsTotal = 0;
-    private String total_over;
+    private String total_over="0.0";
 
     public String getShotAt() {
         return shotAt;

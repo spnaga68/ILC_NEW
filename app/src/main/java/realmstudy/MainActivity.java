@@ -26,6 +26,7 @@ import io.realm.RealmList;
 import io.realm.RealmModel;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import okhttp3.ResponseBody;
 import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.BatingProfile;
@@ -212,7 +213,8 @@ public class MainActivity extends ScoreBoardFragment implements DialogInterface,
         } else {
 
             //to get last updated item from db
-            RealmResults<InningsData> thisInningsData = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).findAll();
+            RealmResults<InningsData> thisInningsData = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isFirstInningsCompleted())
+                    .findAllSorted("delivery", Sort.ASCENDING);
             if (thisInningsData.size() > 0) {
                 lastInningsDataItem = thisInningsData.last();
                 current_score_data = CommanData.fromJson(lastInningsDataItem.getScoreBoardData(), ScoreBoardData.class);
@@ -256,30 +258,39 @@ public class MainActivity extends ScoreBoardFragment implements DialogInterface,
     private void submitbuttonClicked(Wicket wicket) {
 
         if (checkPlayerNotNull()) {
-            final int totalSize = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id())
-                    .equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).notEqualTo("delivery", 0).findAll().size();
-
+            int totalSizes = 0;
+            if (realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id())
+                    .equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).notEqualTo("delivery", 0).max("delivery") != null)
+                totalSizes =
+                        realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id())
+                                .equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).notEqualTo("delivery", 0).max("delivery").intValue();
+            final int totalSize = totalSizes;
             //check undo or redo
             if (lastInningsDataItem != null && lastInningsDataItem.getDelivery() != totalSize) {
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
 
-                        System.out.println("nnnnnnn" + lastInningsDataItem.getDelivery() + "___" + totalSize);
+                        System.out.println("nnnnnnn" +
+                                "" + lastInningsDataItem.getDelivery() + "___" + totalSize);
                         // if (checkPlayerNotNull()) {
                         if (matchDetails.getMatchStatus() == CommanData.MATCH_NOT_YET_STARTED)
                             matchDetails.setMatchStatus(CommanData.MATCH_STARTED_FI);
                         RealmResults<InningsData> result = realm.where(InningsData.class).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
-                        System.out.println("secCheck" + totalSize + "-____" + result.size());
+                        System.out.println("nnnnnnn" + totalSize + "-____" + result.size());
                         result.deleteAllFromRealm();
-                        System.out.println("secCheck_" + totalSize + "-____" + (undoCount));
-                        lastInningsDataItem = realm.where(InningsData.class).findAll().get(realm.where(InningsData.class).findAll().size() - 1);
+                        System.out.println("nnnnnnn" + totalSize + "-____" + (undoCount));
+                        //   lastInningsDataItem = realm.where(InningsData.class).findAll().get(realm.where(InningsData.class).findAll().size() - 1);
+                        lastInningsDataItem = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isFirstInningsCompleted())
+                                .findAllSorted("delivery", Sort.ASCENDING).last();
+                        System.out.println("nnnnnnn" + totalSize + "-____" + lastInningsDataItem.getDelivery());
+
                         current_score_data = CommanData.fromJson(lastInningsDataItem.getScoreBoardData(), ScoreBoardData.class);
 
                         RealmDB.updateBattingBowlingProfile(realm, matchDetails);
 
 
-                        resumeMatch(matchDetails);
+                        //   resumeMatch(matchDetails);
 
 
                     }
@@ -344,7 +355,7 @@ public class MainActivity extends ScoreBoardFragment implements DialogInterface,
             if (matchDetails.getMatchStatus() == CommanData.MATCH_STARTED_SI) {
                 showGameCompleteDailog();
 
-            } else if(matchDetails.getMatchStatus() == CommanData.MATCH_BREAK_FI) {
+            } else if (matchDetails.getMatchStatus() == CommanData.MATCH_BREAK_FI) {
                 System.out.println("_________WWd");
                 if (matchDetails.getMatchStatus() == CommanData.MATCH_BREAK_FI)
                     return true;
@@ -389,6 +400,7 @@ public class MainActivity extends ScoreBoardFragment implements DialogInterface,
         // display dialog
         dialog.show();
     }
+
     private void showGameCompleteDailog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.confirm));
@@ -403,7 +415,7 @@ public class MainActivity extends ScoreBoardFragment implements DialogInterface,
                         realm.beginTransaction();
                         matchDetails.setMatchStatus(CommanData.MATCH_COMPLETED);
                         realm.commitTransaction();
-                     //   Toast.makeText(getActivity(), getString(R.string.game_over), Toast.LENGTH_SHORT).show();
+                        //   Toast.makeText(getActivity(), getString(R.string.game_over), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -625,7 +637,7 @@ public class MainActivity extends ScoreBoardFragment implements DialogInterface,
      */
     private void addScore(Wicket wicket) {
         InningsData inningsData = RealmDB.getInningsData(getActivity(), realm,
-                lastInningsDataItem != null ? (lastInningsDataItem.getIndex() + 1) : 0,
+                lastInningsDataItem != null ? (lastInningsDataItem.getDelivery() + 1) : 0,
                 matchDetails.getMatch_id(), matchDetails.isFirstInningsCompleted());
         ScoreBoardData score_data = null;
         realm.beginTransaction();
@@ -817,7 +829,7 @@ public class MainActivity extends ScoreBoardFragment implements DialogInterface,
                     score_data.setBatsmanSwitched(true);
                     score_data.setAskNextBowler(false);
 
-                    //   Toast.makeText(getActivity(), "switching12", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "switching12", Toast.LENGTH_SHORT).show();
                 } else score_data.setBatsmanSwitched(false);
             } else {
                 if (!normal_delivery && (extraType == CommanData.typeExtraEnum.NO_BALL || extraType == CommanData.typeExtraEnum.WIDE)) {
@@ -838,10 +850,13 @@ public class MainActivity extends ScoreBoardFragment implements DialogInterface,
                     } else
                         score_data.setAskNextBowler(false);
                 }
-
-                if (((runs % 2 == 1 && (current_score_data.getTotalBalls() + (legal ? 1 : 0)) % 6 != 0)
-                        || (runs % 2 == 0 && (current_score_data.getTotalBalls() + (legal ? 1 : 0)) % 6 == 0)) && checkInningsGoingOn()) {
+                boolean oddRunAndOverNotComplete = ((runs % 2 == 1 && (current_score_data.getTotalBalls() + (legal ? 1 : 0)) % 6 != 0));
+                boolean evenRunOverComplete = (runs % 2 == 0 && (current_score_data.getTotalBalls() + (legal ? 1 : 0)) % 6 == 0);
+                System.out.println("switching123_____" + oddRunAndOverNotComplete + "___" + evenRunOverComplete);
+                if ((oddRunAndOverNotComplete
+                        || evenRunOverComplete) && checkInningsGoingOn()) {
                     // Toast.makeText(getActivity(), "switching_____", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "switching123", Toast.LENGTH_SHORT).show();
                     score_data.setBatsmanSwitched(true);
                 } else
                     score_data.setBatsmanSwitched(false);
@@ -873,6 +888,7 @@ public class MainActivity extends ScoreBoardFragment implements DialogInterface,
         if (current_overCompleted)
             ss.add("|");
         score_data.setLastThreeOvers(ss);
+        System.out.println("check_overrr" + over);
         score_data.setTotalOver(String.valueOf(over));
 
         return score_data;
@@ -889,9 +905,11 @@ public class MainActivity extends ScoreBoardFragment implements DialogInterface,
 //
 
     private void checkUnOrRedo() {
+        System.out.println("__________UUUa" + lastInningsDataItem.getDelivery());
         if (undoCount > 0) {
-            if (lastInningsDataItem.getIndex() != 0) {
-                InningsData id = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("index", RealmDB.getInningsDataIndex((lastInningsDataItem.getIndex() - 1), matchDetails)).findFirst();
+            if (lastInningsDataItem.getDelivery() > 0) {
+                InningsData id = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("delivery", (lastInningsDataItem.getDelivery() - 1)).findFirst();
+                System.out.println("__________UUU" + id);
                 if (id != null) {
                     //   System.out.println("__________UUU"+realm.where(InningsData.class).equalTo("match_id",matchDetails.getMatch_id()).findAllSorted("index").last().getScoreBoardData());
                     lastInningsDataItem = id;
@@ -904,8 +922,8 @@ public class MainActivity extends ScoreBoardFragment implements DialogInterface,
             }
         }
         if (redoCount > 0) {
-            InningsData id = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("index", RealmDB.getInningsDataIndex((lastInningsDataItem.getIndex() + 1), matchDetails)).findFirst();
-            if (id != null && id.getIndex() <= realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).findAll().size()) {
+            InningsData id = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("delivery", (lastInningsDataItem.getDelivery() + 1)).findFirst();
+            if (id != null && id.getDelivery() <= realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).findAllSorted("delivery", Sort.DESCENDING).first().getDelivery()) {
                 lastInningsDataItem = id;
                 current_score_data = CommanData.fromJson(lastInningsDataItem.getScoreBoardData(), ScoreBoardData.class);
                 redoCount = 0;
