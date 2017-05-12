@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
+
+    <realmstudy.lib.customViews.SemiLargeTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CSK"
+        android:id="@+id/team_name"
+        android:textColor="@color/black"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp" />
+
+    <LinearLayout
+        android:id="@+id/scoreLay"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/team_name"
+       >
+
+        <realmstudy.lib.customViews.SemiLargeTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="80/0"
+            android:textColor="@color/black"
+            android:id="@+id/score" />
+
+        <realmstudy.lib.customViews.SemiLargeTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(6.0)"
+
+            android:id="@+id/overs" />
+    </LinearLayout>
+
+    <realmstudy.lib.customViews.NormalTextView
+        android:layout_below="@+id/scoreLay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MI opt to bowl"
+        android:id="@+id/match_status_quote"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="0dp"
+        android:textColor="@color/highlight_color"
+         />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CRR"
+
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="11.85"
+            android:textColor="@color/black"
+            android:id="@+id/crr"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
+</RelativeLayout>

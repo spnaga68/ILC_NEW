@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/over_players"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/overs"
+        android:text="New Text" />
+
+    <TextView
+        android:id="@+id/overs"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/black"
+        android:layout_below="@+id/over_players"
+        android:gravity="center"
+        android:text="20 Over" />
+
+    <TextView
+        android:id="@+id/over_total_run"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/overs"
+        android:textColor="@color/hint_color"
+        android:gravity="center"
+        android:text="5" />
+
+    <LinearLayout
+        android:id="@+id/item_over_lay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/over_players"
+        android:layout_toRightOf="@+id/over_total_run"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/item_over_lay"
+        android:layout_marginTop="10dp"
+        android:background="@color/light_grey" />
+</RelativeLayout>

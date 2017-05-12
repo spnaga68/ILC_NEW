@@ -1,0 +1,145 @@
+<resources>
+    <string name="app_name">RealmStudy</string>
+    <string name="ph_no">Phone Number</string>
+    <string name="select_from_db">From DB :</string>
+    <string name="or">OR</string>
+    <string name="from_contacts">From Contacts</string>
+    <string name="create_new">Create New Player :</string>
+    <string name="submit">Submit</string>
+    <string name="striker">Striker</string>
+    <string name="non_striker">Non Striker</string>
+    <string name="current_bowler">Current Bowler</string>
+    <string name="select_from_contacts">Select from contacts :</string>
+    <string name="player_name">Player Name</string>
+    <string name="player_ph_no">Player Phone Number</string>
+    <string name="next_bowler">Next Bowler</string>
+    <string name="out">Out</string>
+    <string name="caught">Caught</string>
+    <string name="lbw">LBW</string>
+    <string name="bowled">Bowled</string>
+    <string name="runout">Run Out</string>
+    <string name="hit_wicket">Hit Wicket</string>
+    <string name="caught_by">Caught By</string>
+    <string name="runs_scored">Runs Scored</string>
+    <string name="run_out_by">Run out by :</string>
+    <string name="wicket_of">Wicket of:</string>
+    <string name="wicket">Wicket</string>
+    <string name="add_player_bowling_team">Add player to fielding team</string>
+    <string name="home_team">Home Team</string>
+    <string name="away_team">Away Team</string>
+    <string name="Noofplayers">No of players</string>
+    <string name="total_overs">Total overs</string>
+    <string name="venue">Venue</string>
+    <string name="Teama">Team A</string>
+    <string name="choose_to">Choose to</string>
+    <string name="start_match">Start Match</string>
+    <string name="team_ask_toss">Team ask toss</string>
+    <string name="on_toss_won">On toss won</string>
+    <string name="toss">Toss</string>
+    <string name="head">Head</string>
+    <string name="tail">Tail</string>
+
+
+    <string name="new_game">New Game</string>
+    <string name="new_game_desc">Strats a fresh game</string>
+    <string name="saved_game">Saved game</string>
+    <string name="saved_game_desc">Continue or view your last game</string>
+    <string name="profile">Profile</string>
+    <string name="profile_desc">View your personal info and achivements</string>
+    <string name="schedule_game">Schedule a game</string>
+    <string name="schedule_game_desc">Schedule a new game and remind</string>
+    <string name="add_player_desc">Add a new player</string>
+    <string name="add_player">Add player</string>
+    <string name="add_team_desc">Add a new team</string>
+    <string name="add_team">Add Team</string>
+    <string name="menu">Menu</string>
+    <string name="select_valid_home_away_team">Please select valid home and away team</string>
+    <string name="click_new_team">Click add button to create new Team</string>
+    <string name="touch_here">Touch above image to toss</string>
+    <string name="player_op">Player in opponent</string>
+    <string name="phno_exist">Phone number already exist</string>
+    <string name="player_already_in">Player already in team</string>
+    <string name="button_undo">UNDO</string>
+    <string name="nick_name">Nick name</string>
+    <string name="player_already_batted">Player already batted/batting</string>
+    <string name="enter_team_name">Please enter team name</string>
+    <string name="enter_team_nick_name">Please enter team nick name</string>
+    <string name="next_batsman">Next Batsman</string>
+    <string name="no_spell">Bowler can\'t spell</string>
+    <string name="bowled_limited">Bowled limited over</string>
+    <string name="player_in_striker_end">Player in striker end</string>
+    <string name="desc">Description</string>
+    <string name="home_team_player">HomeTeam Player</string>
+    <string name="away_teamPlay">Away Team Player</string>
+    <string name="time">Time</string>
+    <string name="share">Share</string>
+    <string name="next">next</string>
+    <string name="vs">Vs</string>
+    <string name="players">Players</string>
+    <string name="atsym">\@</string>
+    <string name="game_over">Game Over</string>
+    <string name="back">Back</string>
+    <string name="re_toss_r_edit">ReToss or Edit</string>
+    <string name="won_toss">Won Toss</string>
+    <string name="completed">Completed</string>
+    <string name="innings_break">Innings Break</string>
+    <string name="on_going">On Going</string>
+    <string name="match_not_started">Yet to start</string>
+    <string name="won_and_elect">won toss and elect to</string>
+    <string name="match">Match</string>
+    <string name="refree">Refree</string>
+    <string name="third_Umpire">3rd Umpire</string>
+    <string name="umpires">Umpires</string>
+    <string name="date">Date</string>
+    <string name="series">Series</string>
+    <string name="squads">Squads</string>
+    <string name="info">Info</string>
+    <string name="batsman">Batsman</string>
+    <string name="sr">SR</string>
+    <string name="sixes">6s</string>
+    <string name="fours">4s</string>
+    <string name="B">B</string>
+    <string name="R">R</string>
+    <string name="extras">Extras</string>
+    <string name="total">Total</string>
+    <string name="did_not_bat">Did not bat</string>
+    <string name="o">O</string>
+    <string name="m">M</string>
+    <string name="r">R</string>
+    <string name="w">W</string>
+    <string name="er">ER</string>
+    <string name="fall_of_wicket">Fall of Wickets</string>
+    <string name="score">Score</string>
+    <string name="over">Over</string>
+    <string name="powerplay">Powerplay</string>
+    <string name="runs">Runs</string>
+    <string name="batting">Batting</string>
+    <string name="overs">Overs</string>
+    <string name="stumped">Stumped</string>
+    <string name="confirm">Confirmation</string>
+    <string name="first_innings_completed">First Innings completed. To Continue second innings press ok.</string>
+    <string name="match_completed">Match Completed</string>
+    <string name="bowler">Bowler</string>
+    <string-array name="run_scored_before_runout">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="no_of_players_in_match">
+
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+
+    </string-array>
+
+</resources>
