@@ -161,7 +161,6 @@ public class ScoreBoardFragment extends Fragment {
         }
         int wicket=(current_score_data.getTotal_wicket());
         score.setText(String.valueOf(current_score_data.getTotalRuns())+(wicket!=0?"/"+wicket:""));
-        // wicket_home.setText();
         overs.setText("(" + String.valueOf(current_score_data.getTotalOver()) + ")");
 
         wicket_away.setText(String.valueOf(current_score_data.getfirstIinningsWicket()));
