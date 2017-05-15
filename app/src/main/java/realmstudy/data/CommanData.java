@@ -60,6 +60,12 @@ public class CommanData {
     public static final int BALL_N0_BALL_BYES = 5;
     public static final int BALL_LB = 6;
 
+    public static String getStrikeRate(float balls, float runs) {
+
+
+        return new DecimalFormat("##.##").format((runs/balls)*100);
+    }
+
     //
     public static enum typeExtraEnum {
         WIDE, NO_BALL, W_BYES, NB_BYES, L_BYES, LEG_BYES, STEP_NO_BALL, GRANTED
@@ -125,27 +131,35 @@ public class CommanData {
         return (float) (int) ((tmp - (int) tmp) >= 0.5f ? tmp + 1 : tmp) / pow;
     }
 
-    public static String currentRunRate(float runs, float overs) {
+    public static String currentRunRate(float runs, String overs) {
       //  System.out.println("______OOVV"+((int)(runs/overs)+"."+(int)(runs%overs)));
-      return  new DecimalFormat("##.##").format((runs/overs));
+
+        float balls=(float) overToBall(String.valueOf(overs));
+
+
+      return  new DecimalFormat("##.##").format(((runs/balls)*6));
     }
     public static String ballsToOver(int balls) {
         String over = "0.0";
         if (balls >= 6) {
             over = (balls / 6) + "." + (balls % 6);
-        } else {
+        } else if(balls>0){
             over = "0." + balls;
         }
         return over;
     }
 
-    public static Float overToBall(String over) {
+    public static int overToBall(String over) {
         // String over = "0.0";
+        int balls=0;
         Float overs = Float.parseFloat(over);
-        if (overs > 1) {
-            String overr = ((overs / 6) * 6) + "." + (overs % 6);
-            overs = Float.parseFloat(overr);
-        }
-        return overs;
+       // if (overs > 1) {
+         //  System.out.println("________vv"+(((int)(overs/1)) * 6)+"__"+((overs % 1)*10)+"__"+over);
+            int overr = (((int)(overs/1)) * 6) + (int)((overs % 1)*10);
+           // System.out.println("________OO"+overr);
+            balls = overr;
+        //}
+
+        return balls;
     }
 }

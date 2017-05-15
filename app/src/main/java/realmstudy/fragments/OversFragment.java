@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -65,7 +67,7 @@ public class OversFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-       final int id = getArguments().getInt("match_id");
+        final int id = getArguments().getInt("match_id");
         ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
         md = RealmDB.getMatchById(getActivity(), realm, id);
         overs_home_team.setOnClickListener(new View.OnClickListener() {
@@ -95,18 +97,21 @@ public class OversFragment extends Fragment {
             }
         });
         if (md != null) {
-            String firstInningsScore = RealmDB.getFirstInningsTotal(realm, md)+"/"+RealmDB.noOfWicket(getActivity(),realm,md.getMatch_id(),true) + "  (" + RealmDB.getFirstInningsOver(realm, md) + ")";
-            String secInningsScore = RealmDB.getSecInningsTotal(realm, md) +"/"+RealmDB.noOfWicket(getActivity(),realm,md.getMatch_id(),false) +  "  (" + RealmDB.getsecInningsOver(realm, md) + ")";
+            String firstInningsScore = RealmDB.getFirstInningsTotal(realm, md) + "/" + RealmDB.noOfWicket(getActivity(), realm, md.getMatch_id(), true) + "  (" + RealmDB.getFirstInningsOver(realm, md) + ")";
+            if (md.isFirstInningsCompleted()) {
+                String secInningsScore = RealmDB.getSecInningsTotal(realm, md) + "/" + RealmDB.noOfWicket(getActivity(), realm, md.getMatch_id(), false) + "  (" + RealmDB.getsecInningsOver(realm, md) + ")";
+                overs_away_score.setText(secInningsScore);
+            }
             overs_home_team.setText(md.getHomeTeam().nick_name);
             over_home_score.setText(firstInningsScore);
             overs_away.setText(md.getAwayTeam().nick_name);
-            overs_away_score.setText(secInningsScore);
+
             overs_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
             //  overs_match_quote.setText(md.);
 
             List<OverAdapterData> datas = getData(id, true);
 
-
+            System.out.println("________sss" + datas.size());
             OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
             overs_rv.setAdapter(adapter);
         }
@@ -114,48 +119,23 @@ public class OversFragment extends Fragment {
 
 
     List<OverAdapterData> getData(int id, boolean isFirstInnings) {
-        float recOver = 0;
+      //  float recOver = 0;
         List<OverAdapterData> datas = new ArrayList<>();
         RealmResults<InningsData> data = realm.where(InningsData.class).equalTo("match_id", id)
                 .equalTo("firstInnings", isFirstInnings).notEqualTo("delivery", 0).findAllSorted("delivery", Sort.DESCENDING);
-        recOver = data.get(0).getOver();
+       // recOver = data.get(0).getOver();
         Set<String> batsmans = new TreeSet<>();
         Set<String> bowlers = new TreeSet<>();
         int total_run = 0;
         float epsilon = (float) 0.00000001;
         ArrayList<String> deliveries = new ArrayList<>();
+
         for (int i = 0; i < data.size(); i++) {
             InningsData currentdata = data.get(i);
-            System.out.println("_______****" + currentdata.getOver() + "^^^" + Math.floor(currentdata.getOver()));
-            if ((!(currentdata.getOver() > Math.floor(currentdata.getOver()))) || Math.abs(currentdata.getOver() - 0.1) < epsilon) {
-
-                String batsmansString = "";
-                String bowlersString = "";
-                System.out.println("_______****ss"+currentdata.getOver()+"__"+ Math.ceil(currentdata.getOver())+"__"+ (int)Math.ceil(currentdata.getOver()));
-                Iterator batsmansIterator = batsmans.iterator();
-                Iterator bowlersIterator = bowlers.iterator();
-                if (batsmansIterator.hasNext()) {
-                    while (batsmansIterator.hasNext()) {
-                        batsmansString += batsmansIterator.next() + " & ";
-                    }
-                    while (bowlersIterator.hasNext()) {
-                        bowlersString += bowlersIterator.next() + " & ";
-                    }
-                    OverAdapterData overData = new OverAdapterData();
-                    overData.setBatsmans(batsmansString.substring(0, batsmansString.length() - 3));
-                    overData.setBolwers(bowlersString.substring(0, bowlersString.length() - 3));
-                    overData.setTotal_run(total_run);
-                    int curOver = currentdata.getOver() < 1 ? 1 : (int) Math.ceil(currentdata.getOver()) + 1;
-                    overData.setOver(curOver);
-                    overData.setDeliveries((List<String>) deliveries.clone());
-                    datas.add(overData);
-                    batsmans.clear();
-                    bowlers.clear();
-                    deliveries.clear();
-                    total_run = 0;
-                }
-
-            }
+           // System.out.println("_______****" + currentdata.getOver() + "^^^" + Math.floor(currentdata.getOver()));
+            boolean isOverCompleted=false;
+            if(i!=(data.size()-1))
+                isOverCompleted=data.get(i+1).isOversCompleted();
             batsmans.add(RealmDB.getPlayer(realm, currentdata.getStriker()).getName());
             batsmans.add(RealmDB.getPlayer(realm, currentdata.getNonStriker()).getName());
             bowlers.add(RealmDB.getPlayer(realm, currentdata.getCurrentBowler()).getName());
@@ -163,8 +143,49 @@ public class OversFragment extends Fragment {
                     , currentdata.getWicket(), currentdata.isLegal(), currentdata.getBallType()));
             total_run += currentdata.getRun();
 
+            System.out.println("_______****ssvv" + datas.size());
+            //|| Math.abs(currentdata.getOver() - 0.1) < epsilon
 
-        }
+            if(isOverCompleted|| i==(data.size()-1)) {
+
+                String batsmansString = "";
+                String bowlersString = "";
+
+                Iterator batsmansIterator = batsmans.iterator();
+                Iterator bowlersIterator = bowlers.iterator();
+                System.out.println("_______****ssve" + (currentdata.getOver()+1));
+                System.out.println("_______****ssvd" + batsmansIterator.hasNext());
+                if (batsmans.size() > 0) {
+                    System.out.println("_______****ssvg" + batsmansIterator.hasNext());
+                    do {
+                        batsmansString += batsmansIterator.next() + " & ";
+                    } while (batsmansIterator.hasNext());
+                    do {
+                        bowlersString += bowlersIterator.next() + " & ";
+                    } while (bowlersIterator.hasNext());
+                    OverAdapterData overData = new OverAdapterData();
+                    overData.setBatsmans(batsmansString.substring(0, batsmansString.length() - 3));
+                    overData.setBolwers(bowlersString.substring(0, bowlersString.length() - 3));
+                    overData.setTotal_run(total_run);
+                    int curOver = currentdata.getOver() < 1 ? 1 : (int) Math.floor(currentdata.getOver()+1);
+                    overData.setOver(curOver);
+                    ArrayList<String> dd=(ArrayList<String>) deliveries.clone();
+                    Collections.reverse(dd);
+                    overData.setDeliveries(dd);
+                    datas.add(overData);
+                    batsmans.clear();
+                    bowlers.clear();
+                    deliveries.clear();
+                    total_run = 0;
+                    System.out.println("_______****ssv" + datas.size());
+                }
+            }
+
+            }
+
+
+
+
         return datas;
     }
 }

@@ -29,11 +29,16 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
         this.datas = datas;
         inflater = LayoutInflater.from(context);
         battingItemView.add(getBattingItemView(0));
-        battingItemView.add(getBattingItemView(1));
+
         bowlingItemView.add(getBowlingItemView(0));
-        bowlingItemView.add(getBowlingItemView(1));
         fow.add(getfowView(0));
-        fow.add(getfowView(1));
+        if (datas.size() > 1) {
+            battingItemView.add(getBattingItemView(1));
+            bowlingItemView.add(getBowlingItemView(1));
+            fow.add(getfowView(1));
+        }
+
+
     }
 
     public View getBattingItemView(int groupPosition) {
@@ -65,6 +70,7 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
         }
         return ll;
     }
+
     public View getBowlingItemView(int groupPosition) {
         LinearLayout ll = new LinearLayout(c);
         ll.setOrientation(LinearLayout.VERTICAL);
@@ -89,12 +95,13 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
             wicket_text.setText("" + bData.wicket);
             ec_rate_text.setText("" + bData.ecnomic_rate);
             out_as.setVisibility(View.GONE);
-          //  out_as.setText("" + bData.outAs);
+            //  out_as.setText("" + bData.outAs);
             ll.addView(v);
 
         }
         return ll;
     }
+
     public View getfowView(int groupPosition) {
         LinearLayout ll = new LinearLayout(c);
         ll.setOrientation(LinearLayout.VERTICAL);
@@ -156,7 +163,6 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
         battingItemView.get(groupPosition).getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
 
 
-
         if (bowlingItemView.get(groupPosition).getParent() != null)
             ((ViewGroup) bowlingItemView.get(groupPosition).getParent()).removeView(bowlingItemView.get(groupPosition));
         holder.bowlers_lay.addView(bowlingItemView.get(groupPosition));
@@ -168,10 +174,10 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
         holder.fall_of_wicket_lay.addView(fow.get(groupPosition));
         fow.get(groupPosition).getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
 
-        holder.extras_run.setText(""+datas.get(groupPosition).getTotal_extras());
-        holder.extras_detail.setText(""+datas.get(groupPosition).getExtras_detail());
-        holder.total_run.setText(""+datas.get(groupPosition).getTeamRun_over());
-        holder.current_run_rate_detail.setText(""+datas.get(groupPosition).getCurrent_run_rate());
+        holder.extras_run.setText("" + datas.get(groupPosition).getTotal_extras());
+        holder.extras_detail.setText("" + datas.get(groupPosition).getExtras_detail());
+        holder.total_run.setText("" + datas.get(groupPosition).getTeamRun_over());
+        holder.current_run_rate_detail.setText("" + datas.get(groupPosition).getCurrent_run_rate());
         return convertView;
     }
 
@@ -187,7 +193,7 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
 
     @Override
     public int getGroupCount() {
-        return 2;
+        return datas.size();
     }
 
     @Override

@@ -17,6 +17,16 @@ public class InningsData extends RealmObject {
     boolean legal;
     boolean firstInnings=true;
 
+    public boolean isOversCompleted() {
+        return oversCompleted;
+    }
+
+    public void setOversCompleted(boolean oversCompleted) {
+        this.oversCompleted = oversCompleted;
+    }
+
+    boolean oversCompleted=false;
+
     public int getDelivery() {
         return delivery;
     }

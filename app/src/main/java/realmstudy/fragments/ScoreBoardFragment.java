@@ -1,5 +1,6 @@
 package realmstudy.fragments;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
@@ -21,7 +22,7 @@ import realmstudy.data.ScoreBoardData;
 /**
  * Created by developer on 8/3/17.
  */
-public class ScoreBoardFragment extends Fragment {
+public class ScoreBoardFragment extends View {
 
 
     private static final int COLOR_SELECT = Color.RED;
@@ -46,8 +47,15 @@ public class ScoreBoardFragment extends Fragment {
     private LinearLayout last_twelve_balls;
     private TextView score, crr, wicket_home, overs;
 
-    private TextView  away_wicket_u, wicket_away,  match_status_quote;
+    private TextView away_wicket_u, wicket_away, match_status_quote;
     private TextView shot;
+    Context context;
+    private TextView non_striker_fours,non_striker_sixes,non_striker_sr,striker_fours,striker_sixes,striker_sr;
+
+    public ScoreBoardFragment(Context context) {
+        super(context);
+        this.context = context;
+    }
 //    @Nullable
 //    @Override
 //    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,10 +71,15 @@ public class ScoreBoardFragment extends Fragment {
         crr = (TextView) v.findViewById(realmstudy.R.id.crr);
         wicket_home = (TextView) v.findViewById(realmstudy.R.id.wicket_home);
         overs = (TextView) v.findViewById(realmstudy.R.id.overs);
-
+        non_striker_fours = (TextView) v.findViewById(realmstudy.R.id.non_striker_fours);
+        non_striker_sixes = (TextView) v.findViewById(realmstudy.R.id.non_striker_sixes);
+        non_striker_sr = (TextView) v.findViewById(realmstudy.R.id.non_striker_sr);
+        striker_fours = (TextView) v.findViewById(realmstudy.R.id.non_striker_fours);
+        striker_sixes = (TextView) v.findViewById(realmstudy.R.id.non_striker_sixes);
+        striker_sr = (TextView) v.findViewById(realmstudy.R.id.non_striker_sr);
         away_wicket_u = (TextView) v.findViewById(realmstudy.R.id.away_wicket_u);
         wicket_away = (TextView) v.findViewById(realmstudy.R.id.wicket_away);
-       // over_away = (TextView) v.findViewById(realmstudy.R.id.over_away);
+        // over_away = (TextView) v.findViewById(realmstudy.R.id.over_away);
 
         match_status_quote = (TextView) v.findViewById(realmstudy.R.id.match_status_quote);
         striker_score = (TextView) v.findViewById(realmstudy.R.id.striker_score);
@@ -100,28 +113,37 @@ public class ScoreBoardFragment extends Fragment {
      */
     public void updateUI(ScoreBoardData current_score_data) {
         System.out.println("___________updateUI");
-        System.out.println("nagacheckkk" + runs % 2 + "____" + current_score_data.getTotalBalls() + current_score_data.getCurrentBowlerName());
+        System.out.println("nagacheckkk" + runs % 2 + "____" + current_score_data.getTotalBalls() + current_score_data.curr_bowlers.getName());
         setPreviousDelivery(current_score_data.getLastThreeOvers());
 
-        striker_score.setText(String.valueOf(current_score_data.getStrikerRun()));
-        striker_balls.setText(String.valueOf(current_score_data.getStrikerBalls()));
-        non_striker_score.setText(String.valueOf(current_score_data.getNonStrikerRun()));
-        non_striker_balls.setText(String.valueOf(current_score_data.getNonStrikerBalls()));
-        striker_name.setText(current_score_data.getStrikerName() + "*");
-        non_striker_name.setText(current_score_data.getNonStrikerName());
-        team_name.setText(current_score_data.isHomeTeamBatting()?current_score_data.getHomeTeam():current_score_data.getAwayTeam());
-        if (current_score_data.getCurrentBowlerName() != null) {
-            current_bowler_name.setText(current_score_data.getCurrentBowlerName());
-            current_bowler_overs.setText(current_score_data.getCurrentBowlerOver());
-            current_bowler_runs.setText(String.valueOf(current_score_data.getCurrentBowlerRuns()));
+        striker_score.setText(String.valueOf(current_score_data.striker.getRuns()));
+        striker_balls.setText(String.valueOf(current_score_data.striker.getBalls()));
+        striker_name.setText(current_score_data.striker.getName() + "*");
+        striker_fours.setText(""+current_score_data.striker.getFours());
+        striker_sixes.setText(""+current_score_data.striker.getSixes());
+        striker_sr.setText(CommanData.getStrikeRate(current_score_data.striker.getBalls(),current_score_data.striker.getRuns()));
+
+
+        non_striker_score.setText(String.valueOf(current_score_data.nonStriker.getRuns()));
+        non_striker_balls.setText(String.valueOf(current_score_data.nonStriker.getBalls()));
+        non_striker_name.setText(current_score_data.nonStriker.getName());
+        non_striker_fours.setText(""+current_score_data.nonStriker.getFours());
+        non_striker_sixes.setText(""+current_score_data.nonStriker.getSixes());
+        non_striker_sr.setText(CommanData.getStrikeRate(current_score_data.nonStriker.getBalls(),current_score_data.nonStriker.getRuns()));
+
+        team_name.setText(current_score_data.isHomeTeamBatting() ? current_score_data.getHomeTeam() : current_score_data.getAwayTeam());
+        if (current_score_data.curr_bowlers.getName() != null) {
+            current_bowler_name.setText(current_score_data.curr_bowlers.getName());
+            current_bowler_overs.setText(current_score_data.curr_bowlers.getOvers());
+            current_bowler_runs.setText(String.valueOf(current_score_data.curr_bowlers.getRuns()));
             current_bowler_lay.setVisibility(View.VISIBLE);
         } else {
             current_bowler_lay.setVisibility(View.GONE);
         }
-        if (current_score_data.getNextBowlerName() != null) {
-            next_bowler_name.setText(current_score_data.getNextBowlerName());
-            next_bowler_overs.setText(current_score_data.getNextBowlerOver());
-            next_bowler_runs.setText(String.valueOf(current_score_data.getNextBowlerRuns()));
+        if (current_score_data.next_bowlers.getName() != null) {
+            next_bowler_name.setText(current_score_data.next_bowlers.getName());
+            next_bowler_overs.setText(current_score_data.next_bowlers.getOvers());
+            next_bowler_runs.setText(String.valueOf(current_score_data.next_bowlers.getRuns()));
             next_bowler_lay.setVisibility(View.VISIBLE);
         } else {
             next_bowler_lay.setVisibility(View.GONE);
@@ -130,41 +152,41 @@ public class ScoreBoardFragment extends Fragment {
         if (current_score_data.isBatsmanSwitched()) {
             //SwaponlyText
 
-            striker_score.setText(String.valueOf(current_score_data.getNonStrikerRun()));
-            striker_balls.setText(String.valueOf(current_score_data.getNonStrikerBalls()));
-            non_striker_score.setText(String.valueOf(current_score_data.getStrikerRun()));
-            non_striker_balls.setText(String.valueOf(current_score_data.getStrikerBalls()));
-            striker_name.setText(current_score_data.getNonStrikerName() + "*");
-            non_striker_name.setText(current_score_data.getStrikerName());
+            striker_score.setText(String.valueOf(current_score_data.nonStriker.getRuns()));
+            striker_balls.setText(String.valueOf(current_score_data.nonStriker.getBalls()));
+            non_striker_score.setText(String.valueOf(current_score_data.striker.getRuns()));
+            non_striker_balls.setText(String.valueOf(current_score_data.striker.getBalls()));
+            striker_name.setText(current_score_data.nonStriker.getName() + "*");
+            non_striker_name.setText(current_score_data.striker.getName());
             // Toast.makeText(getActivity(), "switching1", Toast.LENGTH_SHORT).show();
         }
-        System.out.println("_______________sss" + current_score_data.getWicket()+"__"+current_score_data.isBatsmanSwitched());
+        System.out.println("_______________sss" + current_score_data.getWicket() + "__" + current_score_data.isBatsmanSwitched());
 
-        if (current_score_data.getWicket() != null) {
-            if (current_score_data.getNextBatsmanName() != null) {
-                Wicket wicket = CommanData.fromJson(current_score_data.getWicket(), Wicket.class);
-                if (wicket.isStrikerOut()) {
-                    //   BatingProfile bf = RealmDB.getBattingProfile(getActivity(), realm, current_score_data.getNextBatsmanName(), matchDetails.getMatch_id());
-                    System.out.println("____________" + current_score_data.getNextBatsmanRun());
-                    if (current_score_data.getNextBatsmanName() != null) {
-                        striker_score.setText(String.valueOf(current_score_data.getNextBatsmanRun()));
-                        striker_balls.setText(String.valueOf(current_score_data.getNextBatsmanBalls()));
-                        striker_name.setText(current_score_data.getNextBatsmanName());
-                    }
-
-                } else {
-                    non_striker_score.setText(String.valueOf(current_score_data.getNextBatsmanRun()));
-                    non_striker_balls.setText(String.valueOf(current_score_data.getNextBatsmanBalls()));
-                    non_striker_name.setText(String.valueOf(current_score_data.getNextBatsmanName()));
-                }
-
-            }
-        }
-        int wicket=(current_score_data.getTotal_wicket());
-        score.setText(String.valueOf(current_score_data.getTotalRuns())+("/"+wicket));
+//        if (current_score_data.getWicket() != null) {
+//            if (current_score_data.getNextBatsmanName() != null) {
+//                Wicket wicket = CommanData.fromJson(current_score_data.getWicket(), Wicket.class);
+//                if (wicket.isStrikerOut()) {
+//                    //   BatingProfile bf = RealmDB.getBattingProfile(getActivity(), realm, current_score_data.getNextBatsmanName(), matchDetails.getMatch_id());
+//                    System.out.println("____________" + current_score_data.getNextBatsmanRun());
+//                    if (current_score_data.getNextBatsmanName() != null) {
+//                        striker_score.setText(String.valueOf(current_score_data.getNextBatsmanRun()));
+//                        striker_balls.setText(String.valueOf(current_score_data.getNextBatsmanBalls()));
+//                        striker_name.setText(current_score_data.getNextBatsmanName());
+//                    }
+//
+//                } else {
+//                    non_striker_score.setText(String.valueOf(current_score_data.getNextBatsmanRun()));
+//                    non_striker_balls.setText(String.valueOf(current_score_data.getNextBatsmanBalls()));
+//                    non_striker_name.setText(String.valueOf(current_score_data.getNextBatsmanName()));
+//                }
+//
+//            }
+//        }
+        int wicket = (current_score_data.getTotal_wicket());
+        score.setText(String.valueOf(current_score_data.getTotalRuns()) + ("/" + wicket));
         overs.setText("(" + String.valueOf(current_score_data.getTotalOver()) + ")");
-        float balls=Float.parseFloat(current_score_data.getTotalOver());
-        crr.setText(CommanData.currentRunRate(current_score_data.getTotalRuns(),balls));
+        // float balls=Float.parseFloat(current_score_data.getTotalOver());
+        crr.setText(CommanData.currentRunRate(current_score_data.getTotalRuns(), current_score_data.getTotalOver()));
         wicket_away.setText(String.valueOf(current_score_data.getfirstIinningsWicket()));
 //        if (current_score_data.isHomeTeamBatting()) {
 //            //home_total.setText(current_score_data.getTotalOver());
@@ -197,7 +219,7 @@ public class ScoreBoardFragment extends Fragment {
         last_twelve_balls.removeAllViews();
         if (lpb != null)
             for (String s : lpb) {
-                TextView tv = new TextView(getActivity());
+                TextView tv = new TextView(context);
                 tv.setText(s);
                 tv.setPadding(5, 5, 5, 5);
                 Log.d("ball added", s != null ? s : "");
@@ -205,23 +227,23 @@ public class ScoreBoardFragment extends Fragment {
             }
     }
 
-    protected void swapStrikerText(ScoreBoardData current_score_data, boolean withText, boolean redo) {
+    public void swapStrikerText(ScoreBoardData current_score_data, boolean withText, boolean redo) {
 
         if (withText) {
             if (redo) {
-                striker_score.setText(String.valueOf(current_score_data.getStrikerRun()));
-                striker_balls.setText(String.valueOf(current_score_data.getStrikerBalls()));
-                non_striker_score.setText(String.valueOf(current_score_data.getNonStrikerRun()));
-                non_striker_balls.setText(String.valueOf(current_score_data.getNonStrikerBalls()));
-                striker_name.setText(current_score_data.getStrikerName() + "*");
-                non_striker_name.setText(current_score_data.getNonStrikerName());
+                striker_score.setText(String.valueOf(current_score_data.striker.getRuns()));
+                striker_balls.setText(String.valueOf(current_score_data.striker.getBalls()));
+                non_striker_score.setText(String.valueOf(current_score_data.nonStriker.getRuns()));
+                non_striker_balls.setText(String.valueOf(current_score_data.nonStriker.getBalls()));
+                striker_name.setText(current_score_data.striker.getName() + "*");
+                non_striker_name.setText(current_score_data.nonStriker.getName());
             } else {
-                striker_score.setText(String.valueOf(current_score_data.getNonStrikerRun()));
-                striker_balls.setText(String.valueOf(current_score_data.getNonStrikerBalls()));
-                non_striker_score.setText(String.valueOf(current_score_data.getStrikerRun()));
-                non_striker_balls.setText(String.valueOf(current_score_data.getStrikerBalls()));
-                striker_name.setText(current_score_data.getNonStrikerName() + "*");
-                non_striker_name.setText(current_score_data.getStrikerName());
+                striker_score.setText(String.valueOf(current_score_data.nonStriker.getRuns()));
+                striker_balls.setText(String.valueOf(current_score_data.nonStriker.getBalls()));
+                non_striker_score.setText(String.valueOf(current_score_data.striker.getRuns()));
+                non_striker_balls.setText(String.valueOf(current_score_data.striker.getBalls()));
+                striker_name.setText(current_score_data.nonStriker.getName() + "*");
+                non_striker_name.setText(current_score_data.striker.getName());
             }
         }
 

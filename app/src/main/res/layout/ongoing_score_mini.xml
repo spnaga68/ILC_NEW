@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:padding="10dp"
     android:layout_height="wrap_content">
 
     <realmstudy.lib.customViews.SemiLargeTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CSK"
+        tools:text="home"
         android:id="@+id/team_name"
         android:textColor="@color/black"
         android:layout_alignParentLeft="true"
@@ -29,14 +31,14 @@
         <realmstudy.lib.customViews.SemiLargeTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="80/0"
+            android:text="0/0"
             android:textColor="@color/black"
             android:id="@+id/score" />
 
         <realmstudy.lib.customViews.SemiLargeTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="(6.0)"
+            android:text="(0.0)"
 
             android:id="@+id/overs" />
     </LinearLayout>
@@ -45,7 +47,7 @@
         android:layout_below="@+id/scoreLay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MI opt to bowl"
+        tools:text="MI opt to bowl"
         android:id="@+id/match_status_quote"
         android:layout_marginTop="10dp"
         android:layout_alignParentLeft="true"
@@ -72,7 +74,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="11.85"
+            android:text="-"
             android:textColor="@color/black"
             android:id="@+id/crr"
             android:layout_gravity="center_horizontal" />

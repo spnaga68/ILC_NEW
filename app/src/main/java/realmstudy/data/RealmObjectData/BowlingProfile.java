@@ -151,7 +151,10 @@ public class BowlingProfile extends RealmObject {
     }
     public float economicRate(){
         int runs=runsGranted+wide+noBall+byes;
+        if(OversBowled().equals("-1"))
         return ((float)runs/Float.parseFloat(OversBowled()));
+        else
+            return 0;
 
     }
 }

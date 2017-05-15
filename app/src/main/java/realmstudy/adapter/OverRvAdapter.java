@@ -42,6 +42,7 @@ public class OverRvAdapter extends RecyclerView.Adapter<OverRvAdapter.MyViewHold
 
     public OverRvAdapter(Context c,List<OverAdapterData> datas) {
         this.datas = datas;
+        System.out.println("________sss"+datas.size());
         this.c=c;
     }
 

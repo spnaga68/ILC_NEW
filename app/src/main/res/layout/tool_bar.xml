@@ -80,7 +80,15 @@
             android:src="@android:drawable/ic_menu_edit"
             android:visibility="visible" />
 
-
+        <ImageButton
+            android:id="@+id/view_icon"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginLeft="50dp"
+            android:src="@drawable/eye"
+            android:visibility="visible" />
         <!-- This is a custom right side button -->
         <FrameLayout
 

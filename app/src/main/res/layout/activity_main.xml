@@ -205,6 +205,7 @@
             />
 
         <TextView
+            android:id="@+id/striker_fours"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -212,6 +213,7 @@
             />
 
         <TextView
+            android:id="@+id/striker_sixes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -219,6 +221,7 @@
             />
 
         <TextView
+            android:id="@+id/striker_sr"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -263,20 +266,23 @@
            />
 
         <TextView
+            android:id="@+id/non_striker_fours"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-           />
+            />
 
         <TextView
+            android:id="@+id/non_striker_sixes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-          />
+            />
 
         <TextView
+            android:id="@+id/non_striker_sr"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -501,7 +507,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone">
 
-        <fragment
+      <!--  <fragment
             android:id="@+id/ground_frag"
             class="realmstudy.extras.CanvasStudy"
             android:layout_width="200dp"
@@ -509,7 +515,7 @@
             android:layout_below="@+id/shot"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="10dp" />
+            android:padding="10dp" />-->
     </LinearLayout>
 
     <LinearLayout
