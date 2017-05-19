@@ -330,6 +330,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:text="@string/o" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/R" />
 
         <TextView
@@ -337,28 +344,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/B" />
+            android:text="@string/m" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/fours" />
+            android:text="@string/w" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/sixes" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/sr" />
+            android:text="@string/er" />
     </LinearLayout>
 
 
@@ -401,6 +401,7 @@
             />
 
         <TextView
+            android:id="@+id/current_bowler_maiden"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -408,6 +409,7 @@
             />
 
         <TextView
+            android:id="@+id/current_bowler_wicket"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -415,6 +417,7 @@
             />
 
         <TextView
+            android:id="@+id/current_bowler_er"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -458,6 +461,7 @@
             />
 
         <TextView
+            android:id="@+id/next_bowler_maiden"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -465,6 +469,7 @@
             />
 
         <TextView
+            android:id="@+id/next_bowler_wicket"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -472,6 +477,7 @@
             />
 
         <TextView
+            android:id="@+id/next_bowler_er"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -489,8 +495,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/next_bowler_lay"
         android:gravity="center"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:orientation="horizontal"
-        android:padding="10dp" />
+        />
 
     <realmstudy.lib.customViews.NormalTextView
         android:id="@+id/shot"

@@ -95,6 +95,13 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="b 0,lb 3,w 4" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/extras_run"
+            android:layout_marginTop="5dp"
+            android:background="@color/light_grey" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -128,6 +135,13 @@
             android:layout_alignParentRight="true"
             android:textColor="@color/black"
             tools:text="CRR 8.42" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/current_run_rate_detail"
+            android:layout_marginTop="5dp"
+            android:background="@color/light_grey" />
     </RelativeLayout>
 
     <LinearLayout
@@ -246,6 +260,7 @@
             android:text="@string/over" />
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/fall_of_wicket_lay"
         android:layout_width="match_parent"
@@ -254,6 +269,7 @@
         android:paddingBottom="5dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -261,6 +277,7 @@
         android:paddingBottom="5dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

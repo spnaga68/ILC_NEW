@@ -24,13 +24,22 @@ import realmstudy.fragments.TossFragment;
 @Component(modules = StorageModule.class)
 public interface StorageComponent {
     void inject(MainFragmentActivity activity);
+
     void inject(TeamListFragment teamListFragment);
+
     void inject(ScheduleListFragment scheduleListFragment);
+
     void inject(PlayerListFragment playerListFragment);
+
     void inject(ScheduleNewGame scheduleNewGame);
+
     void inject(SavedGameListAdapter savedGameListAdapter);
+
     void inject(TossFragment tossFragment);
+
     void inject(InfoFragment infoFragment);
-   void inject(OversFragment oversFragment);
+
+    void inject(OversFragment oversFragment);
+
     void inject(ScorecardDetailFragment scorecardDetailFragment);
 }

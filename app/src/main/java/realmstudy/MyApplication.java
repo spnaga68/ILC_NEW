@@ -13,6 +13,8 @@ import io.realm.FieldAttribute;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
 import io.realm.RealmSchema;
+import realmstudy.di.component.CheckComponent;
+import realmstudy.di.component.DaggerCheckComponent;
 import realmstudy.di.component.DaggerStorageComponent;
 import realmstudy.di.component.StorageComponent;
 import realmstudy.di.modules.StorageModule;
@@ -41,6 +43,7 @@ public class MyApplication extends Application {
                 .builder()
                 .storageModule(new StorageModule(this))
                 .build();
+        //CheckComponent ch = DaggerCheckComponent.builder().checkModule()
 
     }
 
@@ -71,8 +74,6 @@ public class MyApplication extends Application {
                 .withLimit(1000)
                 .databaseNamePattern(Pattern.compile(".+\\.realm"))
                 .build();
-
-
 
 
     }

@@ -60,10 +60,16 @@ public class CommanData {
     public static final int BALL_N0_BALL_BYES = 5;
     public static final int BALL_LB = 6;
 
-    public static String getStrikeRate(float balls, float runs) {
+    public static String getStrikeRate(int balls, int runs) {
 
 
-        return new DecimalFormat("##.##").format((runs/balls)*100);
+        return new DecimalFormat("##.##").format((((float) runs)/((float) balls))*100);
+    }
+
+    public static String getER(int runs, String overs) {
+
+      Float er=  ((float)(runs)/(float)overToBall(overs));
+        return  new DecimalFormat("##.##").format(er*6);
     }
 
     //

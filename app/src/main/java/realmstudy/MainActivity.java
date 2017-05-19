@@ -2,6 +2,7 @@ package realmstudy;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,7 +120,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         scoreBoardFragment = new ScoreBoardFragment(getActivity());
         scoreBoardFragment.initialize(v);
         init(v);
-
+        resumeMatch(matchDetails);
 
         return v;
     }
@@ -225,7 +227,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             if (checkPlayerNotNull())
                 initialData();
         } else {
-
+            System.out.println("_______Resuming");
             //to get last updated item from db
             RealmResults<InningsData> thisInningsData = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isFirstInningsCompleted())
                     .findAllSorted("delivery", Sort.ASCENDING);
@@ -265,6 +267,9 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             public void run() {
                 if (checkInningsGoingOn())
                     submitbuttonClicked(null);
+                else{
+                    Log.d("adding Score","not ongoing");
+                }
             }
         }, delay);
     }
@@ -368,10 +373,12 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 initialData();
             return false;
         }
-        System.out.println("_________WW" + RealmDB.noOfWicket(getActivity(), realm, matchDetails.getMatch_id(), !matchDetails.isFirstInningsCompleted()
-        ) + "___" + matchDetails.getTotalPlayers() + "___" + lastInningsDataItem.getOver() + "__" + matchDetails.getOvers());
-        if ((current_score_data != null && (lastInningsDataItem.getOver() >= (matchDetails.getOvers()))) ||
-                (RealmDB.noOfWicket(getActivity(), realm, matchDetails.getMatch_id(), !matchDetails.isFirstInningsCompleted()) >= (matchDetails.getTotalPlayers() - 1))) {
+
+        boolean overCompleted=(lastInningsDataItem.getOver() >= (matchDetails.getOvers()));
+        boolean wicketOver=(RealmDB.noOfWicket(getActivity(), realm, matchDetails.getMatch_id(), !matchDetails.isFirstInningsCompleted()) >= (matchDetails.getTotalPlayers() - 1));
+
+        System.out.println("_________WW" +overCompleted+"__"+wicketOver);
+        if ((current_score_data != null && (overCompleted||wicketOver))) {
             System.out.println("_________WWs");
             if (matchDetails.getMatchStatus() == CommanData.MATCH_STARTED_SI) {
                 showGameCompleteDailog();
@@ -387,7 +394,8 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 // }
             } else if (matchDetails.getMatchStatus() == CommanData.MATCH_BREAK_FI) {
                 switchInnings();
-            }
+            }else if(matchDetails.getMatchStatus()==CommanData.MATCH_NOT_YET_STARTED)
+                return true;
 
             return false;
         } else
@@ -458,6 +466,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     }
 
     private boolean checkPlayerNotNull() {
+        Log.d("adding Score","not null");
         boolean ishome = false;
         if (true) {
             if (striker == null) {
@@ -659,6 +668,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
      * Add score to database
      */
     private void addScore(Wicket wicket) {
+        Log.d("adding Score","1");
         InningsData inningsData = RealmDB.getInningsData(getActivity(), realm,
                 lastInningsDataItem != null ? (lastInningsDataItem.getDelivery() + 1) : 0,
                 matchDetails.getMatch_id(), matchDetails.isFirstInningsCompleted());
@@ -764,6 +774,8 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 score_data.curr_bowlers.setRuns(current_bowler_bf.getRunsGranted());
                 int extra_ball = current_bowler_bf.getNoBall() + current_bowler_bf.getWide();
                 score_data.curr_bowlers.setBalls(current_bowler_bf.getBallsBowled() - extra_ball);
+                score_data.curr_bowlers.setMaiden(current_bowler_bf.getMaiden());
+                score_data.curr_bowlers.setWicket(current_bowler_bf.getWickets().size());
             }
 
             //NEXT BOWLER
@@ -771,8 +783,12 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 BowlingProfile nextBowler_bf = RealmDB.getBowlingProfile(realm, next_bowler.getpID(), matchDetails.getMatch_id());
                 score_data.next_bowlers.setName(next_bowler.getName());
                 score_data.next_bowlers.setRuns(nextBowler_bf.getRunsGranted());
+                score_data.next_bowlers.setMaiden(nextBowler_bf.getMaiden());
+                score_data.next_bowlers.setWicket(nextBowler_bf.getWickets().size());
                 int extra_ball = nextBowler_bf.getNoBall() + nextBowler_bf.getWide();
-                score_data.curr_bowlers.setBalls(nextBowler_bf.getBallsBowled() - extra_ball);
+                score_data.next_bowlers.setWicket(nextBowler_bf.getWickets().size());
+                score_data.next_bowlers.setBalls(nextBowler_bf.getBallsBowled() - extra_ball);
+                System.out.println("_________nextBowleree"+(nextBowler_bf.getBallsBowled())+"__"+extra_ball);
             }
             score_data.setTotalRuns(total_run);
             score_data.striker.setBalls(strikerProfile.getBallFaced());
@@ -785,7 +801,6 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 if (current_bowler != null) {
                     score_data.curr_bowlers.setName(current_bowler.getName());
                     score_data.curr_bowlers.setRuns(current_bowler_bf.getRunsGranted());
-                    score_data.curr_bowlers.setBalls(current_bowler_bf.getBallsBowled());
                 }
             }
 
@@ -795,20 +810,21 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             score_data.striker.setRuns(strikerProfile.getRuns());
             score_data.striker.setBalls(strikerProfile.getBallFaced());
             score_data.striker.setRuns(strikerProfile.getRuns());
-            score_data.striker.setFours(strikerProfile.getFours());
-            score_data.striker.setSixes(strikerProfile.getSixes());
+
             //NON_STRIKER
             score_data.nonStriker.setName(non_striker.getName());
             score_data.nonStriker.setBalls(non_strikerProfile.getBallFaced());
             score_data.nonStriker.setRuns(non_strikerProfile.getRuns());
-            score_data.nonStriker.setFours(strikerProfile.getFours());
-            score_data.nonStriker.setSixes(strikerProfile.getSixes());
+
 
             //CURRENT BOWLER
             score_data.curr_bowlers.setName(current_bowler.getName());
             score_data.curr_bowlers.setName(current_bowler.getName());
-            score_data.curr_bowlers.setBalls(current_bowler_bf.getBallsBowled());
+            int extra_ball = current_bowler_bf.getNoBall() + current_bowler_bf.getWide();
+            score_data.curr_bowlers.setBalls(current_bowler_bf.getBallsBowled()-extra_ball);
             score_data.curr_bowlers.setRuns(current_bowler_bf.getRunsGranted());
+            score_data.curr_bowlers.setMaiden(current_bowler_bf.getMaiden());
+            score_data.curr_bowlers.setWicket(current_bowler_bf.getWickets().size());
 
             switch (extraType) {
 
@@ -829,9 +845,17 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
             //NEXT BOWLER
             if (next_bowler != null) {
+                BowlingProfile nextBowler_bf =RealmDB.getBowlingProfile(realm, next_bowler.getpID(), matchDetails.getMatch_id());
                 score_data.next_bowlers.setName(next_bowler.getName());
-                score_data.next_bowlers.setRuns(RealmDB.getBowlingProfile(realm, next_bowler.getpID(), matchDetails.getMatch_id()).getRunsGranted());
-                score_data.next_bowlers.setBalls(RealmDB.getBowlingProfile(realm, next_bowler.getpID(), matchDetails.getMatch_id()).getBallsBowled());
+                score_data.next_bowlers.setRuns(nextBowler_bf.getRunsGranted());
+                score_data.next_bowlers.setMaiden(nextBowler_bf.getMaiden());
+              //  score_data.next_bowlers.setBalls(RealmDB.getBowlingProfile(realm, next_bowler.getpID(), matchDetails.getMatch_id()).getBallsBowled());
+                System.out.println("_________nextBowlers"+(RealmDB.getBowlingProfile(realm, next_bowler.getpID(), matchDetails.getMatch_id()).getBallsBowled()));
+                int extra_balls = nextBowler_bf.getNoBall() + nextBowler_bf.getWide();
+                score_data.next_bowlers.setBalls(nextBowler_bf.getBallsBowled() - extra_balls);
+                score_data.next_bowlers.setWicket(nextBowler_bf.getWickets().size());
+            }else{
+
             }
 //Totals
 
@@ -845,6 +869,12 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
 
         }
+
+        score_data.striker.setFours(strikerProfile.getFours());
+        score_data.striker.setSixes(strikerProfile.getSixes());
+        score_data.nonStriker.setFours(non_strikerProfile.getFours());
+        score_data.nonStriker.setSixes(non_strikerProfile.getSixes());
+        System.out.println("_________sixes"+strikerProfile.getRuns()+"__"+strikerProfile.getSixes()+"__"+non_strikerProfile.getRuns()+"__"+non_strikerProfile.getSixes()+"__");
         boolean current_overCompleted = false;
         if (legal)
             current_overCompleted = (over % 1 == 0);
@@ -884,7 +914,13 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 if ((oddRunAndOverNotComplete
                         || evenRunOverComplete) && checkInningsGoingOn()) {
                     // Toast.makeText(getActivity(), "switching_____", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getActivity(), "switching123", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getActivity(), "switching123", Toast.LENGTH_SHORT).show();
+                    /**
+                     * not to swap batsmans if wicket gone to avoid confusion
+                     */
+                    if(wicket!=null)
+                        score_data.setBatsmanSwitched(false);
+                    else
                     score_data.setBatsmanSwitched(true);
                 } else
                     score_data.setBatsmanSwitched(false);
@@ -909,12 +945,20 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         ArrayList<String> ss = current_score_data.getLastThreeOvers();
         if (ss == null)
             ss = new ArrayList<>();
-        if (ss.size() > 23) {
+        if (ss.size() > 12) {
             ss.remove(0);
         }
         ss.add(Util.get_delivery_result(runs, wicket, normal_delivery, extraType));
         if (current_overCompleted){
+            boolean maiden=true;
+            if(ss.size()>6)
+                for(int i=ss.size()-1;i>=ss.size()-6;i--){
+                    if(ss.get(i).charAt(0)!='0'){
+                        maiden=false;
+                    }
+                }
             ss.add("|");
+            current_bowler_bf.setMaiden(maiden?current_bowler_bf.getMaiden()+1:current_bowler_bf.getMaiden());
             inningsData.setOversCompleted(true);
         }
         score_data.setLastThreeOvers(ss);
@@ -944,6 +988,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
 
     private void swapStriker(boolean withText, boolean redo) {
+        System.out.println("_______Resumingswap");
         Player dummy = striker;
         striker = non_striker;
         non_striker = dummy;
@@ -1037,9 +1082,15 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        resumeMatch(matchDetails);
+
     }
 
     @Override
@@ -1051,6 +1102,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
                 Wicket wicket = RealmDB.getWicket(getActivity(), realm, data);
                 System.out.println("_____Out" + dialogType + "__" + data + "__" + wicket.getType());
+
                 submitbuttonClicked(wicket);
                 // System.out.println("_____Outsdf1" + dialogType + "__" + data + "__" + wicket.getType());
                 if (wicket.getType() != CommanData.W_RUNOUT) {
@@ -1066,16 +1118,19 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                     striker = null;
 
                 } else if (wicket.getType() == CommanData.W_RUNOUT) {
+                    realm.beginTransaction();
                     Player p = RealmDB.getPlayer(realm, wicket.getBatsman());
                     RealmDB.getBattingProfile(realm, p.getpID(), matchDetails.getMatch_id()).setWicket(wicket);
+                    realm.commitTransaction();
                     if (p.getpID() == striker.getpID())
                         striker = null;
                     else
                         non_striker = null;
+
                 }
 
             }
-
+            System.out.println("__________nulled"+striker+"__"+non_striker);
 
         } else {
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
@@ -1196,9 +1251,11 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             if (next_bowler != null) {
                 BowlingProfile nextBowler_bf = RealmDB.getBowlingProfile(realm, next_bowler.getpID(), matchDetails.getMatch_id());
                 score_data.next_bowlers.setName(next_bowler.getName());
+                score_data.next_bowlers.setMaiden(nextBowler_bf.getMaiden());
                 score_data.next_bowlers.setRuns(nextBowler_bf.getRunsGranted());
                 int extra_ball = nextBowler_bf.getNoBall() + nextBowler_bf.getWide();
                 score_data.next_bowlers.setBalls(nextBowler_bf.getBallsBowled() - extra_ball);
+                System.out.println("_________nextBowler"+(nextBowler_bf.getBallsBowled() - extra_ball));
             }
 
 

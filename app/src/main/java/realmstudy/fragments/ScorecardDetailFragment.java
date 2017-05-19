@@ -11,10 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -67,12 +65,14 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
                 datas.add(homeData);
                 datas.add(awayData);
             } else {
-                if (md.isHomeTeamBattingFirst()) {  homeData = createScoreDetailData(true);
-                    datas.add(homeData);}
-                else{
+                if (md.isHomeTeamBattingFirst()) {
+                    homeData = createScoreDetailData(true);
+                    datas.add(homeData);
+                } else {
                     awayData = createScoreDetailData(false);
                     datas.add(awayData);
-            }}
+                }
+            }
 
         }
         FloatingActionButton bb = (FloatingActionButton) convertview.findViewById(R.id.butt);
@@ -177,9 +177,10 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
             data.runs = battingProfiles.get(i).getRuns();
             data.fours = battingProfiles.get(i).getFours();
             data.sixes = battingProfiles.get(i).getSixes();
-            if (battingProfiles.get(i).getBallFaced() != 0)
-                data.strike_rate = battingProfiles.get(i).getRuns() / battingProfiles.get(i).getBallFaced();
-            scoreCardDetailData.addBatsmanDetails(data);
+            if (battingProfiles.get(i).getBallFaced() != 0) {
+                data.strike_rate = CommanData.getStrikeRate(battingProfiles.get(i).getBallFaced(), battingProfiles.get(i).getRuns());
+                System.out.println("_____hiii"+data.strike_rate);
+            }scoreCardDetailData.addBatsmanDetails(data);
 
         }
 
@@ -190,7 +191,8 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
             data.outAs = String.valueOf(bowlingProfiles.get(i).getWickets().size());
             data.runs = bowlingProfiles.get(i).getRunsGranted();
             data.overs = bowlingProfiles.get(i).OversBowled();
-            data.ecnomic_rate = String.valueOf(bowlingProfiles.get(i).economicRate());
+            data.maiden=bowlingProfiles.get(i).getMaiden();
+            data.ecnomic_rate = CommanData.getER(data.runs,data.overs);
             scoreCardDetailData.addBowlersDetails(data);
 
         }

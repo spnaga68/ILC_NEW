@@ -63,7 +63,8 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
             balls_txt.setText("" + bData.balls);
             fours_txt.setText("" + bData.fours);
             six_txt.setText("" + bData.sixes);
-            strike_rate_txt.setText("" + bData.strike_rate);
+            System.out.println("_____hiiiss"+bData.strike_rate);
+            strike_rate_txt.setText("" + String.valueOf(bData.strike_rate));
             out_as.setText("" + bData.outAs);
             ll.addView(v);
 
