@@ -45,4 +45,14 @@
     <color name="appbg">#ffffff</color>
     <color name="hint_color">#6c6c6c</color>
     <color name="highlight_color">#ff0000</color>
+
+    <color name="dots_c">#9E9E9E</color>
+    <color name="single_c">#A5D6A7</color>
+    <color name="double_c">#A5D6A7</color>
+    <color name="three_c">#A5D6A7</color>
+    <color name="four_c">#81D4FA</color>
+    <color name="six_c">#D1C4E9</color>
+    <color name="wicket_c">#EF5350</color>
+    <color name="extra_c">#DCE775</color>
+
 </resources>

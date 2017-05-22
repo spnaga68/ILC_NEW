@@ -30,11 +30,13 @@ public class RealmDB {
 
     public static BowlingProfile createBowlingProfile(Realm realm, int Pid, int mId) {
         BowlingProfile b = null;
-        realm.beginTransaction();
-        b = realm.createObject(BowlingProfile.class, Pid + "__" + mId);
-        b.setMatch_id(mId);
-        b.setPlayerID(Pid);
-        realm.commitTransaction();
+        if (Pid != -1) {
+            realm.beginTransaction();
+            b = realm.createObject(BowlingProfile.class, Pid + "__" + mId);
+            b.setMatch_id(mId);
+            b.setPlayerID(Pid);
+            realm.commitTransaction();
+        }
         return b;
     }
 
@@ -67,13 +69,14 @@ public class RealmDB {
         BatingProfile b = null;
 //        if (realm.where(BatingProfile.class).findAll().size() > 0)
 //            id = realm.where(BatingProfile.class).findAll().last().getBattingProfileID() + 1;
+        if (Pid != -1) {
+            realm.beginTransaction();
+            b = realm.createObject(BatingProfile.class, Pid + "__" + mId);
+            b.setMatch_id(mId);
+            b.setPlayerID(Pid);
+            realm.commitTransaction();
+        }
 
-        realm.beginTransaction();
-        b = realm.createObject(BatingProfile.class, Pid + "__" + mId);
-        b.setMatch_id(mId);
-        b.setPlayerID(Pid);
-        realm.commitTransaction();
-        System.out.println("_____________JJB" + b.getBattingProfileID());
         return b;
     }
 
@@ -545,6 +548,7 @@ public class RealmDB {
         return CommanData.fromJson(inningsDatas.getScoreBoardData(), ScoreBoardData.class).getTotalOver();
 
     }
+
     public static int getSecInningsTotal(Realm realm, MatchDetails matchDetails) {
 
         InningsData inningsDatas = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", false).findAll().last();
@@ -574,29 +578,29 @@ public class RealmDB {
 
         int runs = 0;
         int balls = 0;
-        int fours=0;
-        int sixes=0;
-        int singles=0;
-        int doubles=0;
-        int threerun=0;
-        int dots=0;
+        int fours = 0;
+        int sixes = 0;
+        int singles = 0;
+        int doubles = 0;
+        int threerun = 0;
+        int dots = 0;
 
         for (InningsData data : batsmanData) {
             if (data.getBallType() == CommanData.BALL_LEGAL ? true : (data.getBallType() == CommanData.BALL_NO_BALL || data.getBallType() == CommanData.BALL_NO_OVER_STEP)) {
                 runs += data.getRun();
                 balls += 1;
-                if(data.getRun()==4)
-                    fours+=1;
-                else if(data.getRun()==6)
-                    sixes+=1;
-                else if(data.getRun()==1)
-                    singles+=1;
-                else if(data.getRun()==2)
-                    doubles+=1;
-                else if(data.getRun()==3)
-                    threerun+=1;
-                else if(data.getRun()==0)
-                    dots+=1;
+                if (data.getRun() == 4)
+                    fours += 1;
+                else if (data.getRun() == 6)
+                    sixes += 1;
+                else if (data.getRun() == 1)
+                    singles += 1;
+                else if (data.getRun() == 2)
+                    doubles += 1;
+                else if (data.getRun() == 3)
+                    threerun += 1;
+                else if (data.getRun() == 0)
+                    dots += 1;
 
 
             }
@@ -611,8 +615,10 @@ public class RealmDB {
         bf.setThrees(threerun);
         bf.setFours(fours);
         bf.setSixes(sixes);
+        if (balls == 0)
+            bf.setCurrentStatus(CommanData.StatusInMatch);
         bf.setInFirstinnings(!matchDetails.isFirstInningsCompleted());
-        Log.d("updateBattingProfile", "updateBattingProfile: "+batsmanData.size());
+        Log.d("updateBattingProfile", "updateBattingProfile: " + batsmanData.size());
         realm.commitTransaction();
         //inningsDatas
     }
@@ -634,7 +640,7 @@ public class RealmDB {
         for (InningsData data : bowlerdata) {
             if (data.getBallType() != CommanData.BALL_LB && data.getBallType() != CommanData.BALL_LEGAL_BYES) {
                 runs += data.getRun();
-              //  System.out.println("___________dddd" + bowlerdata.size() + "_" + runs);
+                //  System.out.println("___________dddd" + bowlerdata.size() + "_" + runs);
             }
         }
 
@@ -645,10 +651,13 @@ public class RealmDB {
         bf.setByes(byes);
         bf.setNoBall(no_balls);
         bf.setWide(wide);
+        if (balls == 0 || balls % 6 == 0)
+            bf.setCurrentBowlerStatus(CommanData.StatusInMatch);
         bf.setInFirstinnings(!matchDetails.isFirstInningsCompleted());
         realm.commitTransaction();
 
     }
+
     public static void getLegalBallsByBowler(Realm realm, MatchDetails matchDetails, int player_id) {
         RealmResults<InningsData> bowlerdata = realm.where(InningsData.class)
                 .equalTo("match_id", matchDetails.getMatch_id())
@@ -663,7 +672,7 @@ public class RealmDB {
         int byes = bowlerdata.where().equalTo("ballType", CommanData.BALL_LEGAL_BYES).findAll().size();
         ;
         for (InningsData data : bowlerdata) {
-            if (data.getBallType()==CommanData.BALL_LEGAL ||(data.getBallType() != CommanData.BALL_LB && data.getBallType() != CommanData.BALL_LEGAL_BYES)) {
+            if (data.getBallType() == CommanData.BALL_LEGAL || (data.getBallType() != CommanData.BALL_LB && data.getBallType() != CommanData.BALL_LEGAL_BYES)) {
                 runs = +data.getRun();
 
             }
@@ -680,21 +689,18 @@ public class RealmDB {
     }
 
 
-
-
-
-    public static float BallinWhichOver(Realm realm,MatchDetails matchDetails) {
+    public static float BallinWhichOver(Realm realm, MatchDetails matchDetails) {
 //        float over = (lastInningsDataItem.getOver() - Math.floor(lastInningsDataItem.getOver())) >= 0.5 ? (float) (Math.ceil(lastInningsDataItem.getOver())) : CommanData.round2(((float) (lastInningsDataItem.getOver() + .1)), 1);
 //        if (lastInningsDataItem.getOver() == 0)
 //            over = (float) 0.1;
-        int balls= realm.where(InningsData.class).equalTo("match_id",matchDetails.getMatch_id())
-                .equalTo("firstInnings",!matchDetails.isFirstInningsCompleted()).notEqualTo("delivery",0).findAllSorted("delivery", Sort.ASCENDING).last().getDelivery();
-        int wide= realm.where(InningsData.class).equalTo("match_id",matchDetails.getMatch_id())
-                .equalTo("ballType",CommanData.BALL_WIDE).equalTo("firstInnings",!matchDetails.isFirstInningsCompleted()).findAll().size();
-        int noBall= realm.where(InningsData.class).equalTo("match_id",matchDetails.getMatch_id())
-                .equalTo("ballType",CommanData.BALL_NO_BALL) .equalTo("firstInnings",!matchDetails.isFirstInningsCompleted()).findAll().size();
-        System.out.println("_____________"+balls);
-        return ballsToOver((balls-(wide+noBall)));
+        int balls = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id())
+                .equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).notEqualTo("delivery", 0).findAllSorted("delivery", Sort.ASCENDING).last().getDelivery();
+        int wide = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id())
+                .equalTo("ballType", CommanData.BALL_WIDE).equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).findAll().size();
+        int noBall = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id())
+                .equalTo("ballType", CommanData.BALL_NO_BALL).equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).findAll().size();
+        System.out.println("_____________" + balls);
+        return ballsToOver((balls - (wide + noBall)));
     }
 
     private static Float ballsToOver(int balls) {

@@ -44,6 +44,7 @@ public class Pager extends FragmentStatePagerAdapter {
                 OversFragment frags = new OversFragment();
                 Bundle bs = new Bundle();
                 bs.putInt("match_id", match_id);
+              //  bs.putInt("scoreData", match_id);
                 frags.setArguments(bs);
                 return frags;
             case 2:

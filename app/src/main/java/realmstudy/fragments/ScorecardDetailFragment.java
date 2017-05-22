@@ -104,6 +104,8 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
 
 
         adapter = new ScorecardDetailAdapter(getActivity(), datas);
+
+
         //adapter.setData(items);
         listView = (AnimatedExpandableListView) convertview.findViewById(R.id.listView);
         listView.setAdapter(adapter);
@@ -156,11 +158,13 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
             fow = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).equalTo("firstInnings", md.isHomeTeamBattingFirst()).isNotNull("wicket").findAllSorted("delivery", Sort.ASCENDING);
             extraTypes = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).equalTo("firstInnings", md.isHomeTeamBattingFirst()).notEqualTo("ballType", 0).findAll();
         } else {
+            System.out.println("naaaaaaa"+!md.isHomeTeamBattingFirst());
             scoreCardDetailData.setTeamName(md.getAwayTeam().nick_name);
             InningsData = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).equalTo("firstInnings", !md.isHomeTeamBattingFirst()).findAllSorted("delivery", Sort.DESCENDING).first();
             battingProfiles = realm.where(BatingProfile.class).equalTo("match_id", md.getMatch_id()).equalTo("inFirstinnings", !md.isHomeTeamBattingFirst())
                     .notEqualTo("currentStatus", CommanData.StatusFree).notEqualTo("currentStatus", CommanData.StatusInMatch).findAllSorted("battedAt", Sort.ASCENDING);
             bowlingProfiles = realm.where(BowlingProfile.class).equalTo("match_id", md.getMatch_id()).equalTo("inFirstinnings", !md.isHomeTeamBattingFirst()).findAll();
+            System.out.println("naaaaaaa"+!md.isHomeTeamBattingFirst()+"__"+bowlingProfiles.size());
             fow = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).equalTo("firstInnings", !md.isHomeTeamBattingFirst()).isNotNull("wicket").findAllSorted("delivery", Sort.ASCENDING);
             extraTypes = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).equalTo("firstInnings", !md.isHomeTeamBattingFirst()).notEqualTo("ballType", 0).findAll();
         }
@@ -187,6 +191,7 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
 
         for (int i = 0; i < bowlingProfiles.size(); i++) {
             ScoreCardDetailData.BowlersDetail data = new ScoreCardDetailData.BowlersDetail();
+           // System.out.println("eeee"+bowlingProfiles.get(i).getPlayerID());
             data.name = RealmDB.getPlayer(realm, bowlingProfiles.get(i).getPlayerID()).getName();
             data.outAs = String.valueOf(bowlingProfiles.get(i).getWickets().size());
             data.runs = bowlingProfiles.get(i).getRunsGranted();

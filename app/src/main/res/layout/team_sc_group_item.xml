@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/semi_transperant"
+    android:orientation="horizontal"
     android:padding="10dp">
 
     <TextView
+        android:id="@+id/team_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/team_name"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="false"
         android:layout_alignParentStart="true"
-        android:layout_alignParentRight="false" />
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:text="New Text" />
 
     <TextView
+        android:id="@+id/score_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/score_detail"
-        android:layout_gravity="center_horizontal"
         android:layout_alignParentLeft="false"
-        android:layout_marginLeft="176dp"
         android:layout_alignParentTop="true"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="0dp"
-        android:layout_alignParentRight="true" />
+        android:layout_toLeftOf="@+id/arrow"
+        android:text="New Text" />
+
+    <ImageView
+        android:id="@+id/arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/down_arrow" />
 </RelativeLayout>

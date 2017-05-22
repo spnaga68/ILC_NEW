@@ -227,35 +227,45 @@ public class ScoreBoardFragment extends View {
 //        }
 
         match_status_quote.setText(current_score_data.getMatchQuote());
-        shot.setText(current_score_data.getShotAt());
+//        shot.setText(current_score_data.getShotAt());
 
 
     }
 
+    public void showPreviousDelivery(boolean show) {
+        if(show)
+            last_twelve_balls.setVisibility(View.VISIBLE);
+        else
+        last_twelve_balls.setVisibility(View.GONE);
+    }
+
     private void setPreviousDelivery(ArrayList<String> lpb) {
-        last_twelve_balls.removeAllViews();
-        if (lpb != null)
-            for (String s : lpb) {
-                TextView tv;
-                if (s.trim().equals("|"))
-                    tv = new TextView(context);
-                else {
-                    tv = new AutoResizeTextView(context);
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(60, 60);
+
+        if (last_twelve_balls.getVisibility() == VISIBLE) {
+            last_twelve_balls.removeAllViews();
+            if (lpb != null)
+                for (String s : lpb) {
+                    TextView tv;
+                    if (s.trim().equals("|"))
+                        tv = new TextView(context);
+                    else {
+                        tv = new AutoResizeTextView(context);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(60, 60);
 //            layoutParams.width=20;
 //            layoutParams.height=20;
-                    layoutParams.setMargins(5, 5, 5, 5);
-                    tv.setLayoutParams(layoutParams);
-                    ((AutoResizeTextView) tv).setSolidColor("#BCAAA4");
-                    //   tv.setStrokeColor("#43A047");
-                    tv.setGravity(Gravity.CENTER);
-                   // tv.setPadding(8, 8, 8, 8);
+                        layoutParams.setMargins(5, 5, 5, 5);
+                        tv.setLayoutParams(layoutParams);
+                        ((AutoResizeTextView) tv).setSolidColor("#BCAAA4");
+                        //   tv.setStrokeColor("#43A047");
+                        tv.setGravity(Gravity.CENTER);
+                        // tv.setPadding(8, 8, 8, 8);
+                    }
+                    tv.setText(s);
+                    tv.setPadding(5, 5, 5, 5);
+                    // Log.d("ball added", s != null ? s : "");
+                    last_twelve_balls.addView(tv);
                 }
-                tv.setText(s);
-                tv.setPadding(5, 5, 5, 5);
-               // Log.d("ball added", s != null ? s : "");
-                last_twelve_balls.addView(tv);
-            }
+        }
     }
 
     public void swapStrikerText(ScoreBoardData current_score_data, boolean withText, boolean redo) {
@@ -276,7 +286,6 @@ public class ScoreBoardFragment extends View {
                 striker_sr.setText(CommanData.getStrikeRate(current_score_data.striker.getBalls(), current_score_data.striker.getRuns()));
 
 
-
                 striker_name.setText(current_score_data.striker.getName() + "*");
                 non_striker_name.setText(current_score_data.nonStriker.getName());
             } else {
@@ -288,11 +297,9 @@ public class ScoreBoardFragment extends View {
                 non_striker_name.setText(current_score_data.striker.getName());
 
 
-
                 striker_fours.setText("" + current_score_data.nonStriker.getFours());
                 striker_sixes.setText("" + current_score_data.nonStriker.getSixes());
                 striker_sr.setText(CommanData.getStrikeRate(current_score_data.nonStriker.getBalls(), current_score_data.nonStriker.getRuns()));
-
 
 
                 non_striker_fours.setText("" + current_score_data.striker.getFours());

@@ -39,7 +39,9 @@ public class InningsData extends RealmObject {
 
     String scoreBoardData;
     //aggregtion --> InningsData has a relationship with BatingProfile class
+    @Index
     int striker, nonStriker;
+    @Index
     int currentBowler, nextBowler;
     float over;
 

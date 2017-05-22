@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
     ArrayList<View> battingItemView = new ArrayList<>();
     ArrayList<View> bowlingItemView = new ArrayList<>();
     ArrayList<View> fow = new ArrayList<>();
+    ArrayList<View> pp = new ArrayList<>();
 
     public ScorecardDetailAdapter(Context context, ArrayList<ScoreCardDetailData> datas) {
         c = context;
@@ -63,7 +65,7 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
             balls_txt.setText("" + bData.balls);
             fours_txt.setText("" + bData.fours);
             six_txt.setText("" + bData.sixes);
-            System.out.println("_____hiiiss"+bData.strike_rate);
+            System.out.println("_____hiiiss" + bData.strike_rate);
             strike_rate_txt.setText("" + String.valueOf(bData.strike_rate));
             out_as.setText("" + bData.outAs);
             ll.addView(v);
@@ -154,6 +156,8 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
             holder.bowlers_lay = (LinearLayout) convertView.findViewById(R.id.bowlers_lay);
             holder.fall_of_wicket_lay = (LinearLayout) convertView.findViewById(R.id.fall_of_wicket_lay);
             holder.power_play_lay = (LinearLayout) convertView.findViewById(R.id.power_play_lay);
+            holder.power_play_head = (LinearLayout) convertView.findViewById(R.id.power_play_head);
+            holder.fow_head_lay = (LinearLayout) convertView.findViewById(R.id.fow_head_lay);
             convertView.setTag(holder);
         } else {
             holder = (ChildHolder) convertView.getTag();
@@ -170,11 +174,24 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
         bowlingItemView.get(groupPosition).getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
 
 
-        if (fow.get(groupPosition).getParent() != null)
+        if (fow.get(groupPosition).getParent() != null) {
+            holder.fow_head_lay.setVisibility(View.VISIBLE);
             ((ViewGroup) fow.get(groupPosition).getParent()).removeView(fow.get(groupPosition));
-        holder.fall_of_wicket_lay.addView(fow.get(groupPosition));
-        fow.get(groupPosition).getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+            holder.fall_of_wicket_lay.addView(fow.get(groupPosition));
+            fow.get(groupPosition).getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+        } else {
+            holder.fow_head_lay.setVisibility(View.GONE);
 
+        }
+        if (pp.size() > 0) {
+            holder.power_play_head.setVisibility(View.VISIBLE);
+            ((ViewGroup) fow.get(groupPosition).getParent()).removeView(fow.get(groupPosition));
+            holder.power_play_lay.addView(fow.get(groupPosition));
+            fow.get(groupPosition).getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+        } else {
+            holder.power_play_head.setVisibility(View.GONE);
+
+        }
         holder.extras_run.setText("" + datas.get(groupPosition).getTotal_extras());
         holder.extras_detail.setText("" + datas.get(groupPosition).getExtras_detail());
         holder.total_run.setText("" + datas.get(groupPosition).getTeamRun_over());
@@ -210,14 +227,21 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
             convertView = inflater.inflate(R.layout.team_sc_group_item, parent, false);
             holder.team_name = (TextView) convertView.findViewById(R.id.team_name);
             holder.score_detail = (TextView) convertView.findViewById(R.id.score_detail);
+            holder.arrow = (ImageView) convertView.findViewById(R.id.arrow);
             convertView.setTag(holder);
         } else {
             holder = (GroupHolder) convertView.getTag();
         }
+        if (isExpanded)
+            holder.arrow.setImageResource(R.drawable.up_arrow);
+        else
+            holder.arrow.setImageResource(R.drawable.down_arrow);
         holder.team_name.setText(datas.get(groupPosition).getTeamName());
         holder.score_detail.setText(datas.get(groupPosition).getTeamRun_over());
         return convertView;
     }
+
+
 
     @Override
     public boolean hasStableIds() {
@@ -243,7 +267,7 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
         public TextView title;
         public TextView hint;
         private LinearLayout
-                batsman_lay, did_not_bat_lay, bowlers_lay, fall_of_wicket_lay, power_play_lay;
+                batsman_lay, did_not_bat_lay, bowlers_lay, fall_of_wicket_lay, power_play_lay, power_play_head, fow_head_lay;
         private TextView extras_run;
         private TextView extras_detail;
         private TextView total_run;
@@ -253,5 +277,6 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
 
     public class GroupHolder {
         public TextView team_name, score_detail;
+        ImageView arrow;
     }
 }

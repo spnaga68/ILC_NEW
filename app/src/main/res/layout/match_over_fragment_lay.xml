@@ -10,64 +10,69 @@
     app:cardCornerRadius="0dp"
     android:paddingTop="10dp"
     android:elevation="10dp">
-    <LinearLayout
+    <!--<LinearLayout
+        android:id="@+id/score_layy"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:weightSum="4"
-        android:orientation="horizontal">
+        android:orientation="vertical">-->
+        <include
+            android:id="@+id/score_live_lay"
+            layout="@layout/score_live_update"/>
 
-        <realmstudy.lib.customViews.LargerTextView
-            android:id="@+id/overs_home_team"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="New Text" />
-
-        <realmstudy.lib.customViews.LargerTextView
-            android:id="@+id/over_home_score"
-            android:layout_width="0dp"
+        <!--<LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="3"
-            android:text="score" />
-    </LinearLayout>
+            android:weightSum="4"
+            android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:weightSum="4"
-        android:orientation="horizontal">
+            <realmstudy.lib.customViews.LargerTextView
+                android:id="@+id/overs_home_team"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="New Text" />
 
-        <realmstudy.lib.customViews.LargerTextView
-            android:id="@+id/overs_away"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="New Text" />
+            <realmstudy.lib.customViews.LargerTextView
+                android:id="@+id/over_home_score"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="3"
+                android:text="score" />
+        </LinearLayout>
 
-        <realmstudy.lib.customViews.LargerTextView
-            android:id="@+id/overs_away_score"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="3"
-            android:text="New Text" />
-    </LinearLayout>
+            android:weightSum="4"
+            android:orientation="horizontal">
 
+            <realmstudy.lib.customViews.LargerTextView
+                android:id="@+id/overs_away"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="New Text" />
+
+            <realmstudy.lib.customViews.LargerTextView
+                android:id="@+id/overs_away_score"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="3"
+                android:text="New Text" />
+        </LinearLayout>-->
+<!--
     <TextView
         android:id="@+id/overs_match_quote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
         android:textColor="@color/link_blue"
-        android:layout_margin="8dp"/>
-    </LinearLayout>
+        android:layout_margin="8dp"/>-->
+  <!--  </LinearLayout>-->
 
 </android.support.v7.widget.CardView>
     <android.support.v7.widget.RecyclerView

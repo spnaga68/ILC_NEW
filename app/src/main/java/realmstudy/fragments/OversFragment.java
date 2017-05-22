@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -27,9 +28,12 @@ import io.realm.Sort;
 import realmstudy.MyApplication;
 import realmstudy.R;
 import realmstudy.adapter.OverRvAdapter;
+import realmstudy.data.CommanData;
 import realmstudy.data.OverAdapterData;
 import realmstudy.data.RealmObjectData.InningsData;
 import realmstudy.data.RealmObjectData.MatchDetails;
+import realmstudy.data.ScoreBoardData;
+import realmstudy.data.SessionSave;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.lib.Util;
 
@@ -37,22 +41,31 @@ import realmstudy.lib.Util;
  * Created by developer on 17/4/17.
  */
 public class OversFragment extends Fragment {
-    private TextView
-            overs_home_team, over_home_score, overs_away, overs_away_score, overs_match_quote;
+    //    private TextView
+//            overs_home_team, over_home_score, overs_away, overs_away_score, overs_match_quote;
     private android.support.v7.widget.RecyclerView overs_rv;
     @Inject
     Realm realm;
     private MatchDetails md;
+    // private LinearLayout score_layy;
+    private ScoreBoardFragment scoreBoardFragment;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.match_over_fragment_lay, container, false);
-        overs_home_team = (TextView) v.findViewById(R.id.overs_home_team);
-        over_home_score = (TextView) v.findViewById(R.id.over_home_score);
-        overs_away = (TextView) v.findViewById(R.id.overs_away);
-        overs_away_score = (TextView) v.findViewById(R.id.overs_away_score);
-        overs_match_quote = (TextView) v.findViewById(R.id.overs_match_quote);
+//        overs_home_team = (TextView) v.findViewById(R.id.overs_home_team);
+//        over_home_score = (TextView) v.findViewById(R.id.over_home_score);
+//        overs_away = (TextView) v.findViewById(R.id.overs_away);
+//        overs_away_score = (TextView) v.findViewById(R.id.overs_away_score);
+//        overs_match_quote = (TextView) v.findViewById(R.id.overs_match_quote);
+
+        // score_layy=(LinearLayout)v.findViewById(R.id.score_layy);
+        ScoreBoardData current_score_data = CommanData.fromJson(SessionSave.getSession("sdata", getActivity()), ScoreBoardData.class);
+        scoreBoardFragment = new ScoreBoardFragment(getActivity());
+        scoreBoardFragment.initialize(v);
+        scoreBoardFragment.showPreviousDelivery(false);
+        scoreBoardFragment.updateUI(current_score_data);
         overs_rv = (android.support.v7.widget.RecyclerView) v.findViewById(R.id.overs_rv);
         return v;
     }
@@ -70,41 +83,42 @@ public class OversFragment extends Fragment {
         final int id = getArguments().getInt("match_id");
         ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
         md = RealmDB.getMatchById(getActivity(), realm, id);
-        overs_home_team.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                List<OverAdapterData> datas = getData(id, true);
 
-//                List<OverAdapterData> sdatas = getData(id, false);
-//                datas.addAll(sdatas);
-
-                OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
-                overs_rv.setAdapter(adapter);
-                overs_rv.getAdapter().notifyDataSetChanged();
-            }
-        });
-        overs_away.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                List<OverAdapterData> datas = getData(id, false);
-
-//                List<OverAdapterData> sdatas = getData(id, false);
-//                datas.addAll(sdatas);
-
-                OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
-                overs_rv.setAdapter(adapter);
-                overs_rv.getAdapter().notifyDataSetChanged();
-            }
-        });
+//        overs_home_team.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                List<OverAdapterData> datas = getData(id, true);
+//
+////                List<OverAdapterData> sdatas = getData(id, false);
+////                datas.addAll(sdatas);
+//
+//                OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
+//                overs_rv.setAdapter(adapter);
+//                overs_rv.getAdapter().notifyDataSetChanged();
+//            }
+//        });
+//        overs_away.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                List<OverAdapterData> datas = getData(id, false);
+//
+////                List<OverAdapterData> sdatas = getData(id, false);
+////                datas.addAll(sdatas);
+//
+//                OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
+//                overs_rv.setAdapter(adapter);
+//                overs_rv.getAdapter().notifyDataSetChanged();
+//            }
+//        });
         if (md != null) {
             String firstInningsScore = RealmDB.getFirstInningsTotal(realm, md) + "/" + RealmDB.noOfWicket(getActivity(), realm, md.getMatch_id(), true) + "  (" + RealmDB.getFirstInningsOver(realm, md) + ")";
             if (md.isFirstInningsCompleted()) {
                 String secInningsScore = RealmDB.getSecInningsTotal(realm, md) + "/" + RealmDB.noOfWicket(getActivity(), realm, md.getMatch_id(), false) + "  (" + RealmDB.getsecInningsOver(realm, md) + ")";
-                overs_away_score.setText(secInningsScore);
+                // overs_away_score.setText(secInningsScore);
             }
-            overs_home_team.setText(md.getHomeTeam().nick_name);
-            over_home_score.setText(firstInningsScore);
-            overs_away.setText(md.getAwayTeam().nick_name);
+//            overs_home_team.setText(md.getHomeTeam().nick_name);
+//            over_home_score.setText(firstInningsScore);
+//            overs_away.setText(md.getAwayTeam().nick_name);
 
             overs_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
             //  overs_match_quote.setText(md.);
@@ -119,11 +133,11 @@ public class OversFragment extends Fragment {
 
 
     List<OverAdapterData> getData(int id, boolean isFirstInnings) {
-      //  float recOver = 0;
+        //  float recOver = 0;
         List<OverAdapterData> datas = new ArrayList<>();
         RealmResults<InningsData> data = realm.where(InningsData.class).equalTo("match_id", id)
                 .equalTo("firstInnings", isFirstInnings).notEqualTo("delivery", 0).findAllSorted("delivery", Sort.DESCENDING);
-       // recOver = data.get(0).getOver();
+        // recOver = data.get(0).getOver();
         Set<String> batsmans = new TreeSet<>();
         Set<String> bowlers = new TreeSet<>();
         int total_run = 0;
@@ -132,10 +146,10 @@ public class OversFragment extends Fragment {
 
         for (int i = 0; i < data.size(); i++) {
             InningsData currentdata = data.get(i);
-           // System.out.println("_______****" + currentdata.getOver() + "^^^" + Math.floor(currentdata.getOver()));
-            boolean isOverCompleted=false;
-            if(i!=(data.size()-1))
-                isOverCompleted=data.get(i+1).isOversCompleted();
+            // System.out.println("_______****" + currentdata.getOver() + "^^^" + Math.floor(currentdata.getOver()));
+            boolean isOverCompleted = false;
+            if (i != (data.size() - 1))
+                isOverCompleted = data.get(i + 1).isOversCompleted();
             batsmans.add(RealmDB.getPlayer(realm, currentdata.getStriker()).getName());
             batsmans.add(RealmDB.getPlayer(realm, currentdata.getNonStriker()).getName());
             bowlers.add(RealmDB.getPlayer(realm, currentdata.getCurrentBowler()).getName());
@@ -146,14 +160,14 @@ public class OversFragment extends Fragment {
             System.out.println("_______****ssvv" + datas.size());
             //|| Math.abs(currentdata.getOver() - 0.1) < epsilon
 
-            if(isOverCompleted|| i==(data.size()-1)) {
+            if (isOverCompleted || i == (data.size() - 1)) {
 
                 String batsmansString = "";
                 String bowlersString = "";
 
                 Iterator batsmansIterator = batsmans.iterator();
                 Iterator bowlersIterator = bowlers.iterator();
-                System.out.println("_______****ssve" + (currentdata.getOver()+1));
+                System.out.println("_______****ssve" + (currentdata.getOver() + 1));
                 System.out.println("_______****ssvd" + batsmansIterator.hasNext());
                 if (batsmans.size() > 0) {
                     System.out.println("_______****ssvg" + batsmansIterator.hasNext());
@@ -167,9 +181,9 @@ public class OversFragment extends Fragment {
                     overData.setBatsmans(batsmansString.substring(0, batsmansString.length() - 3));
                     overData.setBolwers(bowlersString.substring(0, bowlersString.length() - 3));
                     overData.setTotal_run(total_run);
-                    int curOver = currentdata.getOver() < 1 ? 1 : (int) Math.floor(currentdata.getOver()+1);
+                    int curOver = currentdata.getOver() < 1 ? 1 : (int) Math.floor(currentdata.getOver() + 1);
                     overData.setOver(curOver);
-                    ArrayList<String> dd=(ArrayList<String>) deliveries.clone();
+                    ArrayList<String> dd = (ArrayList<String>) deliveries.clone();
                     Collections.reverse(dd);
                     overData.setDeliveries(dd);
                     datas.add(overData);
@@ -181,9 +195,7 @@ public class OversFragment extends Fragment {
                 }
             }
 
-            }
-
-
+        }
 
 
         return datas;
