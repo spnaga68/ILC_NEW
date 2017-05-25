@@ -28,10 +28,13 @@ import realmstudy.data.RealmObjectData.BatingProfile;
 import realmstudy.data.RealmObjectData.BowlingProfile;
 import realmstudy.data.RealmObjectData.InningsData;
 import realmstudy.data.RealmObjectData.MatchDetails;
+import realmstudy.data.RealmObjectData.Wicket;
 import realmstudy.data.ScoreBoardData;
 import realmstudy.data.ScoreCardDetailData;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.extras.AnimatedExpandableListView;
+
+import static realmstudy.data.CommanData.wicketIdToString;
 
 /**
  * Created by developer on 2/5/17.
@@ -140,6 +143,20 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
         return convertview;
     }
 
+
+    public String wicketToString(Wicket wicket) {
+        String s = "";
+        String as = "";
+        if (wicket.getType() == CommanData.W_CAUGHT)
+            as = RealmDB.getPlayer(realm, wicket.getCaughtBy()).getName();
+        else if (wicket.getType() == CommanData.W_RUNOUT)
+            as = RealmDB.getPlayer(realm, wicket.getRunoutBy()).getName();
+        else if(wicket.getType()!=CommanData.W_STUMPED)
+            as = RealmDB.getPlayer(realm, wicket.getBowler()).getName();
+        s += wicketIdToString(wicket.getType()) + " b " + as;
+        return s;
+    }
+
     public ScoreCardDetailData createScoreDetailData(boolean forHomeTeam) {
         ScoreCardDetailData scoreCardDetailData = new ScoreCardDetailData();
 
@@ -154,17 +171,17 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
             InningsData = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).equalTo("firstInnings", md.isHomeTeamBattingFirst()).findAllSorted("delivery", Sort.DESCENDING).first();
             battingProfiles = realm.where(BatingProfile.class).equalTo("match_id", md.getMatch_id()).equalTo("inFirstinnings", md.isHomeTeamBattingFirst())
                     .notEqualTo("currentStatus", CommanData.StatusFree).notEqualTo("currentStatus", CommanData.StatusInMatch).findAllSorted("battedAt", Sort.ASCENDING);
-            bowlingProfiles = realm.where(BowlingProfile.class).equalTo("match_id", md.getMatch_id()).equalTo("inFirstinnings", md.isHomeTeamBattingFirst()).findAll();
+            bowlingProfiles = realm.where(BowlingProfile.class).equalTo("currentBowlerStatus",CommanData.StatusBowling).equalTo("match_id", md.getMatch_id()).equalTo("inFirstinnings", md.isHomeTeamBattingFirst()).findAll();
             fow = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).equalTo("firstInnings", md.isHomeTeamBattingFirst()).isNotNull("wicket").findAllSorted("delivery", Sort.ASCENDING);
             extraTypes = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).equalTo("firstInnings", md.isHomeTeamBattingFirst()).notEqualTo("ballType", 0).findAll();
         } else {
-            System.out.println("naaaaaaa"+!md.isHomeTeamBattingFirst());
+            System.out.println("naaaaaaa" + !md.isHomeTeamBattingFirst());
             scoreCardDetailData.setTeamName(md.getAwayTeam().nick_name);
             InningsData = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).equalTo("firstInnings", !md.isHomeTeamBattingFirst()).findAllSorted("delivery", Sort.DESCENDING).first();
             battingProfiles = realm.where(BatingProfile.class).equalTo("match_id", md.getMatch_id()).equalTo("inFirstinnings", !md.isHomeTeamBattingFirst())
                     .notEqualTo("currentStatus", CommanData.StatusFree).notEqualTo("currentStatus", CommanData.StatusInMatch).findAllSorted("battedAt", Sort.ASCENDING);
-            bowlingProfiles = realm.where(BowlingProfile.class).equalTo("match_id", md.getMatch_id()).equalTo("inFirstinnings", !md.isHomeTeamBattingFirst()).findAll();
-            System.out.println("naaaaaaa"+!md.isHomeTeamBattingFirst()+"__"+bowlingProfiles.size());
+            bowlingProfiles = realm.where(BowlingProfile.class).equalTo("currentBowlerStatus",CommanData.StatusBowling).equalTo("match_id", md.getMatch_id()).equalTo("inFirstinnings", !md.isHomeTeamBattingFirst()).findAll();
+            System.out.println("naaaaaaa" + !md.isHomeTeamBattingFirst() + "__" + bowlingProfiles.size());
             fow = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).equalTo("firstInnings", !md.isHomeTeamBattingFirst()).isNotNull("wicket").findAllSorted("delivery", Sort.ASCENDING);
             extraTypes = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).equalTo("firstInnings", !md.isHomeTeamBattingFirst()).notEqualTo("ballType", 0).findAll();
         }
@@ -175,7 +192,7 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
             data.balls = battingProfiles.get(i).getBallFaced();
             data.name = RealmDB.getPlayer(realm, battingProfiles.get(i).getPlayerID()).getName();
             if (battingProfiles.get(i).getWicket() != null)
-                data.outAs = String.valueOf(battingProfiles.get(i).getWicket().getType());
+                data.outAs = wicketToString(battingProfiles.get(i).getWicket());
             else
                 data.outAs = getString(R.string.batting);
             data.runs = battingProfiles.get(i).getRuns();
@@ -183,21 +200,22 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
             data.sixes = battingProfiles.get(i).getSixes();
             if (battingProfiles.get(i).getBallFaced() != 0) {
                 data.strike_rate = CommanData.getStrikeRate(battingProfiles.get(i).getBallFaced(), battingProfiles.get(i).getRuns());
-                System.out.println("_____hiii"+data.strike_rate);
-            }scoreCardDetailData.addBatsmanDetails(data);
+                System.out.println("_____hiii" + data.strike_rate);
+            }
+            scoreCardDetailData.addBatsmanDetails(data);
 
         }
 
 
         for (int i = 0; i < bowlingProfiles.size(); i++) {
             ScoreCardDetailData.BowlersDetail data = new ScoreCardDetailData.BowlersDetail();
-           // System.out.println("eeee"+bowlingProfiles.get(i).getPlayerID());
+            // System.out.println("eeee"+bowlingProfiles.get(i).getPlayerID());
             data.name = RealmDB.getPlayer(realm, bowlingProfiles.get(i).getPlayerID()).getName();
             data.outAs = String.valueOf(bowlingProfiles.get(i).getWickets().size());
             data.runs = bowlingProfiles.get(i).getRunsGranted();
             data.overs = bowlingProfiles.get(i).OversBowled();
-            data.maiden=bowlingProfiles.get(i).getMaiden();
-            data.ecnomic_rate = CommanData.getER(data.runs,data.overs);
+            data.maiden = bowlingProfiles.get(i).getMaiden();
+            data.ecnomic_rate = CommanData.getER(data.runs, data.overs);
             scoreCardDetailData.addBowlersDetails(data);
 
         }
@@ -225,7 +243,7 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
 
         }
         scoreCardDetailData.setTotal_extras(wide + lb + b + noball);
-        scoreCardDetailData.setExtras_detail("wd" + wide + ",b" + b + ",lb" + lb + ",nb" + noball);
+        scoreCardDetailData.setExtras_detail("wd " + wide + ",b " + b + ",lb " + lb + ",nb " + noball);
         if (InningsData.getDelivery() != 0)
             scoreCardDetailData.setCurrent_run_rate(InningsData.getRun() / InningsData.getDelivery());
         return scoreCardDetailData;

@@ -99,6 +99,9 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
             ec_rate_text.setText("" + bData.ecnomic_rate);
             out_as.setVisibility(View.GONE);
             //  out_as.setText("" + bData.outAs);
+            if (i == (datas.get(groupPosition).getBowlersDetails().size() - 1)) {
+                v.findViewById(R.id.bottom_view).setVisibility(View.GONE);
+            }
             ll.addView(v);
 
         }
@@ -211,7 +214,7 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
 
     @Override
     public int getGroupCount() {
-        return datas.size();
+        return 1;
     }
 
     @Override
@@ -240,7 +243,6 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
         holder.score_detail.setText(datas.get(groupPosition).getTeamRun_over());
         return convertView;
     }
-
 
 
     @Override

@@ -8,6 +8,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import realmstudy.data.RealmObjectData.Wicket;
+import realmstudy.databaseFunctions.RealmDB;
+
 /**
  * Created by developer on 9/12/16.
  */
@@ -60,16 +63,40 @@ public class CommanData {
     public static final int BALL_N0_BALL_BYES = 5;
     public static final int BALL_LB = 6;
 
+
+    public static String wicketIdToString(int id) {
+        switch (id) {
+            case W_BOWLED:
+                return "b";
+            case W_CAUGHT:
+                return "c";
+            case W_HITOUT:
+                return "hit out";
+            case W_LBW:
+                return "lbw";
+            case W_RUNOUT:
+                return "run out";
+            case W_STUMPED:
+                return "stumped";
+            default:
+                return "unDefined";
+
+        }
+
+    }
+
+
+
     public static String getStrikeRate(int balls, int runs) {
 
 
-        return new DecimalFormat("##.##").format((((float) runs)/((float) balls))*100);
+        return new DecimalFormat("##.##").format((((float) runs) / ((float) balls)) * 100);
     }
 
     public static String getER(int runs, String overs) {
 
-      Float er=  ((float)(runs)/(float)overToBall(overs));
-        return  new DecimalFormat("##.##").format(er*6);
+        Float er = ((float) (runs) / (float) overToBall(overs));
+        return new DecimalFormat("##.##").format(er * 6);
     }
 
     //
@@ -138,18 +165,19 @@ public class CommanData {
     }
 
     public static String currentRunRate(float runs, String overs) {
-      //  System.out.println("______OOVV"+((int)(runs/overs)+"."+(int)(runs%overs)));
+        //  System.out.println("______OOVV"+((int)(runs/overs)+"."+(int)(runs%overs)));
 
-        float balls=(float) overToBall(String.valueOf(overs));
+        float balls = (float) overToBall(String.valueOf(overs));
 
 
-      return  new DecimalFormat("##.##").format(((runs/balls)*6));
+        return new DecimalFormat("##.##").format(((runs / balls) * 6));
     }
+
     public static String ballsToOver(int balls) {
         String over = "0.0";
         if (balls >= 6) {
             over = (balls / 6) + "." + (balls % 6);
-        } else if(balls>0){
+        } else if (balls > 0) {
             over = "0." + balls;
         }
         return over;
@@ -157,13 +185,13 @@ public class CommanData {
 
     public static int overToBall(String over) {
         // String over = "0.0";
-        int balls=0;
+        int balls = 0;
         Float overs = Float.parseFloat(over);
-       // if (overs > 1) {
-         //  System.out.println("________vv"+(((int)(overs/1)) * 6)+"__"+((overs % 1)*10)+"__"+over);
-            int overr = (((int)(overs/1)) * 6) + (int)((overs % 1)*10);
-           // System.out.println("________OO"+overr);
-            balls = overr;
+        // if (overs > 1) {
+        //  System.out.println("________vv"+(((int)(overs/1)) * 6)+"__"+((overs % 1)*10)+"__"+over);
+        int overr = (((int) (overs / 1)) * 6) + (int) ((overs % 1) * 10);
+        // System.out.println("________OO"+overr);
+        balls = overr;
         //}
 
         return balls;

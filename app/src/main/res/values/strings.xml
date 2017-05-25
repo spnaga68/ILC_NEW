@@ -120,6 +120,9 @@
     <string name="first_innings_completed">First Innings completed. To Continue second innings press ok.</string>
     <string name="match_completed">Match Completed</string>
     <string name="bowler">Bowler</string>
+    <string name="needs">needs</string>
+    <string name="runs_in">runs in</string>
+    <string name="balls">balls</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>

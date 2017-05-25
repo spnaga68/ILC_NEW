@@ -193,7 +193,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             @Override
             public void onClick(View view) {
 
-                SessionSave.saveSession("sdata",CommanData.toString(current_score_data), getActivity());
+                SessionSave.saveSession("sdata", CommanData.toString(current_score_data), getActivity());
                 Intent i = new Intent(getActivity(), MatchDetailActivity.class);
                 i.putExtra("match_id", matchDetails.getMatch_id());
                 getActivity().startActivity(i);
@@ -291,9 +291,9 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 //                    public void execute(Realm realm) {
                 // RealmResults<InningsData> result = realm.where(InningsData.class).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
                 System.out.println("nnnnnnn" +
-                        "" + lastInningsDataItem.getDelivery() + "___" + totalSize+"__"+result.size());
+                        "" + lastInningsDataItem.getDelivery() + "___" + totalSize + "__" + result.size());
                 // if (checkPlayerNotNull()) {
-                System.out.println("nnnnnnnnnnz"+result.size());
+                System.out.println("nnnnnnnnnnz" + result.size());
                 removeBallsFromProfile(totalSize);
                 System.out.println("nnnnnnn" + totalSize + "-____" + (undoCount));
                 //   lastInningsDataItem = realm.where(InningsData.class).findAll().get(realm.where(InningsData.class).findAll().size() - 1);
@@ -329,16 +329,16 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     private void removeBallsFromProfile(int totalSize) {
 
         RealmResults<InningsData> result = realm.where(InningsData.class).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
-        System.out.println("nnnnnnnnnna"+result.size());
-        ArrayList<Integer> bf=new ArrayList<>();
-        ArrayList<Integer> bwf=new ArrayList<>();
+        System.out.println("nnnnnnnnnna" + result.size());
+        ArrayList<Integer> bf = new ArrayList<>();
+        ArrayList<Integer> bwf = new ArrayList<>();
         RealmResults<InningsData> strikers = result.distinct("striker");
         for (int i = 0; i < strikers.size(); i++)
-         bf.add(strikers.get(i).getStriker());
+            bf.add(strikers.get(i).getStriker());
 
         System.out.println("updating battt___" + bf.size());
 
-      result = realm.where(InningsData.class).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
+        result = realm.where(InningsData.class).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
         RealmResults<InningsData> non_strikers = result.distinct("nonStriker");
         for (int i = 0; i < non_strikers.size(); i++)
             bf.add(non_strikers.get(i).getNonStriker());
@@ -346,7 +346,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         result = realm.where(InningsData.class).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
         RealmResults<InningsData> currentBowlers = result.distinct("currentBowler");
         for (int i = 0; i < currentBowlers.size(); i++) {
-           bwf.add(currentBowlers.get(i).getCurrentBowler());
+            bwf.add(currentBowlers.get(i).getCurrentBowler());
 
 
         }
@@ -355,10 +355,10 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         RealmResults<InningsData> nextBowlers = result.distinct("nextBowler");
         for (int i = 0; i < nextBowlers.size(); i++) {
             bwf.add(nextBowlers.get(i).getNextBowler());
-           // System.out.println("updating bowler___next" + currentBowlers.get(i).getCurrentBowler());
+            // System.out.println("updating bowler___next" + currentBowlers.get(i).getCurrentBowler());
 
         }
-        System.out.println("nnnnnnnnnnb"+result.size());
+        System.out.println("nnnnnnnnnnb" + result.size());
 
         result = realm.where(InningsData.class).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
         realm.beginTransaction();
@@ -366,13 +366,13 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             matchDetails.setMatchStatus(CommanData.MATCH_STARTED_FI);
         result.deleteAllFromRealm();
         realm.commitTransaction();
-        System.out.println("nnnnnnnnnnc"+result.size());
+        System.out.println("nnnnnnnnnnc" + result.size());
 
-        for(Integer data:bf)
+        for (Integer data : bf)
             RealmDB.updateBattingProfile(realm, matchDetails, data);
-        for(Integer data:bwf)
+        for (Integer data : bwf)
             RealmDB.updateBowlingProfile(realm, matchDetails, data);
-        System.out.println("Alllllllll"+"___"+bf.size()+"___"+bwf.size());
+        System.out.println("Alllllllll" + "___" + bf.size() + "___" + bwf.size());
     }
 
 
@@ -770,7 +770,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         }
         StrikerProf.setCurrentStatus(CommanData.StatusBatting);
         nonStrikerProf.setCurrentStatus(CommanData.StatusBatting);
-        current_bowler_bf.setCurrentBowlerStatus(CommanData.StatusInMatch);
+        current_bowler_bf.setCurrentBowlerStatus(CommanData.StatusBowling);
 
 
         realm.commitTransaction();
@@ -993,6 +993,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             score_data.setfirstInningsWicket(RealmDB.noOfWicket(getActivity(), realm, matchDetails.getMatch_id(), true));
 
             score_data.setFirstIinningsOver(RealmDB.getFirstInningsOver(realm, matchDetails));
+            score_data.setMatchQuote(matchDetails.getCurrentBattingTeam().name + " " + getString(R.string.needs) + " "+((current_score_data.getFirstInningsTotal()+1)-total_run)+" " + getString(R.string.runs_in) +" "+ ((matchDetails.getOvers() * 6) - CommanData.overToBall(String.valueOf(over))) + " " + getString(R.string.balls));
         } else {
             score_data.setMatchQuote(matchDetails.getToss().nick_name + " " + getString(R.string.won_and_elect) + " " + matchDetails.getChooseTo());
         }
