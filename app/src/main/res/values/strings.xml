@@ -123,6 +123,13 @@
     <string name="needs">needs</string>
     <string name="runs_in">runs in</string>
     <string name="balls">balls</string>
+    <string name="swap_batsman">Swap Batsman</string>
+    <string name="view_score_card">View ScoreCard</string>
+    <string name="redo_last_ball">Redo LastBall</string>
+    <string name="undo">undo</string>
+    <string name="redo">Redo</string>
+    <string name="scorer">Scorer</string>
+    <string name="score_board">ScoreBoard</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>

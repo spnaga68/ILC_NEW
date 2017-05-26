@@ -109,12 +109,20 @@
 
             </android.support.v7.widget.Toolbar>-->
 
-            <include
+            <!--         <include
+                         android:id="@+id/tool_bar"
+                         layout="@layout/tool_bar"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content" />-->
+            <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/tool_bar"
-                layout="@layout/tool_bar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                android:elevation="4dp"
+                android:theme="@styles/ToolBarStyle"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"></android.support.v7.widget.Toolbar>
 
             <FrameLayout
                 android:id="@+id/mainFrag"

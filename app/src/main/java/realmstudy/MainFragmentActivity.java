@@ -10,7 +10,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -40,16 +42,16 @@ import io.realm.RealmConfiguration;
 /**
  * Created by developer on 26/12/16.
  */
-public class MainFragmentActivity extends AppCompatActivity implements MsgToFragment, MsgFromDialog {
+public class MainFragmentActivity extends AppCompatActivity implements MsgToFragment, MsgFromDialog,Toolbar.OnMenuItemClickListener {
 
     private FrameLayout content_frame, shadow;
     private android.support.v4.widget.DrawerLayout drawer_layout;
     private android.support.v7.widget.Toolbar tool_bar;
     private ImageView toolbar_logo;
-    private TextView toolbar_title;
-    private LinearLayout toolbar_titletm;
-    private ImageView imageee;
-    private ImageButton left_icon;
+//    private TextView toolbar_title;
+//    private LinearLayout toolbar_titletm;
+  //  private ImageView imageee;
+   // private ImageButton left_icon;
     private ImageButton right_icon;
     private TextView cancel_b;
     private android.support.v7.widget.SwitchCompat switch_right_icon;
@@ -81,11 +83,12 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
         content_frame = (FrameLayout) findViewById(realmstudy.R.id.content_frame);
         drawer_layout = (android.support.v4.widget.DrawerLayout) findViewById(realmstudy.R.id.drawer_layout);
         tool_bar = (android.support.v7.widget.Toolbar) findViewById(realmstudy.R.id.tool_bar);
+        tool_bar.inflateMenu(R.menu.main_menu);
         toolbar_logo = (ImageView) findViewById(realmstudy.R.id.toolbar_logo);
-        toolbar_title = (TextView) findViewById(realmstudy.R.id.toolbar_title);
-        toolbar_titletm = (LinearLayout) findViewById(realmstudy.R.id.toolbar_titletm);
-        imageee = (ImageView) findViewById(realmstudy.R.id.imageee);
-        left_icon = (ImageButton) findViewById(realmstudy.R.id.left_icon);
+       // toolbar_title = (TextView) findViewById(realmstudy.R.id.toolbar_title);
+       // toolbar_titletm = (LinearLayout) findViewById(realmstudy.R.id.toolbar_titletm);
+      //  imageee = (ImageView) findViewById(realmstudy.R.id.imageee);
+       // left_icon = (ImageButton) findViewById(realmstudy.R.id.left_icon);
         right_icon = (ImageButton) findViewById(realmstudy.R.id.right_icon);
         cancel_b = (TextView) findViewById(realmstudy.R.id.cancel_b);
         switch_right_icon = (android.support.v7.widget.SwitchCompat) findViewById(realmstudy.R.id.switch_right_icon);
@@ -96,7 +99,7 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//     getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
 
 
         return true;
@@ -115,10 +118,13 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
 
 
     public void homePage_title(String title) {
-        toolbar_title.setVisibility(View.VISIBLE);
-        toolbar_title.setText(title);
-        toolbar_titletm.setVisibility(View.VISIBLE);
-        toolbar_logo.setVisibility(View.GONE);
+//        toolbar_title.setVisibility(View.VISIBLE);
+//        toolbar_title.setText(title);
+        setSupportActionBar(tool_bar);
+        tool_bar.setTitle("ILC");
+        tool_bar.hideOverflowMenu();
+//        toolbar_titletm.setVisibility(View.VISIBLE);
+//        toolbar_logo.setVisibility(View.GONE);
 
 
     }
@@ -152,13 +158,13 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
         this.dialogInterface = dialogInterface;
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
-        System.out.println("_______DDDDDD__"+prev);
+        System.out.println("_______DDDDDD__" + prev);
         if (prev != null) {
             System.out.println("_______DDDDDD__");
             ft.remove(prev);
-          //  ((DialogFragment)prev).dismiss();
+            //  ((DialogFragment)prev).dismiss();
         }
-       // ft.addToBackStack(null);
+        // ft.addToBackStack(null);
 
         // Create and show the dialog.
         DialogFragment newFragment;
@@ -197,19 +203,19 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
 
     }
 
-    public void closePrevSelectPlayer(){
+    public void closePrevSelectPlayer() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
-        System.out.println("_________________prev"+prev);
+        System.out.println("_________________prev" + prev);
         if (prev != null) {
-            System.out.println("_________________prevrr"+prev);
-            ((DialogFragment)prev).dismiss();
+            System.out.println("_________________prevrr" + prev);
+            ((DialogFragment) prev).dismiss();
             ft.remove(prev);
 
         }
     }
 
-    public void showSelectplayer(int match_id, boolean ishomeTeam, Player current_bowler, String title,int assignTo) {
+    public void showSelectplayer(int match_id, boolean ishomeTeam, Player current_bowler, String title, int assignTo) {
 
         // DialogFragment.show() will take care of adding the fragment
         // in a transaction.  We also want to remove any currently showing
@@ -217,14 +223,14 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
 
         this.dialogInterface = dialogInterface;
 
-       // ft.addToBackStack(null);
+        // ft.addToBackStack(null);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         closePrevSelectPlayer();
         int cb = -1;
         if (current_bowler != null)
             cb = current_bowler.getpID();
         // Create and show the dialog.
-        DialogFragment newFragment = SelectPlayerDialog.newInstance(match_id, ishomeTeam, cb, title,assignTo);
+        DialogFragment newFragment = SelectPlayerDialog.newInstance(match_id, ishomeTeam, cb, title, assignTo);
         // ((SelectPlayerDialog) newFragment).setDialogInterface(dialogInterface, match_id, ishomeTeam, current_bowler,title);
 //        if (type == 0)
 //            newFragment = NewTeamDialog.newInstance();
@@ -319,16 +325,17 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
     }
 
     @Override
-    public void messageFromDialog(int dialogType, boolean success, String data,String message,int assignTo) {
+    public void messageFromDialog(int dialogType, boolean success, String data, String message, int assignTo) {
         Fragment ff = getSupportFragmentManager().findFragmentById(realmstudy.R.id.mainFrag);
         if (ff instanceof MsgFromDialog) {
-            ((MsgFromDialog) ff).messageFromDialog(dialogType, success,data, message,assignTo);
+            ((MsgFromDialog) ff).messageFromDialog(dialogType, success, data, message, assignTo);
         }
     }
-    public void messageFromDialog(int dialogType, boolean success, String data,String message) {
+
+    public void messageFromDialog(int dialogType, boolean success, String data, String message) {
         Fragment ff = getSupportFragmentManager().findFragmentById(realmstudy.R.id.mainFrag);
         if (ff instanceof MsgFromDialog) {
-            ((MsgFromDialog) ff).messageFromDialog(dialogType, success,data, message);
+            ((MsgFromDialog) ff).messageFromDialog(dialogType, success, data, message);
         }
     }
 
@@ -336,7 +343,12 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
     public void messageFromDialog(int dialogType, boolean success, ArrayList<Integer> data, String message) {
         Fragment ff = getSupportFragmentManager().findFragmentById(realmstudy.R.id.mainFrag);
         if (ff instanceof MsgFromDialog) {
-            ((MsgFromDialog) ff).messageFromDialog(dialogType, success,data, message);
+            ((MsgFromDialog) ff).messageFromDialog(dialogType, success, data, message);
         }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        return false;
     }
 }

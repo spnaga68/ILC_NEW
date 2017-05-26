@@ -34,7 +34,7 @@
             android:orientation="horizontal"
             android:text="@string/app_name"
             android:textColor="@color/white"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/toolbar_titletm"
@@ -80,7 +80,7 @@
             android:src="@android:drawable/ic_menu_edit"
             android:visibility="visible" />
 
-        <ImageButton
+       <!-- <ImageButton
             android:id="@+id/view_icon"
             style="@style/Widget.AppCompat.ActionButton"
             android:layout_width="wrap_content"
@@ -88,7 +88,7 @@
             android:layout_gravity="start|center_vertical"
             android:layout_marginLeft="50dp"
             android:src="@drawable/eye"
-            android:visibility="visible" />
+            android:visibility="visible" />-->
         <!-- This is a custom right side button -->
         <FrameLayout
 
@@ -129,27 +129,7 @@
                 android:visibility="gone" />
 
 
-            <ImageButton
-                android:id="@+id/undo"
-                style="@style/Widget.AppCompat.ActionButton"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_gravity="end"
-                android:layout_marginRight="?attr/actionBarSize"
-                android:scaleType="centerInside"
-                android:src="@android:drawable/ic_media_previous"
-                android:visibility="visible" />
 
-            <ImageButton
-                android:id="@+id/redo"
-                style="@style/Widget.AppCompat.ActionButton"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-
-                android:layout_gravity="end"
-                android:scaleType="centerInside"
-                android:src="@android:drawable/ic_media_next"
-                android:visibility="visible" />
 
 
         </FrameLayout>

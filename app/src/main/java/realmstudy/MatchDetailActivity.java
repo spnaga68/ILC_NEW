@@ -1,6 +1,5 @@
 package realmstudy;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
@@ -13,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import realmstudy.adapter.Pager;
-import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.extras.ZoomOutPageTransformer;
 
 /**
@@ -25,6 +23,7 @@ public class MatchDetailActivity extends AppCompatActivity implements TabLayout.
 
     private ViewPager viewPager;
     private int match_id;
+    private Toolbar tool_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +33,6 @@ public class MatchDetailActivity extends AppCompatActivity implements TabLayout.
         match_id = getIntent().getIntExtra("match_id", 0);
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout1);
 
 //        View bottomSheet = findViewById(R.id.bot);
@@ -52,6 +50,9 @@ public class MatchDetailActivity extends AppCompatActivity implements TabLayout.
 
         //Adding adapter to pager
         viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(1);
+        tool_bar = (android.support.v7.widget.Toolbar) findViewById(realmstudy.R.id.tool_bar);
+        tool_bar.setTitle(getString(R.string.score_board));
 
         //Adding onTabSelectedListener to swipe views
         tabLayout.setOnTabSelectedListener(this);

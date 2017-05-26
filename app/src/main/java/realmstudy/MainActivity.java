@@ -12,6 +12,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -66,7 +68,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     private ScoreBoardData r1;
     private InningsData lastInningsDataItem;
     public static int legalRun = 1;
-    ImageButton undo, redo;
+    //    ImageButton undo, redo;
     private int undoCount, redoCount;
     //temp variable holds address of player(i.e striker,bowler)
     /**
@@ -83,6 +85,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     private int resumeInningsFrom = -1;
     private ScoreBoardFragment scoreBoardFragment;
     private ImageButton view_icon;
+    private MenuItem redo, undo, swap_batsman, view_scoreCard;
 
     @Override
     public void msg(String s) {
@@ -93,6 +96,11 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     private CommanData.typeExtraEnum extraType;
     MatchDetails matchDetails;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -135,16 +143,16 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         leg_byes_txt = (TextView) v.findViewById(realmstudy.R.id.leg_byes_txt);
         granted_txt = (TextView) v.findViewById(realmstudy.R.id.granted_txt);
         legal_ball_txt = (TextView) v.findViewById(realmstudy.R.id.legal_ball_txt);
-        undo = (ImageButton) getActivity().findViewById(realmstudy.R.id.undo);
-        redo = (ImageButton) getActivity().findViewById(realmstudy.R.id.redo);
-        view_icon = (ImageButton) getActivity().findViewById(realmstudy.R.id.view_icon);
-        getActivity().findViewById(realmstudy.R.id.left_icon).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                swapStriker(true, swapCount % 2 != 0);
-                swapCount += 1;
-            }
-        });
+//        undo = (ImageButton) getActivity().findViewById(realmstudy.R.id.undo);
+//        redo = (ImageButton) getActivity().findViewById(realmstudy.R.id.redo);
+        // view_icon = (ImageButton) getActivity().findViewById(realmstudy.R.id.view_icon);
+
+//       swap_batsman.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
         submit = (AppCompatButton) v.findViewById(realmstudy.R.id.submit);
         out = (AppCompatButton) v.findViewById(realmstudy.R.id.out);
         // groundFragment = (CanvasStudy) getChildFragmentManager().findFragmentById(R.id.ground_frag);
@@ -168,38 +176,64 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                     ((MainFragmentActivity) getActivity()).showOutDialog(striker.getpID(), non_striker.getpID(), assignToPlayer, matchDetails.getMatch_id());
             }
         });
-        undo.setOnClickListener(new View.OnClickListener() {
+//
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        swap_batsman = menu.findItem(R.id.swap_batsman);
+        undo = menu.findItem(R.id.undo);
+        redo = menu.findItem(R.id.redo);
+        view_scoreCard = menu.findItem(R.id.view_icon);
+
+
+        swap_batsman.setVisible(true);
+        undo.setVisible(true);
+        redo.setVisible(true);
+        view_scoreCard.setVisible(true);
+
+        swap_batsman.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onMenuItemClick(MenuItem item) {
+                swapStriker(true, swapCount % 2 != 0);
+                swapCount += 1;
+                return false;
+            }
+        });
+        undo.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
                 undoCount = 1;
-//                checkAndUpdateUI();
                 checkUnOrRedo();
                 scoreBoardFragment.updateUI(current_score_data);
-
+                return false;
             }
         });
-        redo.setOnClickListener(new View.OnClickListener() {
+        redo.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onMenuItemClick(MenuItem item) {
                 redoCount = 1;
-
-                //   checkAndUpdateUI();
                 checkUnOrRedo();
                 scoreBoardFragment.updateUI(current_score_data);
-
+                return false;
             }
         });
-        view_icon.setOnClickListener(new View.OnClickListener() {
+        view_scoreCard.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
-            public void onClick(View view) {
-
+            public boolean onMenuItemClick(MenuItem item) {
                 SessionSave.saveSession("sdata", CommanData.toString(current_score_data), getActivity());
                 Intent i = new Intent(getActivity(), MatchDetailActivity.class);
+
                 i.putExtra("match_id", matchDetails.getMatch_id());
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 getActivity().startActivity(i);
+                return false;
             }
         });
+        getActivity().invalidateOptionsMenu();
+        super.onPrepareOptionsMenu(menu);
     }
+
 
     private void checkAndUpdateUI() {
         if (checkPlayerNotNull()) {
@@ -993,7 +1027,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             score_data.setfirstInningsWicket(RealmDB.noOfWicket(getActivity(), realm, matchDetails.getMatch_id(), true));
 
             score_data.setFirstIinningsOver(RealmDB.getFirstInningsOver(realm, matchDetails));
-            score_data.setMatchQuote(matchDetails.getCurrentBattingTeam().name + " " + getString(R.string.needs) + " "+((current_score_data.getFirstInningsTotal()+1)-total_run)+" " + getString(R.string.runs_in) +" "+ ((matchDetails.getOvers() * 6) - CommanData.overToBall(String.valueOf(over))) + " " + getString(R.string.balls));
+            score_data.setMatchQuote(matchDetails.getCurrentBattingTeam().name + " " + getString(R.string.needs) + " " + ((current_score_data.getFirstInningsTotal() + 1) - total_run) + " " + getString(R.string.runs_in) + " " + ((matchDetails.getOvers() * 6) - CommanData.overToBall(String.valueOf(over))) + " " + getString(R.string.balls));
         } else {
             score_data.setMatchQuote(matchDetails.getToss().nick_name + " " + getString(R.string.won_and_elect) + " " + matchDetails.getChooseTo());
         }
@@ -1156,7 +1190,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     @Override
     public void onResume() {
         super.onResume();
-
+        getActivity().setTitle(getString(R.string.scorer));
     }
 
     @Override

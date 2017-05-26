@@ -54,5 +54,6 @@
     <color name="six_c">#D1C4E9</color>
     <color name="wicket_c">#EF5350</color>
     <color name="extra_c">#DCE775</color>
+    <color name="slideTabColor">#6c6c6c</color>
 
 </resources>
