@@ -1,83 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:padding="10dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <realmstudy.lib.customViews.SemiLargeTextView
+        android:id="@+id/team_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="home"
-        android:id="@+id/team_name"
-        android:textColor="@color/black"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp" />
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:textColor="@color/black"
+        tools:text="home" />
 
     <LinearLayout
         android:id="@+id/scoreLay"
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_below="@+id/team_name"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/team_name"
-       >
+        android:orientation="horizontal">
 
         <realmstudy.lib.customViews.SemiLargeTextView
+            android:id="@+id/score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0/0"
-            android:textColor="@color/black"
-            android:id="@+id/score" />
+            android:textColor="@color/black" />
 
         <realmstudy.lib.customViews.SemiLargeTextView
+            android:id="@+id/overs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="(0.0)"
 
-            android:id="@+id/overs" />
+            android:text="(0.0)" />
     </LinearLayout>
 
     <realmstudy.lib.customViews.NormalTextView
-        android:layout_below="@+id/scoreLay"
+        android:id="@+id/match_status_quote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="MI opt to bowl"
-        android:id="@+id/match_status_quote"
-        android:layout_marginTop="10dp"
         android:layout_alignParentLeft="true"
+        android:layout_below="@+id/scoreLay"
         android:layout_marginLeft="0dp"
+        android:layout_marginTop="10dp"
         android:textColor="@color/highlight_color"
-         />
+        tools:text="MI opt to bowl" />
 
     <LinearLayout
-        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:id="@+id/rrr_lay"
+        android:layout_toLeftOf="@+id/crr_lay"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+
+            android:text="@string/rrr" />
+
+        <TextView
+            android:id="@+id/rrr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="-"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/crr_lay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="30dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="30dp">
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CRR"
+            android:layout_gravity="center_horizontal"
 
-            android:layout_gravity="center_horizontal" />
+            android:text="CRR" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-"
-            android:textColor="@color/black"
             android:id="@+id/crr"
-            android:layout_gravity="center_horizontal" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="-"
+            android:textColor="@color/black" />
     </LinearLayout>
 
 </RelativeLayout>

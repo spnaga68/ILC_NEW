@@ -126,10 +126,14 @@
     <string name="swap_batsman">Swap Batsman</string>
     <string name="view_score_card">View ScoreCard</string>
     <string name="redo_last_ball">Redo LastBall</string>
-    <string name="undo">undo</string>
+    <string name="undo">Undo</string>
     <string name="redo">Redo</string>
     <string name="scorer">Scorer</string>
     <string name="score_board">ScoreBoard</string>
+    <string name="rrr">REQ</string>
+    <string name="activity_image_trans">slideTransfer</string>
+    <string name="recent">Recent</string>
+    <string name="upcoming">Up Coming</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>

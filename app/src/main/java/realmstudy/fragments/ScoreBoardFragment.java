@@ -50,12 +50,13 @@ public class ScoreBoardFragment extends View {
             current_bowler_maiden, current_bowler_wicket, current_bowler_er,
             next_bowler_maiden, next_bowler_wicket, next_bowler_er;
     private LinearLayout last_twelve_balls;
-    private TextView score, crr, wicket_home, overs;
+    private TextView score, crr, wicket_home, overs, reqRR;
 
     private TextView away_wicket_u, wicket_away, match_status_quote;
     private TextView shot;
     Context context;
     private TextView non_striker_fours, non_striker_sixes, non_striker_sr, striker_fours, striker_sixes, striker_sr;
+    LinearLayout rrr_lay;
 
     public ScoreBoardFragment(Context context) {
         super(context);
@@ -74,6 +75,7 @@ public class ScoreBoardFragment extends View {
 
         score = (TextView) v.findViewById(realmstudy.R.id.score);
         crr = (TextView) v.findViewById(realmstudy.R.id.crr);
+        reqRR = (TextView) v.findViewById(realmstudy.R.id.rrr);
         wicket_home = (TextView) v.findViewById(realmstudy.R.id.wicket_home);
         overs = (TextView) v.findViewById(realmstudy.R.id.overs);
         non_striker_fours = (TextView) v.findViewById(realmstudy.R.id.non_striker_fours);
@@ -85,6 +87,7 @@ public class ScoreBoardFragment extends View {
         away_wicket_u = (TextView) v.findViewById(realmstudy.R.id.away_wicket_u);
         wicket_away = (TextView) v.findViewById(realmstudy.R.id.wicket_away);
         // over_away = (TextView) v.findViewById(realmstudy.R.id.over_away);
+        rrr_lay = (LinearLayout) v.findViewById(realmstudy.R.id.rrr_lay);
 
         current_bowler_maiden = (TextView) v.findViewById(realmstudy.R.id.current_bowler_maiden);
         current_bowler_wicket = (TextView) v.findViewById(realmstudy.R.id.current_bowler_wicket);
@@ -127,6 +130,8 @@ public class ScoreBoardFragment extends View {
         System.out.println("___________updateUI");
         System.out.println("nagacheckkk" + runs % 2 + "____" + current_score_data.getTotalBalls() + current_score_data.curr_bowlers.getName());
         setPreviousDelivery(current_score_data.getLastThreeOvers());
+
+
         striker_score.setText(String.valueOf(current_score_data.striker.getRuns()));
         striker_balls.setText(String.valueOf(current_score_data.striker.getBalls()));
         striker_name.setText(current_score_data.striker.getName() + "*");
@@ -204,6 +209,12 @@ public class ScoreBoardFragment extends View {
         overs.setText("(" + String.valueOf(current_score_data.getTotalOver()) + ")");
         // float balls=Float.parseFloat(current_score_data.getTotalOver());
         crr.setText(CommanData.currentRunRate(current_score_data.getTotalRuns(), current_score_data.getTotalOver()));
+
+        if (current_score_data.isFirstInnings())
+            rrr_lay.setVisibility(GONE);
+        else
+            reqRR.setText(current_score_data.getReqRunRate());
+
         wicket_away.setText(String.valueOf(current_score_data.getfirstIinningsWicket()));
 //        if (current_score_data.isHomeTeamBatting()) {
 //            //home_total.setText(current_score_data.getTotalOver());
@@ -233,10 +244,10 @@ public class ScoreBoardFragment extends View {
     }
 
     public void showPreviousDelivery(boolean show) {
-        if(show)
+        if (show)
             last_twelve_balls.setVisibility(View.VISIBLE);
         else
-        last_twelve_balls.setVisibility(View.GONE);
+            last_twelve_balls.setVisibility(View.GONE);
     }
 
     private void setPreviousDelivery(ArrayList<String> lpb) {

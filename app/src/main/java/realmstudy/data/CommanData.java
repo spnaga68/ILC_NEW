@@ -86,7 +86,6 @@ public class CommanData {
     }
 
 
-
     public static String getStrikeRate(int balls, int runs) {
 
 
@@ -97,6 +96,13 @@ public class CommanData {
 
         Float er = ((float) (runs) / (float) overToBall(overs));
         return new DecimalFormat("##.##").format(er * 6);
+    }
+
+    public static String getReqRunRate(int firstInningsTotal, int totalBalls, int totalRuns, int ballRemaining) {
+        String s = "";
+        float reqRun = firstInningsTotal - totalRuns;
+        float reqRR = reqRun / (float) ballRemaining;
+        return new DecimalFormat("##.##").format(reqRR * 6);
     }
 
     //

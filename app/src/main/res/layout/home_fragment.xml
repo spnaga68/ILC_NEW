@@ -121,7 +121,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
                 android:elevation="4dp"
-                android:theme="@styles/ToolBarStyle"
+                android:theme="@style/ToolBarStyle"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"></android.support.v7.widget.Toolbar>
 
             <FrameLayout

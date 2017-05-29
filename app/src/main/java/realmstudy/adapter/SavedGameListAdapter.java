@@ -7,11 +7,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -109,21 +111,21 @@ public class SavedGameListAdapter extends RecyclerView.Adapter implements SlideR
             viewHolder.venue.setText(data.get(position).getLocation());
             viewHolder.home_team_name.setText(data.get(position).getHomeTeam().nick_name);
             viewHolder.away_team_name.setText(data.get(position).getAwayTeam().nick_name);
-            viewHolder.time.setText(CommanData.getDateCurrentTimeZone(data.get(position).getTime()));
+            viewHolder.status.setText(CommanData.getDateCurrentTimeZone(data.get(position).getTime()));
             viewHolder.undoButton.setVisibility(View.GONE);
             viewHolder.undoButton.setOnClickListener(null);
             viewHolder.titleView.setTag(position);
 
-            if (data.get(position).getMatchStatus() == CommanData.MATCH_COMPLETED) {
-                viewHolder.status.setText(context.getString(R.string.completed));
-                viewHolder.status.setTextColor(ContextCompat.getColor(context, R.color.red_M));
-            } else if (data.get(position).getMatchStatus() == CommanData.MATCH_NOT_YET_STARTED) {
-                viewHolder.status.setText(context.getString(R.string.match_not_started));
-                viewHolder.status.setTextColor(ContextCompat.getColor(context, R.color.yellow_M));
-            } else {
-                viewHolder.status.setText(context.getString(R.string.on_going));
-                viewHolder.status.setTextColor(ContextCompat.getColor(context, R.color.green_M));
-            }
+//            if (data.get(position).getMatchStatus() == CommanData.MATCH_COMPLETED) {
+//                viewHolder.status.setText(context.getString(R.string.completed));
+//                viewHolder.status.setTextColor(ContextCompat.getColor(context, R.color.red_M));
+//            } else if (data.get(position).getMatchStatus() == CommanData.MATCH_NOT_YET_STARTED) {
+//                viewHolder.status.setText(context.getString(R.string.match_not_started));
+//                viewHolder.status.setTextColor(ContextCompat.getColor(context, R.color.yellow_M));
+//            } else {
+//                viewHolder.status.setText(context.getString(R.string.on_going));
+//                viewHolder.status.setTextColor(ContextCompat.getColor(context, R.color.green_M));
+//            }
             viewHolder.titleView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -146,8 +148,8 @@ public class SavedGameListAdapter extends RecyclerView.Adapter implements SlideR
                     } else {
                         //Toast.makeText(context, context.getString(R.string.game_over), Toast.LENGTH_SHORT).show();
 
-                        Intent i=new Intent(context, MatchDetailActivity.class);
-                        i.putExtra("match_id",md.getMatch_id());
+                        Intent i = new Intent(context, MatchDetailActivity.class);
+                        i.putExtra("match_id", md.getMatch_id());
                         context.startActivity(i);
                     }
                 }
@@ -225,27 +227,28 @@ public class SavedGameListAdapter extends RecyclerView.Adapter implements SlideR
  */
 class TestViewHolder extends RecyclerView.ViewHolder {
 
-    realmstudy.lib.customViews.CircleImageView
+    ImageView
             home_team_image, away_team_image;
-    realmstudy.lib.customViews.SemiLargeTextView home_team_name;
-    realmstudy.lib.customViews.SemiLargeTextView away_team_name;
+    TextView home_team_name;
+TextView away_team_name;
     TextView venue, status;
-    TextView time;
-    RelativeLayout titleView;
+    TextView home_team_scr, away_team_scr;
+    CardView titleView;
     Button undoButton;
 
 
     public TestViewHolder(ViewGroup parent) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.saved_list_item, parent, false));
-        titleView = (RelativeLayout) itemView.findViewById(R.id.titleView);
+        titleView = (CardView) itemView.findViewById(R.id.titleView);
         undoButton = (Button) itemView.findViewById(R.id.undo_button);
         status = (TextView) itemView.findViewById(R.id.status);
-        home_team_image = (realmstudy.lib.customViews.CircleImageView) itemView.findViewById(R.id.home_team_image);
-        home_team_name = (realmstudy.lib.customViews.SemiLargeTextView) itemView.findViewById(R.id.home_team_name);
-        away_team_name = (realmstudy.lib.customViews.SemiLargeTextView) itemView.findViewById(R.id.away_team_name);
+        home_team_image = (ImageView) itemView.findViewById(R.id.home_team_image);
+        home_team_name = (TextView) itemView.findViewById(R.id.home_team_name);
+        away_team_name = (TextView) itemView.findViewById(R.id.away_team_name);
         venue = (TextView) itemView.findViewById(R.id.venue);
-        time = (TextView) itemView.findViewById(R.id.time);
-        away_team_image = (realmstudy.lib.customViews.CircleImageView) itemView.findViewById(R.id.away_team_image);
+        home_team_scr = (TextView) itemView.findViewById(R.id.home_team_scr);
+        away_team_scr = (TextView) itemView.findViewById(R.id.away_team_scr);
+        away_team_image = (ImageView) itemView.findViewById(R.id.away_team_image);
     }
 
 }

@@ -33,7 +33,7 @@ public class TeamViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getCurrentFragment() {
         return mCurrentFragment;
     }
-    //This method return the fragment for the every position in the View Pager
+    //This method return the fragment for the every position in the View MatchListPager
     @Override
 
     public Fragment getItem(int position) {

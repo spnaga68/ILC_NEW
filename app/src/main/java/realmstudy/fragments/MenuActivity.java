@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import realmstudy.MainFragmentActivity;
 import realmstudy.R;
+import realmstudy.matchList.MatchListMainFragment;
 
 /**
  * Created by $hakt! Vasu on 2/11/2017.
@@ -35,7 +36,8 @@ public class MenuActivity extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag,new TeamListSelectionFragment()).commit();
                 break;
             case R.id.saved_game_menu_lay:
-                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag,new SavedListFragment()).commit();
+
+                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag,new MatchListMainFragment()).commit();
                 break;
             case R.id.profile_menu_lay:
                 Fragment f=new OversFragment();

@@ -15,12 +15,20 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:text="home" />-->
-    <include
+
+
+    <LinearLayout
         android:id="@+id/score_live_lay"
-        layout="@layout/score_live_update"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <include
 
+            layout="@layout/ongoing_score_mini" />
 
+        <include layout="@layout/score_live_update" />
+    </LinearLayout>
 
 
     <realmstudy.lib.customViews.NormalTextView

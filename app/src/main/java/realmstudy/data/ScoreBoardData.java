@@ -10,13 +10,31 @@ public class ScoreBoardData {
     int totalBalls;
     int firstIinningsWicket = 0;
     int firstInningsTotal = 0;
-    private String total_over="0.0";
+    private String total_over = "0.0";
 
-   public Batsman striker=new Batsman();
-    public Batsman nonStriker=new Batsman();
-    public Bowlers curr_bowlers =new Bowlers();
-    public Bowlers next_bowlers =new Bowlers();
+    public Batsman striker = new Batsman();
+    public Batsman nonStriker = new Batsman();
+    public Bowlers curr_bowlers = new Bowlers();
+    public Bowlers next_bowlers = new Bowlers();
+    boolean isFirstInnings;
+    public boolean isFirstInnings() {
+        return isFirstInnings;
+    }
 
+    public void setFirstInnings(boolean firstInnings) {
+        isFirstInnings = firstInnings;
+    }
+
+
+    public String getReqRunRate() {
+        return reqRunRate;
+    }
+
+    public void setReqRunRate(String reqRunRate) {
+        this.reqRunRate = reqRunRate;
+    }
+
+    String reqRunRate;
 
 
     public String getShotAt() {
@@ -68,8 +86,7 @@ public class ScoreBoardData {
     boolean isHomeTeamBatting;
 
 
-
-//    int NonStrikerRun;
+    //    int NonStrikerRun;
 //    int NonStrikerBalls;
 //    int currentBowlerBalls, currentBowlerRuns;
 //    int nextBowlerBalls, nextBowlerRuns;
@@ -80,7 +97,7 @@ public class ScoreBoardData {
     String wicket;
 
     int total_wicket;
-   // String CurrentBowlerName, NextBowlerName;
+    // String CurrentBowlerName, NextBowlerName;
     ArrayList<String> lastThreeOvers;
     String awayTeam;
     String homeTeam;
@@ -331,16 +348,12 @@ public class ScoreBoardData {
 //    }
 
 
-
     public String getMatchQuote() {
         return matchQuote;
     }
 
 
-
-
-
-    public class Bowlers{
+    public class Bowlers {
 
 //        public String getOvers() {
 //            return overs;
@@ -391,7 +404,7 @@ public class ScoreBoardData {
         }
 
         String Name;
-       // String overs;
+        // String overs;
         int maiden;
         int runs;
         int wicket;
@@ -405,22 +418,17 @@ public class ScoreBoardData {
         }
 
         public String getOvers() {
-        return CommanData.ballsToOver(getBalls());
-    }
+            return CommanData.ballsToOver(getBalls());
+        }
 
 
         int balls;
-        int economic_rate;}
-
-
-
-
-
-
+        int economic_rate;
+    }
 
 
     //Batsman
-    public class Batsman{
+    public class Batsman {
 
 
         String Name;
@@ -429,6 +437,7 @@ public class ScoreBoardData {
         int fours;
         int sixes;
         int strikeRate;
+
         public String getName() {
             return Name;
         }
@@ -436,6 +445,7 @@ public class ScoreBoardData {
         public void setName(String name) {
             Name = name;
         }
+
         public int getRuns() {
             return runs;
         }

@@ -15,6 +15,7 @@ import realmstudy.fragments.ScheduleNewGame;
 import realmstudy.fragments.ScorecardDetailFragment;
 import realmstudy.fragments.TeamListFragment;
 import realmstudy.fragments.TossFragment;
+import realmstudy.matchList.view.MatchListPage;
 
 
 /**
@@ -42,4 +43,6 @@ public interface StorageComponent {
     void inject(OversFragment oversFragment);
 
     void inject(ScorecardDetailFragment scorecardDetailFragment);
+
+    void inject(MatchListPage matchListPage);
 }

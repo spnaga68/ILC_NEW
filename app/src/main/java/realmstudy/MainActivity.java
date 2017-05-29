@@ -958,6 +958,16 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
 
         }
+        int fstInningsTotal = 0;
+        score_data.setFirstInnings(!matchDetails.isFirstInningsCompleted());
+        if (matchDetails.isFirstInningsCompleted()) {
+            RealmDB.getFirstInningsTotal(realm, matchDetails);
+            int overRemaining = (matchDetails.getOvers() * 6) - total_balls;
+           score_data.setReqRunRate(CommanData.getReqRunRate(fstInningsTotal, total_balls, total_run, overRemaining));
+
+        }
+
+
         updateStriker(score_data, strikerProfile);
 //        score_data.striker.setFours(strikerProfile.getFours());
 //        score_data.striker.setSixes(strikerProfile.getSixes());
@@ -1023,7 +1033,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         score_data.setAwayTeam(matchDetails.getAwayTeam().nick_name);
         score_data.setHomeTeamBatting(matchDetails.isHomeTeamBatting());
         if (matchDetails.isFirstInningsCompleted()) {
-            score_data.setFirstInningsTotal(RealmDB.getFirstInningsTotal(realm, matchDetails));
+            score_data.setFirstInningsTotal(fstInningsTotal);
             score_data.setfirstInningsWicket(RealmDB.noOfWicket(getActivity(), realm, matchDetails.getMatch_id(), true));
 
             score_data.setFirstIinningsOver(RealmDB.getFirstInningsOver(realm, matchDetails));
