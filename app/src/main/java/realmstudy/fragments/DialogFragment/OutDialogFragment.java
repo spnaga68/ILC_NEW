@@ -29,6 +29,7 @@ import io.realm.RealmConfiguration;
 import realmstudy.MainFragmentActivity;
 import realmstudy.R;
 import realmstudy.data.CommanData;
+import realmstudy.data.DetailedScoreData;
 import realmstudy.data.RealmObjectData.InningsData;
 import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.data.RealmObjectData.Player;
@@ -88,7 +89,7 @@ public class OutDialogFragment extends DialogFragment {
         realm = Realm.getInstance(config);
         // current_bowler=RealmDB.getPlayer(getActivity(),realm,current_bowler_id);
         matchDetails = RealmDB.getMatchById(getActivity(), realm, match_id);
-        current_score_data = CommanData.fromJson(realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).findAll().sort("index").last().getScoreBoardData(), ScoreBoardData.class);
+        current_score_data = CommanData.fromJson(realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).findAll().sort("index").last().getDetailedScoreBoardData(), DetailedScoreData.class).getScoreBoardData();
     }
 
     @Nullable

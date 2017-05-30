@@ -12,6 +12,7 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 import realmstudy.R;
 import realmstudy.data.CommanData;
+import realmstudy.data.DetailedScoreData;
 import realmstudy.data.RealmObjectData.BatingProfile;
 import realmstudy.data.RealmObjectData.BowlingProfile;
 import realmstudy.data.RealmObjectData.InningsData;
@@ -223,7 +224,7 @@ public class RealmDB {
 //        RealmResults<InningsData> datas = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).findAll().sort("index");
 //        if (datas.size() > 0) {
 //            InningsData idata = datas.last();
-//            ScoreBoardData sdata = CommanData.fromJson(idata.getScoreBoardData(), ScoreBoardData.class);
+//            ScoreBoardData sdata = CommanData.fromJson(idata.getDetailedScoreBoardData(), DetailedScoreData.class).getScoreBoardData();
 //            if (md.getMatchStatus() == 0)
 //                return CommanData.MATCH_STARTED_FI;
 //            if ((md.getOvers() * 6) > (sdata.getTotalBalls() + 1) && md.getMatchStatus() == CommanData.MATCH_STARTED_FI) {
@@ -518,7 +519,7 @@ public class RealmDB {
 //            si-=1;
 //            //  System.out.println("SSSSS___"+s);
 //        }
-            ArrayList<String> lb = CommanData.fromJson(inningsDatas.getScoreBoardData(), ScoreBoardData.class).getLastThreeOvers();
+            ArrayList<String> lb = CommanData.fromJson(inningsDatas.getDetailedScoreBoardData(), DetailedScoreData.class).getScoreBoardData().getLastThreeOvers();
             ArrayList<String> ss = new ArrayList<>();
             if (lb != null)
                 for (int i = 0; i < lb.size(); i++)
@@ -539,26 +540,26 @@ public class RealmDB {
     public static int getFirstInningsTotal(Realm realm, MatchDetails matchDetails) {
 
         InningsData inningsDatas = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", true).findAll().last();
-        return CommanData.fromJson(inningsDatas.getScoreBoardData(), ScoreBoardData.class).getTotalRuns();
+        return CommanData.fromJson(inningsDatas.getDetailedScoreBoardData(), DetailedScoreData.class).getScoreBoardData().getTotalRuns();
     }
 
     public static String getFirstInningsOver(Realm realm, MatchDetails matchDetails) {
 
         InningsData inningsDatas = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", true).findAll().last();
-        return CommanData.fromJson(inningsDatas.getScoreBoardData(), ScoreBoardData.class).getTotalOver();
+        return CommanData.fromJson(inningsDatas.getDetailedScoreBoardData(), DetailedScoreData.class).getScoreBoardData().getTotalOver();
 
     }
 
     public static int getSecInningsTotal(Realm realm, MatchDetails matchDetails) {
 
         InningsData inningsDatas = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", false).findAll().last();
-        return CommanData.fromJson(inningsDatas.getScoreBoardData(), ScoreBoardData.class).getTotalRuns();
+        return CommanData.fromJson(inningsDatas.getDetailedScoreBoardData(), DetailedScoreData.class).getScoreBoardData().getTotalRuns();
     }
 
     public static String getsecInningsOver(Realm realm, MatchDetails matchDetails) {
 
         InningsData inningsDatas = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", false).findAll().last();
-        return CommanData.fromJson(inningsDatas.getScoreBoardData(), ScoreBoardData.class).getTotalOver();
+        return CommanData.fromJson(inningsDatas.getDetailedScoreBoardData(), DetailedScoreData.class).getScoreBoardData().getTotalOver();
 
     }
 

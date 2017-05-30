@@ -1,6 +1,7 @@
 package realmstudy;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
@@ -14,28 +15,50 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
+import java.util.ArrayList;
+
+import javax.inject.Inject;
+
+import io.realm.Realm;
+import io.realm.Sort;
 import realmstudy.adapter.Pager;
+import realmstudy.adapter.ScorecardDetailAdapter;
+import realmstudy.data.CommanData;
+import realmstudy.data.DetailedScoreData;
+import realmstudy.data.OverAdapterData;
+import realmstudy.data.RealmObjectData.InningsData;
+import realmstudy.data.ScoreCardDetailData;
+import realmstudy.data.SessionSave;
+import realmstudy.extras.AnimatedExpandableListView;
 import realmstudy.extras.ZoomOutPageTransformer;
+import realmstudy.fragments.OversFragment;
+import realmstudy.fragments.ScorecardDetailFragment;
 
 /**
  * Created by developer on 2/5/17.
  */
 
-public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSelectedListener {
+public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
 //   BottomSheetBehavior behavior;
 
     private ViewPager viewPager;
     private int match_id;
     private Toolbar tool_bar;
+    @Inject
+    Realm realm;
+    private DetailedScoreData detailedScoreData;
+    private Pager adapter;
+    private View v;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       View v=inflater.inflate(R.layout.match_detail_main,container,false);
+        v = inflater.inflate(R.layout.match_detail_main, container, false);
         match_id = getArguments().getInt("match_id", 0);
 
-
+        ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tabLayout1);
 
 //        View bottomSheet = v.findViewById(R.id.bot);
@@ -48,12 +71,18 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         viewPager = (ViewPager) v.findViewById(R.id.pager);
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
-        Pager adapter = new Pager(getActivity().getSupportFragmentManager(), tabLayout.getTabCount(), match_id);
+        adapter = new Pager(getActivity().getSupportFragmentManager(), tabLayout.getTabCount(), match_id);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         //Adding adapter to pager
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
+        viewPager.addOnPageChangeListener(this);
+        InningsData d = realm.where(InningsData.class).equalTo("match_id", match_id).findAllSorted("delivery", Sort.ASCENDING).last();
+        detailedScoreData = CommanData.fromJson(d.getDetailedScoreBoardData(), DetailedScoreData.class);
+        SessionSave.saveSession("checjjj",d.getDetailedScoreBoardData(),getActivity());
+
+
 //        tool_bar = (android.support.v7.widget.Toolbar) v.findViewById(realmstudy.R.id.tool_bar);
 //        tool_bar.setTitle(getString(R.string.score_board));
 
@@ -66,8 +95,6 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.match_detail_main);
-
-        
 
 
     }
@@ -85,6 +112,43 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+        System.out.println("Selected__" + position);
+        if (position == 2) {
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
+//                    datas.add(detailedScoreData.getScoreCardDetailData());
+//                    ((ScorecardDetailFragment) adapter.getItem(2)).setDatas(datas,getActivity());
+//                }
+//            },1000);
+
+            ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
+            datas.add(detailedScoreData.getScoreCardDetailData());
+            AnimatedExpandableListView listView = (AnimatedExpandableListView) v.findViewById(R.id.listView);
+            ScorecardDetailAdapter scorecardDetailAdapter = new ScorecardDetailAdapter(getActivity(), datas);
+            listView.setAdapter(scorecardDetailAdapter);
+          //  ((ScorecardDetailFragment) adapter.getItem(2)).setDatas();
+
+
+        } else {
+            ((OversFragment) adapter.getItem(1)).setData(detailedScoreData.getOverAdapterData());
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
 
     }
 

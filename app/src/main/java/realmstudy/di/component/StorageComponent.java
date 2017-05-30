@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import realmstudy.MainFragmentActivity;
+import realmstudy.MatchDetailActivity;
 import realmstudy.adapter.PlayerListAdapter;
 import realmstudy.adapter.SavedGameListAdapter;
 import realmstudy.databaseFunctions.RealmDB;
@@ -48,4 +49,6 @@ public interface StorageComponent {
     void inject(MatchListPage matchListPage);
 
     void inject(PlayerListAdapter playerListAdapter);
+
+    void inject(MatchDetailActivity matchDetailActivity);
 }

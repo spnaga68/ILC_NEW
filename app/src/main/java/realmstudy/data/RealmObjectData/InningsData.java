@@ -37,7 +37,7 @@ public class InningsData extends RealmObject {
 
     int delivery;
 
-    String scoreBoardData;
+    String detailedScoreBoardData;
     //aggregtion --> InningsData has a relationship with BatingProfile class
     @Index
     int striker, nonStriker;
@@ -196,11 +196,11 @@ public class InningsData extends RealmObject {
     }
 
 
-    public String getScoreBoardData() {
-        return scoreBoardData;
+    public String getDetailedScoreBoardData() {
+        return detailedScoreBoardData;
     }
 
-    public void setScoreBoardData(String scoreBoardData) {
-        this.scoreBoardData = scoreBoardData;
+    public void setDetailedScoreBoardData(String detailedScoreBoardData) {
+        this.detailedScoreBoardData = detailedScoreBoardData;
     }
 }

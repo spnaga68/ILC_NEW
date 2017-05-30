@@ -70,10 +70,19 @@ public class OversFragment extends Fragment {
         scoreBoardFragment.initialize(v);
         id = getArguments().getInt("match_id");
         md = RealmDB.getMatchById(getActivity(), realm, id);
-        InningsData d = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).findAllSorted("delivery", Sort.DESCENDING).last();
-        current_score_data = CommanData.fromJson(d.getScoreBoardData(), ScoreBoardData.class);
+
+        // current_score_data = CommanData.fromJson(d.getScoreBoardData(), ScoreBoardData.class);
         overs_rv = (android.support.v7.widget.RecyclerView) v.findViewById(R.id.overs_rv);
         return v;
+    }
+
+    public void setData(List<OverAdapterData> datas ) {
+
+
+        System.out.println("________sss" + datas.size());
+        OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
+        overs_rv.setAdapter(adapter);
+        scoreBoardFragment.updateUI(current_score_data);
     }
 
     @Override
@@ -89,7 +98,7 @@ public class OversFragment extends Fragment {
 
 
         scoreBoardFragment.showPreviousDelivery(false);
-        scoreBoardFragment.updateUI(current_score_data);
+//        scoreBoardFragment.updateUI(current_score_data);
 
         if (md != null) {
             String firstInningsScore = RealmDB.getFirstInningsTotal(realm, md) + "/" + RealmDB.noOfWicket(getActivity(), realm, md.getMatch_id(), true) + "  (" + RealmDB.getFirstInningsOver(realm, md) + ")";
@@ -104,79 +113,75 @@ public class OversFragment extends Fragment {
             overs_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
             //  overs_match_quote.setText(md.);
 
-            List<OverAdapterData> datas = getData(id, true);
 
-            System.out.println("________sss" + datas.size());
-            OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
-            overs_rv.setAdapter(adapter);
         }
     }
 
 
-    List<OverAdapterData> getData(int id, boolean isFirstInnings) {
-        //  float recOver = 0;
-        List<OverAdapterData> datas = new ArrayList<>();
-        RealmResults<InningsData> data = realm.where(InningsData.class).equalTo("match_id", id)
-                .equalTo("firstInnings", isFirstInnings).notEqualTo("delivery", 0).findAllSorted("delivery", Sort.DESCENDING);
-        // recOver = data.get(0).getOver();
-        Set<String> batsmans = new TreeSet<>();
-        Set<String> bowlers = new TreeSet<>();
-        int total_run = 0;
-        float epsilon = (float) 0.00000001;
-        ArrayList<String> deliveries = new ArrayList<>();
-
-        for (int i = 0; i < data.size(); i++) {
-            InningsData currentdata = data.get(i);
-            boolean isOverCompleted = false;
-            if (i != (data.size() - 1))
-                isOverCompleted = data.get(i + 1).isOversCompleted();
-            batsmans.add(RealmDB.getPlayer(realm, currentdata.getStriker()).getName());
-            batsmans.add(RealmDB.getPlayer(realm, currentdata.getNonStriker()).getName());
-            bowlers.add(RealmDB.getPlayer(realm, currentdata.getCurrentBowler()).getName());
-            deliveries.add(Util.get_delivery_result(currentdata.getRun()
-                    , currentdata.getWicket(), currentdata.isLegal(), currentdata.getBallType()));
-            total_run += currentdata.getRun();
-
-            System.out.println("_______****ssvv" + datas.size());
-
-            if (isOverCompleted || i == (data.size() - 1)) {
-
-                String batsmansString = "";
-                String bowlersString = "";
-
-                Iterator batsmansIterator = batsmans.iterator();
-                Iterator bowlersIterator = bowlers.iterator();
-                System.out.println("_______****ssve" + (currentdata.getOver() + 1));
-                System.out.println("_______****ssvd" + batsmansIterator.hasNext());
-                if (batsmans.size() > 0) {
-                    System.out.println("_______****ssvg" + batsmansIterator.hasNext());
-                    do {
-                        batsmansString += batsmansIterator.next() + " & ";
-                    } while (batsmansIterator.hasNext());
-                    do {
-                        bowlersString += bowlersIterator.next() + " & ";
-                    } while (bowlersIterator.hasNext());
-                    OverAdapterData overData = new OverAdapterData();
-                    overData.setBatsmans(batsmansString.substring(0, batsmansString.length() - 3));
-                    overData.setBolwers(bowlersString.substring(0, bowlersString.length() - 3));
-                    overData.setTotal_run(total_run);
-                    int curOver = currentdata.getOver() < 1 ? 1 : (int) Math.floor(currentdata.getOver() + 1);
-                    overData.setOver(curOver);
-                    ArrayList<String> dd = (ArrayList<String>) deliveries.clone();
-                    Collections.reverse(dd);
-                    overData.setDeliveries(dd);
-                    datas.add(overData);
-                    batsmans.clear();
-                    bowlers.clear();
-                    deliveries.clear();
-                    total_run = 0;
-                    System.out.println("_______****ssv" + datas.size());
-                }
-            }
-
-        }
-
-
-        return datas;
-    }
+//    List<OverAdapterData> getData(int id, boolean isFirstInnings) {
+//        //  float recOver = 0;
+//        List<OverAdapterData> datas = new ArrayList<>();
+//        RealmResults<InningsData> data = realm.where(InningsData.class).equalTo("match_id", id)
+//                .equalTo("firstInnings", isFirstInnings).notEqualTo("delivery", 0).findAllSorted("delivery", Sort.DESCENDING);
+//        // recOver = data.get(0).getOver();
+//        Set<String> batsmans = new TreeSet<>();
+//        Set<String> bowlers = new TreeSet<>();
+//        int total_run = 0;
+//        float epsilon = (float) 0.00000001;
+//        ArrayList<String> deliveries = new ArrayList<>();
+//
+//        for (int i = 0; i < data.size(); i++) {
+//            InningsData currentdata = data.get(i);
+//            boolean isOverCompleted = false;
+//            if (i != (data.size() - 1))
+//                isOverCompleted = data.get(i + 1).isOversCompleted();
+//            batsmans.add(RealmDB.getPlayer(realm, currentdata.getStriker()).getName());
+//            batsmans.add(RealmDB.getPlayer(realm, currentdata.getNonStriker()).getName());
+//            bowlers.add(RealmDB.getPlayer(realm, currentdata.getCurrentBowler()).getName());
+//            deliveries.add(Util.get_delivery_result(currentdata.getRun()
+//                    , currentdata.getWicket(), currentdata.isLegal(), currentdata.getBallType()));
+//            total_run += currentdata.getRun();
+//
+//            System.out.println("_______****ssvv" + datas.size());
+//
+//            if (isOverCompleted || i == (data.size() - 1)) {
+//
+//                String batsmansString = "";
+//                String bowlersString = "";
+//
+//                Iterator batsmansIterator = batsmans.iterator();
+//                Iterator bowlersIterator = bowlers.iterator();
+//                System.out.println("_______****ssve" + (currentdata.getOver() + 1));
+//                System.out.println("_______****ssvd" + batsmansIterator.hasNext());
+//                if (batsmans.size() > 0) {
+//                    System.out.println("_______****ssvg" + batsmansIterator.hasNext());
+//                    do {
+//                        batsmansString += batsmansIterator.next() + " & ";
+//                    } while (batsmansIterator.hasNext());
+//                    do {
+//                        bowlersString += bowlersIterator.next() + " & ";
+//                    } while (bowlersIterator.hasNext());
+//                    OverAdapterData overData = new OverAdapterData();
+//                    overData.setBatsmans(batsmansString.substring(0, batsmansString.length() - 3));
+//                    overData.setBolwers(bowlersString.substring(0, bowlersString.length() - 3));
+//                    overData.setTotal_run(total_run);
+//                    int curOver = currentdata.getOver() < 1 ? 1 : (int) Math.floor(currentdata.getOver() + 1);
+//                    overData.setOver(curOver);
+//                    ArrayList<String> dd = (ArrayList<String>) deliveries.clone();
+//                    Collections.reverse(dd);
+//                    overData.setDeliveries(dd);
+//                    datas.add(overData);
+//                    batsmans.clear();
+//                    bowlers.clear();
+//                    deliveries.clear();
+//                    total_run = 0;
+//                    System.out.println("_______****ssv" + datas.size());
+//                }
+//            }
+//
+//        }
+//
+//
+//        return datas;
+//    }
 }
