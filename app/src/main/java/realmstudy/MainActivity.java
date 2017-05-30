@@ -942,7 +942,6 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 score_data.next_bowlers.setName(next_bowler.getName());
                 score_data.next_bowlers.setRuns(nextBowler_bf.getRunsGranted());
                 score_data.next_bowlers.setMaiden(nextBowler_bf.getMaiden());
-                //  score_data.next_bowlers.setBalls(RealmDB.getBowlingProfile(realm, next_bowler.getpID(), matchDetails.getMatch_id()).getBallsBowled());
                 System.out.println("_________nextBowlers" + (RealmDB.getBowlingProfile(realm, next_bowler.getpID(), matchDetails.getMatch_id()).getBallsBowled()));
                 int extra_balls = nextBowler_bf.getNoBall() + nextBowler_bf.getWide();
                 score_data.next_bowlers.setBalls(nextBowler_bf.getBallsBowled() - extra_balls);
