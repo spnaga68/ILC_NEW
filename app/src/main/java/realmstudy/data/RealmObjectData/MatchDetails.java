@@ -231,7 +231,12 @@ public class MatchDetails extends RealmObject {
     public RealmList<Player> getAwayTeamPlayers() {
         return awayTeamPlayers;
     }
-
+public RealmList<Player> getAllPlayers(){
+    RealmList<Player> allPlayer;
+    allPlayer=awayTeamPlayers;
+    allPlayer.addAll(homeTeamPlayers);
+    return allPlayer;
+}
     public Team getCurrentBattingTeam() {
         if (!firstInningsCompleted) {
             if (toss.team_id == homeTeam.team_id) {

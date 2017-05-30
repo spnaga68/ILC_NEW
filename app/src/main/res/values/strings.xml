@@ -134,6 +134,7 @@
     <string name="activity_image_trans">slideTransfer</string>
     <string name="recent">Recent</string>
     <string name="upcoming">Up Coming</string>
+    <string name="player_in_match">Player in ongoin match.Complete or delete the match to delete player</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>

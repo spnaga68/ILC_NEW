@@ -45,10 +45,28 @@ public class MatchListMainFragment extends Fragment implements TabLayout.OnTabSe
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         //Adding adapter to pager
-          viewPager.setAdapter(adapter);
+        viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
-        tool_bar = (android.support.v7.widget.Toolbar) v.findViewById(realmstudy.R.id.tool_bar);
-        tool_bar.setTitle(getString(R.string.score_board));
+  //      tool_bar = (android.support.v7.widget.Toolbar) v.findViewById(realmstudy.R.id.tool_bar);
+//        tool_bar.setTitle(getString(R.string.score_board));
+
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                System.out.println("Selected__" + position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         //Adding onTabSelectedListener to swipe views
         tabLayout.addOnTabSelectedListener(this);

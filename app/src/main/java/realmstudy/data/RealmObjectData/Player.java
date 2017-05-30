@@ -11,16 +11,16 @@ public class Player extends RealmObject {
 //    BatingProfile recentBatingProfile;
 //    BowlingProfile recentBowlingProfile;
 
-    Wicket outAs;
+    int status;
     @PrimaryKey
     String ph_no;
 
-    public Wicket getOutAs() {
-        return outAs;
+    public int getStatus() {
+        return status;
     }
 
-    public void setOutAs(Wicket outAs) {
-        this.outAs = outAs;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getPh_no() {

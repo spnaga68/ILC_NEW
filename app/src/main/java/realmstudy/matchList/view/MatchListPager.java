@@ -5,10 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import realmstudy.fragments.InfoFragment;
-import realmstudy.fragments.OversFragment;
-import realmstudy.fragments.ScorecardDetailFragment;
-
 /**
  * Created by developer on 29/5/17.
  */

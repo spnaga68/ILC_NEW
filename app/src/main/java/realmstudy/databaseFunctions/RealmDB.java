@@ -290,9 +290,9 @@ public class RealmDB {
             wicketObj.setMatch_id(match_id);
             //  wicketObj.setWicket_id(batsmans+"_"+match_id);
             realm.commitTransaction();
-            realm.beginTransaction();
-            batsman.setOutAs(realm.where(Wicket.class).equalTo("wicket_id", batsmans + "_" + match_id).findFirst());
-            realm.commitTransaction();
+//            realm.beginTransaction();
+//            batsman.setOutAs(realm.where(Wicket.class).equalTo("wicket_id", batsmans + "_" + match_id).findFirst());
+//            realm.commitTransaction();
             return batsmans + "_" + match_id;
         } else return batsmans + "_" + match_id;
 
@@ -711,6 +711,36 @@ public class RealmDB {
             over = "0." + balls;
         }
         return Float.parseFloat(over);
+    }
+
+    public static boolean removePlayer(Realm realm, int id) {
+        Player results = realm.where(Player.class).equalTo("pID", id).findFirst();
+//        RealmResults<Player> battingProfile=realm.where(Player.class).contains("battingProfileID",id+"_").findAll();
+//        RealmResults<Player> bowlingProfile=realm.where(Player.class).contains("battingProfileID",id+"_").findAll();
+        //
+
+        if (results.getStatus() != CommanData.StatusInMatch) {
+            realm.beginTransaction();
+            results.deleteFromRealm();
+            realm.commitTransaction();
+            return true;
+        } else
+            return false;
+
+    }
+
+    public static void completeMatch(Realm realm, MatchDetails matchDetails) {
+        RealmList<Player> awayPlayer = matchDetails.getAwayTeamPlayers();
+        RealmList<Player> homePlayer = matchDetails.getHomeTeamPlayers();
+        realm.beginTransaction();
+        matchDetails.setMatchStatus(CommanData.MATCH_COMPLETED);
+        for (Player player : awayPlayer) {
+            player.setStatus(CommanData.StatusFree);
+        }
+        for (Player player : homePlayer) {
+            player.setStatus(CommanData.StatusFree);
+        }
+        realm.commitTransaction();
     }
 }
 

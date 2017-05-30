@@ -45,7 +45,7 @@ import realmstudy.interfaces.SlideRecyclerView;
  */
 
 
-public class SavedGameListAdapter extends RecyclerView.Adapter implements SlideRecyclerView {
+public class SavedGameListAdapter extends RecyclerView.Adapter {
     private Context context;
     private static final int PENDING_REMOVAL_TIMEOUT = 1500; // 3sec
 
@@ -147,10 +147,12 @@ public class SavedGameListAdapter extends RecyclerView.Adapter implements SlideR
                         ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
                     } else {
                         //Toast.makeText(context, context.getString(R.string.game_over), Toast.LENGTH_SHORT).show();
-
-                        Intent i = new Intent(context, MatchDetailActivity.class);
-                        i.putExtra("match_id", md.getMatch_id());
-                        context.startActivity(i);
+                        Bundle b = new Bundle();
+                        MatchDetailActivity fragment = new MatchDetailActivity();
+                        b.putInt("match_id", md.getMatch_id());
+                        // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
+                        fragment.setArguments(b);
+                        ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
                     }
                 }
             });
@@ -230,7 +232,7 @@ class TestViewHolder extends RecyclerView.ViewHolder {
     ImageView
             home_team_image, away_team_image;
     TextView home_team_name;
-TextView away_team_name;
+    TextView away_team_name;
     TextView venue, status;
     TextView home_team_scr, away_team_scr;
     CardView titleView;

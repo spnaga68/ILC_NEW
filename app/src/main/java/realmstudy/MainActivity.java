@@ -222,11 +222,12 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 SessionSave.saveSession("sdata", CommanData.toString(current_score_data), getActivity());
-                Intent i = new Intent(getActivity(), MatchDetailActivity.class);
-
-                i.putExtra("match_id", matchDetails.getMatch_id());
-                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                getActivity().startActivity(i);
+                Bundle b = new Bundle();
+                MatchDetailActivity fragment = new MatchDetailActivity();
+                b.putInt("match_id", matchDetails.getMatch_id());
+                // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
+                fragment.setArguments(b);
+                ((MainFragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
                 return false;
             }
         });
@@ -529,10 +530,10 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 new android.content.DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(android.content.DialogInterface dialog, int which) {
+
+                        RealmDB.completeMatch(realm,matchDetails);
                         // positive button logic
-                        realm.beginTransaction();
-                        matchDetails.setMatchStatus(CommanData.MATCH_COMPLETED);
-                        realm.commitTransaction();
+
                         //   Toast.makeText(getActivity(), getString(R.string.game_over), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -805,6 +806,9 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         StrikerProf.setCurrentStatus(CommanData.StatusBatting);
         nonStrikerProf.setCurrentStatus(CommanData.StatusBatting);
         current_bowler_bf.setCurrentBowlerStatus(CommanData.StatusBowling);
+        striker.setStatus(CommanData.StatusInMatch);
+        non_striker.setStatus(CommanData.StatusInMatch);
+        current_bowler.setStatus(CommanData.StatusInMatch);
 
 
         realm.commitTransaction();
@@ -963,7 +967,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         if (matchDetails.isFirstInningsCompleted()) {
             RealmDB.getFirstInningsTotal(realm, matchDetails);
             int overRemaining = (matchDetails.getOvers() * 6) - total_balls;
-           score_data.setReqRunRate(CommanData.getReqRunRate(fstInningsTotal, total_balls, total_run, overRemaining));
+            score_data.setReqRunRate(CommanData.getReqRunRate(fstInningsTotal, total_balls, total_run, overRemaining));
 
         }
 

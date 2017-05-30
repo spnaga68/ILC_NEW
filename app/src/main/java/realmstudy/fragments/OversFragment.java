@@ -37,6 +37,8 @@ import realmstudy.data.SessionSave;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.lib.Util;
 
+import static android.R.attr.id;
+
 /**
  * Created by developer on 17/4/17.
  */
@@ -47,8 +49,10 @@ public class OversFragment extends Fragment {
     @Inject
     Realm realm;
     private MatchDetails md;
+    int id;
     // private LinearLayout score_layy;
     private ScoreBoardFragment scoreBoardFragment;
+    private ScoreBoardData current_score_data;
 
     @Nullable
     @Override
@@ -61,11 +65,13 @@ public class OversFragment extends Fragment {
 //        overs_match_quote = (TextView) v.findViewById(R.id.overs_match_quote);
 
         // score_layy=(LinearLayout)v.findViewById(R.id.score_layy);
-        ScoreBoardData current_score_data = CommanData.fromJson(SessionSave.getSession("sdata", getActivity()), ScoreBoardData.class);
+        ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
         scoreBoardFragment = new ScoreBoardFragment(getActivity());
         scoreBoardFragment.initialize(v);
-        scoreBoardFragment.showPreviousDelivery(false);
-        scoreBoardFragment.updateUI(current_score_data);
+        id = getArguments().getInt("match_id");
+        md = RealmDB.getMatchById(getActivity(), realm, id);
+        InningsData d = realm.where(InningsData.class).equalTo("match_id", md.getMatch_id()).findAllSorted("delivery", Sort.DESCENDING).last();
+        current_score_data = CommanData.fromJson(d.getScoreBoardData(), ScoreBoardData.class);
         overs_rv = (android.support.v7.widget.RecyclerView) v.findViewById(R.id.overs_rv);
         return v;
     }
@@ -80,36 +86,11 @@ public class OversFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        final int id = getArguments().getInt("match_id");
-        ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
-        md = RealmDB.getMatchById(getActivity(), realm, id);
 
-//        overs_home_team.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                List<OverAdapterData> datas = getData(id, true);
-//
-////                List<OverAdapterData> sdatas = getData(id, false);
-////                datas.addAll(sdatas);
-//
-//                OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
-//                overs_rv.setAdapter(adapter);
-//                overs_rv.getAdapter().notifyDataSetChanged();
-//            }
-//        });
-//        overs_away.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                List<OverAdapterData> datas = getData(id, false);
-//
-////                List<OverAdapterData> sdatas = getData(id, false);
-////                datas.addAll(sdatas);
-//
-//                OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
-//                overs_rv.setAdapter(adapter);
-//                overs_rv.getAdapter().notifyDataSetChanged();
-//            }
-//        });
+
+        scoreBoardFragment.showPreviousDelivery(false);
+        scoreBoardFragment.updateUI(current_score_data);
+
         if (md != null) {
             String firstInningsScore = RealmDB.getFirstInningsTotal(realm, md) + "/" + RealmDB.noOfWicket(getActivity(), realm, md.getMatch_id(), true) + "  (" + RealmDB.getFirstInningsOver(realm, md) + ")";
             if (md.isFirstInningsCompleted()) {
@@ -146,7 +127,6 @@ public class OversFragment extends Fragment {
 
         for (int i = 0; i < data.size(); i++) {
             InningsData currentdata = data.get(i);
-            // System.out.println("_______****" + currentdata.getOver() + "^^^" + Math.floor(currentdata.getOver()));
             boolean isOverCompleted = false;
             if (i != (data.size() - 1))
                 isOverCompleted = data.get(i + 1).isOversCompleted();
@@ -158,7 +138,6 @@ public class OversFragment extends Fragment {
             total_run += currentdata.getRun();
 
             System.out.println("_______****ssvv" + datas.size());
-            //|| Math.abs(currentdata.getOver() - 0.1) < epsilon
 
             if (isOverCompleted || i == (data.size() - 1)) {
 
