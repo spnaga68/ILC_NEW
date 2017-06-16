@@ -39,6 +39,11 @@ import java.util.Random;
 import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.Wicket;
 
+import static realmstudy.data.CommanData.typeExtraEnum.LEG_BYES;
+import static realmstudy.data.CommanData.typeExtraEnum.L_BYES;
+import static realmstudy.data.CommanData.typeExtraEnum.NO_BALL;
+import static realmstudy.data.CommanData.typeExtraEnum.WIDE;
+
 public class Util {
 
     // debugging tag
@@ -165,19 +170,19 @@ public class Util {
     }
 
     public static int getExternalResourceHeads(final String packageName, final Resources pkg,
-            final String prefix) {
+                                               final String prefix) {
         Log.d(TAG, "getExternalResourceHeads()");
         return pkg.getIdentifier(prefix + "_heads", "drawable", packageName);
     }
 
     public static int getExternalResourceTails(final String packageName, final Resources pkg,
-            final String prefix) {
+                                               final String prefix) {
         Log.d(TAG, "getExternalResourceTails()");
         return pkg.getIdentifier(prefix + "_tails", "drawable", packageName);
     }
 
     public static int getExternalResourceEdge(final String packageName, final Resources pkg,
-            final String prefix) {
+                                              final String prefix) {
         Log.d(TAG, "getExternalResourceEdge()");
         return pkg.getIdentifier(prefix + "_edge", "drawable", packageName);
     }
@@ -204,13 +209,52 @@ public class Util {
 
     public static String get_delivery_result(int runs, Wicket wicket, boolean legal, CommanData.typeExtraEnum extraType) {
         String type = "";
-        type = runs + (wicket != null ? "o" : "") + (legal ? "" : extraType.toString().charAt(0));
+        String ex = "";
+        if (extraType != null) {
+
+            switch (extraType) {
+                case WIDE:
+                    ex = "wd";
+                    break;
+                case LEG_BYES:
+                    ex = "lb";
+                    break;
+                case NO_BALL:
+                    ex = "nb";
+                    break;
+                case L_BYES:
+                    ex = "b";
+                    break;
+
+
+            }
+        }
+        type = runs + (wicket != null ? "w" : "") + (legal ? "" : ex);
 
         return type;
     }
+
     public static String get_delivery_result(int runs, Wicket wicket, boolean legal, int extraType) {
         String type = "";
-        type = runs + (wicket != null ? "o" : "") + (extraType==0 ? "" : "e");
+        String ex = "";
+
+        switch (extraType) {
+            case CommanData.BALL_WIDE:
+                ex = "wd";
+                break;
+            case CommanData.BALL_LB:
+                ex = "lb";
+                break;
+            case CommanData.BALL_NO_BALL:
+                ex = "nb";
+                break;
+            case CommanData.BALL_LEGAL_BYES:
+                ex = "b";
+                break;
+
+
+        }
+        type = runs + (wicket != null ? "w" : "") + (extraType == 0 ? "" : ex);
 
         return type;
     }

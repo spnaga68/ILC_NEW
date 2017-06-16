@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
             android:src="@android:drawable/ic_menu_edit"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
        <!-- <ImageButton
             android:id="@+id/view_icon"

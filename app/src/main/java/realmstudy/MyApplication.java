@@ -8,13 +8,6 @@ import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.util.regex.Pattern;
 
-import io.realm.DynamicRealm;
-import io.realm.FieldAttribute;
-import io.realm.RealmConfiguration;
-import io.realm.RealmMigration;
-import io.realm.RealmSchema;
-import realmstudy.di.component.CheckComponent;
-import realmstudy.di.component.DaggerCheckComponent;
 import realmstudy.di.component.DaggerStorageComponent;
 import realmstudy.di.component.StorageComponent;
 import realmstudy.di.modules.StorageModule;

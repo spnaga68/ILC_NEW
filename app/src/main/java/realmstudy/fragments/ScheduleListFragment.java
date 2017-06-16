@@ -31,7 +31,7 @@ import realmstudy.lib.customViews.SlideDeleteRecyclcerView;
  * Created by developer on 7/3/17.
  */
 public class ScheduleListFragment extends Fragment {
-    private SlideDeleteRecyclcerView mRecyclerView;
+    private RecyclerView mRecyclerView;
     private SavedGameListAdapter adapter;
     @Inject
      Realm realm;
@@ -40,7 +40,7 @@ public class ScheduleListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.player_list_view, container, false);
-        mRecyclerView = (SlideDeleteRecyclcerView) v.findViewById(R.id.list_view);
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.list_view);
         v.findViewById(R.id.add).setVisibility(View.GONE);
         v.findViewById(R.id.add_from_contacts).setVisibility(View.GONE);
         ((MyApplication)getActivity().getApplication()).getComponent().inject(this);

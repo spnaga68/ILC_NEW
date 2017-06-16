@@ -22,7 +22,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId "pasu.ilc"
+        applicationId "pasu.ilc.test"
         minSdkVersion 16
         maxSdkVersion 24
         targetSdkVersion 23

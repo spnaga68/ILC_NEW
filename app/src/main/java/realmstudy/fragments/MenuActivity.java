@@ -40,10 +40,10 @@ public class MenuActivity extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag,new MatchListMainFragment()).commit();
                 break;
             case R.id.profile_menu_lay:
-                Fragment f=new OversFragment();
-                Bundle b=new Bundle();
-                b.putInt("match_id",1492432485);
-                f.setArguments(b);
+                ViewMatch f=new ViewMatch();
+//                Bundle b=new Bundle();
+//                b.putInt("match_id",1492432485);
+//                f.setArguments(b);
                 getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag,f).commit();
                 break;
             case R.id.schedule_game_menu_lay:

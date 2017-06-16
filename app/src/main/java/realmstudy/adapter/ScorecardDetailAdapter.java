@@ -31,13 +31,13 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
         this.datas = datas;
         inflater = LayoutInflater.from(context);
         battingItemView.add(getBattingItemView(0));
-
         bowlingItemView.add(getBowlingItemView(0));
         fow.add(getfowView(0));
         if (datas.size() > 1) {
             battingItemView.add(getBattingItemView(1));
             bowlingItemView.add(getBowlingItemView(1));
             fow.add(getfowView(1));
+            System.out.println("sec_dataaa+"+datas.get(1).getBatsmanDetails().size());
         }
 
 
@@ -214,7 +214,7 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
 
     @Override
     public int getGroupCount() {
-        return 1;
+        return datas.size();
     }
 
     @Override

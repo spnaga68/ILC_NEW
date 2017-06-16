@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import realmstudy.MainFragmentActivity;
 import realmstudy.R;
@@ -33,6 +34,8 @@ public class NewPlayerDialog extends DialogFragment {
     private static final int PICK_CONTACT = 420;
     private EditText name, ph_no;
     DialogInterface dialogInterface;
+
+    Spinner bat_style, bowl_style;
 
     NewPlayerDialog setDialogInterface(DialogInterface dialogInterface) {
         this.dialogInterface = dialogInterface;
@@ -65,6 +68,10 @@ public class NewPlayerDialog extends DialogFragment {
         View v = inflater.inflate(R.layout.create_new_player, container, false);
         name = (EditText) v.findViewById(R.id.name);
         ph_no = (EditText) v.findViewById(R.id.time);
+        bat_style = (Spinner) v.findViewById(R.id.bat_style);
+        bowl_style = (Spinner) v.findViewById(R.id.bowl_style);
+
+
         ph_no.setHint(R.string.ph_no);
 
         v.findViewById(R.id.from_contacts).setOnClickListener(new View.OnClickListener() {
@@ -75,7 +82,7 @@ public class NewPlayerDialog extends DialogFragment {
 
                     ((MainFragmentActivity) getActivity()).startInstalledAppDetailsActivity(getActivity());
                 } else {
-                  //  dismiss();
+                    //  dismiss();
                     pickFromContacts();
                 }
             }
@@ -94,7 +101,7 @@ public class NewPlayerDialog extends DialogFragment {
 //                    realm.executeTransaction(new Realm.Transaction() {
 //                        @Override
 //                        public void execute(Realm realm) {
-                    RealmDB.AddPlayer(getActivity(), realm, nameS, phno);
+                    RealmDB.AddPlayer(getActivity(), realm, nameS, phno, bat_style.getSelectedItem().toString(), bowl_style.getSelectedItem().toString(), getResources().getStringArray(R.array.role_sytle)[0]);
                     if (dialogInterface != null)
                         dialogInterface.onSuccess(name + "____" + phno, true);
 
@@ -120,7 +127,7 @@ public class NewPlayerDialog extends DialogFragment {
         super.onActivityResult(reqCode, resultCode, data);
         String cNumber = "";
         String name = "";
-        System.out.println("_____PP"+3);
+        System.out.println("_____PP" + 3);
         switch (reqCode) {
             case (PICK_CONTACT):
                 if (resultCode == Activity.RESULT_OK) {

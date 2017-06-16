@@ -123,13 +123,15 @@ public class CommanData {
     public static String getDateCurrentTimeZone(long timestamp) {
         try {
             Calendar calendar = Calendar.getInstance();
-            TimeZone tz = TimeZone.getDefault();
+            //TimeZone tz = TimeZone.getDefault();
             calendar.setTimeInMillis(timestamp * 1000);
-            calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.getTimeInMillis()));
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date currenTimeZone = (Date) calendar.getTime();
-            return sdf.format(currenTimeZone);
+            //calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.getTimeInMillis()));
+            Date currenTimeZone = calendar.getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE' , 'dd' 'MMM ' - ' hh:mm aaa");
+            String ss = sdf.format(currenTimeZone);
+            return ss;
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return "";
     }
@@ -154,6 +156,7 @@ public class CommanData {
             TimeZone tz = TimeZone.getDefault();
             calendar.setTimeInMillis(timestamp * 1000);
             calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.getTimeInMillis()));
+
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
             Date currenTimeZone = (Date) calendar.getTime();
             return sdf.format(currenTimeZone);

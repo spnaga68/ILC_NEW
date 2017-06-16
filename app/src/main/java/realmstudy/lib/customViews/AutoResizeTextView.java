@@ -5,14 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.Switch;
-import android.widget.TextView;
 
 import realmstudy.R;
 
 
-public class AutoResizeTextView extends TextView {
+public class AutoResizeTextView extends AppCompatTextView {
 
     private float strokeWidth;
     int strokeColor, solidColor;
@@ -87,8 +86,9 @@ public class AutoResizeTextView extends TextView {
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
-        if (text.length() == 2) {
-            setTextSize(10);
+        //System.out.println("_____VV*" + text);
+        if (text.length() >= 2) {
+            setTextSize(8);
             colorForText(text.charAt(1));
 
         } else if (text.length() == 1) {
@@ -103,7 +103,7 @@ public class AutoResizeTextView extends TextView {
 
     private void colorForText(char text) {
         String s = String.valueOf(text);
-        System.out.println("_____VV" + s);
+        //System.out.println("_____VV" + s);
         switch (s) {
             case "0":
                 solidColor = ContextCompat.getColor(c, R.color.dots_c);

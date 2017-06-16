@@ -14,6 +14,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -52,17 +53,18 @@ public class SelectPlayerDialog extends DialogFragment {
     private int assignTo;
 
     static SelectPlayerDialog f;
-    public static SelectPlayerDialog newInstance(int match_id, boolean ishomeTeam, int current_bowler_id, String title,int assignTo) {
-        if(f!=null)
+
+    public static SelectPlayerDialog newInstance(int match_id, boolean ishomeTeam, int current_bowler_id, String title, int assignTo) {
+        if (f != null)
             f.dismiss();
-        f= new SelectPlayerDialog();
+        f = new SelectPlayerDialog();
 
         // Supply input as an argument.
         Bundle args = new Bundle();
         args.putInt("match_id", match_id);
         args.putBoolean("ishomeTeam", ishomeTeam);
         args.putInt("current_bowler_id", current_bowler_id);
-        args.putInt("assignTo",assignTo);
+        args.putInt("assignTo", assignTo);
         args.putString("title_txt", title);
         f.setArguments(args);
 
@@ -83,7 +85,7 @@ public class SelectPlayerDialog extends DialogFragment {
                 .build();
         realm = Realm.getInstance(config);
         matchDetails = RealmDB.getMatchById(getActivity(), realm, match_id);
-        current_bowler = RealmDB.getPlayer( realm, cb);
+        current_bowler = RealmDB.getPlayer(realm, cb);
 
     }
 
@@ -91,6 +93,7 @@ public class SelectPlayerDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.select_player, container, false);
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         System.out.println("_________SHH2");
         selectPlayerDialog(v, realm, title_txt);
         setCancelable(false);
@@ -147,7 +150,7 @@ public class SelectPlayerDialog extends DialogFragment {
         if ((matchDetails.isHomeTeamBatting() && ishomeTeam) || (!matchDetails.isHomeTeamBatting() && !ishomeTeam)) {
             toAddForBattingTeam = true;
         }
-        ArrayList<Player> otherPlayers =null;
+        ArrayList<Player> otherPlayers = null;
 //        ArrayList<Player> otherPlayer = null;
 //        if (otherPlayers != null)
 //            otherPlayer = new ArrayList<>(otherPlayers.subList(0, otherPlayers.size()));
@@ -160,12 +163,12 @@ public class SelectPlayerDialog extends DialogFragment {
         if (ishomeTeam) {
             //  players = realm.where(MatchDetails.class).equalTo("match_id", matchDetails.getMatch_id()).findFirst().getHomeTeamPlayers();
 
-            otherPlayers=RealmDB.getPlayerNotInHomeTeam( getActivity(),realm,matchDetails);
+            otherPlayers = RealmDB.getPlayerNotInHomeTeam(getActivity(), realm, matchDetails);
         } else {
-            otherPlayers=RealmDB.getPlayerNotInAwayTeam( getActivity(),realm,matchDetails);
+            otherPlayers = RealmDB.getPlayerNotInAwayTeam(getActivity(), realm, matchDetails);
             //   players = realm.where(MatchDetails.class).equalTo("match_id", matchDetails.getMatch_id()).findFirst().getAwayTeamPlayers();
         }
-     //   System.out.println("______________" + home_team_players.size() + "__" + away_team_players.size() + "___" + otherPlayer.size() + "___" + otherPlayers.size());
+        //   System.out.println("______________" + home_team_players.size() + "__" + away_team_players.size() + "___" + otherPlayer.size() + "___" + otherPlayers.size());
         ArrayAdapter<Player> adapter;
         adapter = new ArrayAdapter<>(
                 getActivity(), R.layout.player_spinner_item, otherPlayers);
@@ -211,7 +214,7 @@ public class SelectPlayerDialog extends DialogFragment {
                     int pID = RealmDB.addNewPlayerToMatch(name.getText().toString(), ph_no.getText().toString(), getActivity(), realm, matchDetails, ishomeTeam);
                     if (pID != -1 && getDialog() != null) {
                         dismiss();
-                        ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, true, String.valueOf(pID), "success",assignTo);
+                        ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, true, String.valueOf(pID), "success", assignTo);
                     }
                 }
             }
@@ -230,12 +233,12 @@ public class SelectPlayerDialog extends DialogFragment {
                 if (ss) {
                     Player p;
                     dummy = RealmDB.getPlayer(realm, bb.getpID());
-                    BatingProfile bf = RealmDB.getBattingProfile( realm, dummy.getpID(), matchDetails.getMatch_id());
+                    BatingProfile bf = RealmDB.getBattingProfile(realm, dummy.getpID(), matchDetails.getMatch_id());
                     if (bf == null)
-                        bf = RealmDB.createBattingProfile( realm, dummy.getpID(), matchDetails.getMatch_id());
+                        bf = RealmDB.createBattingProfile(realm, dummy.getpID(), matchDetails.getMatch_id());
                     BowlingProfile bwf = RealmDB.getBowlingProfile(realm, dummy.getpID(), matchDetails.getMatch_id());
                     if (bwf == null)
-                        bwf = RealmDB.createBowlingProfile( realm, dummy.getpID(), matchDetails.getMatch_id());
+                        bwf = RealmDB.createBowlingProfile(realm, dummy.getpID(), matchDetails.getMatch_id());
                     realm.beginTransaction();
 //                    dummy.setRecentBatingProfile(bf);
 //                    dummy.setRecentBowlingProfile(bwf);
@@ -246,9 +249,9 @@ public class SelectPlayerDialog extends DialogFragment {
                     realm.commitTransaction();
                     System.out.println("_________________dd5.1" + p);
                     if (p == null)
-                        ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, false, String.valueOf(dummy.getpID()), "Success",assignTo);
+                        ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, false, String.valueOf(dummy.getpID()), "Success", assignTo);
                     else
-                        ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, true, String.valueOf(dummy.getpID()), "Player invalid",assignTo);
+                        ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, true, String.valueOf(dummy.getpID()), "Player invalid", assignTo);
                     // dialogInterface.onSuccess("hii", true);
                     dismiss();
 
@@ -278,7 +281,7 @@ public class SelectPlayerDialog extends DialogFragment {
                     // String battingTeamPlayer[] = matchDetails.getBattingTeamPlayer().split(",");
 
                     for (int i = 0; i < battingTeamPlayers.size(); i++) {
-                        int batStatus = RealmDB.getBattingProfile( realm, id, matchDetails.getMatch_id()).getCurrentStatus();
+                        int batStatus = RealmDB.getBattingProfile(realm, id, matchDetails.getMatch_id()).getCurrentStatus();
                         System.out.println("_________________dd2" + batStatus);
                         if (id == battingTeamPlayers.get(i).getpID() && (batStatus == CommanData.StatusOut || batStatus == CommanData.StatusBatting)) {
                             eligible = false;
@@ -388,7 +391,7 @@ public class SelectPlayerDialog extends DialogFragment {
                             if (getDialog() != null && pID != -1 ? true : false)
                                 dismiss();
 
-                            ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, pID != -1 ? true : false, String.valueOf(pID), "success",assignTo);
+                            ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, pID != -1 ? true : false, String.valueOf(pID), "success", assignTo);
 //                            if (assignToPlayer == 5) {
 //                                ArrayList<Player> bowlingTeamPlayers = getBowlingTeamPlayer();
 //                                ArrayAdapter<Player> bowling_team_player_adapter = new ArrayAdapter<>(

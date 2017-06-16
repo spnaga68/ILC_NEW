@@ -11,7 +11,7 @@
     <color name="colorAccent">#2b333b</color>
 
 
-    <color name="semi_transperant">#66795548</color>
+    <color name="semi_transperant">#E0E0E0</color>
     <color name="link_blue">#01579B</color>
 
     <color name="dialog_text_color">#333</color>
@@ -59,7 +59,7 @@
 
 
     <color name="date">#cfcece</color>
-    <color name="result">#3273ae</color>
+    <color name="result">#EF5350</color>
     <color name="text">#5d5e60</color>
     <color name="text_dark">#0b0b0b</color>
 

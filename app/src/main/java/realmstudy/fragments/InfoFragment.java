@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import javax.inject.Inject;
@@ -24,9 +25,11 @@ public class InfoFragment extends Fragment {
 
     private TextView
             squad_home_team, squad_away_team, info_match_id, info_series, info_date, info_time, info_toss, info_venue, info_umpires, info_third_umpire, info_refree;
-MatchDetails md;
+    MatchDetails md;
+    LinearLayout series_lay, umpire_lay, third_umpire_lay, refree_lay;
     @Inject
     Realm realm;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +40,11 @@ MatchDetails md;
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        int id= getArguments().getInt("match_id");
-        ((MyApplication)getActivity().getApplication()).getComponent().inject(this);
-        md= RealmDB.getMatchById(getActivity(),realm,id);
-        if(md!=null){
+        int id = getArguments().getInt("match_id");
+        ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
+        md = RealmDB.getMatchById(getActivity(), realm, id);
+
+        if (md != null) {
             squad_home_team.setText(md.getHomeTeam().name);
             squad_away_team.setText(md.getAwayTeam().name);
             info_match_id.setText(String.valueOf(md.getMatchStatus()));
@@ -49,7 +53,11 @@ MatchDetails md;
             info_time.setText(CommanData.getTime(md.getTime()));
             info_toss.setText(md.getToss().nick_name);
             info_venue.setText(md.getLocation());
-          //  squad_home_team.setText(md.getHomeTeam().name);
+            refree_lay.setVisibility(View.GONE);
+            third_umpire_lay.setVisibility(View.GONE);
+            umpire_lay.setVisibility(View.GONE);
+            series_lay.setVisibility(View.GONE);
+            //  squad_home_team.setText(md.getHomeTeam().name);
         }
     }
 
@@ -68,6 +76,10 @@ MatchDetails md;
         info_umpires = (TextView) v.findViewById(R.id.info_umpires);
         info_third_umpire = (TextView) v.findViewById(R.id.info_third_umpire);
         info_refree = (TextView) v.findViewById(R.id.info_refree);
+        series_lay = (LinearLayout) v.findViewById(R.id.series_lay);
+        umpire_lay = (LinearLayout) v.findViewById(R.id.umpire_lay);
+        third_umpire_lay = (LinearLayout) v.findViewById(R.id.third_umpire_lay);
+        refree_lay = (LinearLayout) v.findViewById(R.id.refree_lay);
 
         return v;
     }

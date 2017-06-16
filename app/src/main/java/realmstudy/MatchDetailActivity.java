@@ -29,8 +29,10 @@ import realmstudy.data.CommanData;
 import realmstudy.data.DetailedScoreData;
 import realmstudy.data.OverAdapterData;
 import realmstudy.data.RealmObjectData.InningsData;
+import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.data.ScoreCardDetailData;
 import realmstudy.data.SessionSave;
+import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.extras.AnimatedExpandableListView;
 import realmstudy.extras.ZoomOutPageTransformer;
 import realmstudy.fragments.OversFragment;
@@ -56,6 +58,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.match_detail_main, container, false);
+        System.out.println("ScoreDataaaaonc");
         match_id = getArguments().getInt("match_id", 0);
 
         ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
@@ -78,9 +81,12 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
         viewPager.addOnPageChangeListener(this);
-        InningsData d = realm.where(InningsData.class).equalTo("match_id", match_id).findAllSorted("delivery", Sort.ASCENDING).last();
+        boolean forSecInnings=false;
+        MatchDetails md= RealmDB.getMatchById(getActivity(),realm,match_id);
+        InningsData d = realm.where(InningsData.class).equalTo("match_id", match_id).equalTo("firstInnings",!md.isFirstInningsCompleted()).findAllSorted("delivery", Sort.ASCENDING).last();
         detailedScoreData = CommanData.fromJson(d.getDetailedScoreBoardData(), DetailedScoreData.class);
-        SessionSave.saveSession("checjjj",d.getDetailedScoreBoardData(),getActivity());
+        System.out.println("ScoreDataaaa"+d.getDetailedScoreBoardData());
+        // SessionSave.saveSession("checjjj",d.getDetailedScoreBoardData(),getActivity());
 
 
 //        tool_bar = (android.support.v7.widget.Toolbar) v.findViewById(realmstudy.R.id.tool_bar);
@@ -102,6 +108,8 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
+
+        System.out.println("Selected__rrta");
         viewPager.setCurrentItem(tab.getPosition());
     }
 
@@ -117,39 +125,34 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        //System.out.println("Selected__vvv" + position+"__"+positionOffset+"__"+positionOffsetPixels);
+        Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+        if (fragment instanceof ScorecardDetailFragment && positionOffsetPixels == 0) {
+            ScorecardDetailFragment scorecardDetailFragment = (ScorecardDetailFragment) fragment;
+            ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
+            datas.add(detailedScoreData.getScoreCardDetailData());
 
+            if (detailedScoreData.getSecscoreCardDetailData().getTeamName() != null) {
+                System.out.println("not_nulll__"+detailedScoreData.getScoreCardDetailData().getTeamName()+"__"+detailedScoreData.getSecscoreCardDetailData().getTeamName());
+                datas.add(detailedScoreData.getSecscoreCardDetailData());
+            }
+            scorecardDetailFragment.setDatas(datas);
+        } else if (fragment instanceof OversFragment && positionOffsetPixels == 0) {
+            OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+            oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
+        }
     }
 
     @Override
     public void onPageSelected(int position) {
 
         System.out.println("Selected__" + position);
-        if (position == 2) {
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
-//                    datas.add(detailedScoreData.getScoreCardDetailData());
-//                    ((ScorecardDetailFragment) adapter.getItem(2)).setDatas(datas,getActivity());
-//                }
-//            },1000);
 
-            ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
-            datas.add(detailedScoreData.getScoreCardDetailData());
-            AnimatedExpandableListView listView = (AnimatedExpandableListView) v.findViewById(R.id.listView);
-            ScorecardDetailAdapter scorecardDetailAdapter = new ScorecardDetailAdapter(getActivity(), datas);
-            listView.setAdapter(scorecardDetailAdapter);
-          //  ((ScorecardDetailFragment) adapter.getItem(2)).setDatas();
-
-
-        } else {
-            ((OversFragment) adapter.getItem(1)).setData(detailedScoreData.getOverAdapterData());
-        }
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
+        System.out.println("Selected__ccc");
     }
 
 //    @Override

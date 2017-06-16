@@ -81,8 +81,8 @@ public class SavedListFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(new SavedGameListAdapter(getActivity(),realm.where(MatchDetails.class).findAll()));
         mRecyclerView.setHasFixedSize(true);
-        setUpItemTouchHelper();
-        setUpAnimationDecoratorHelper();
+//        setUpItemTouchHelper();
+//        setUpAnimationDecoratorHelper();
     }
 
     /**
@@ -118,9 +118,9 @@ public class SavedListFragment extends Fragment {
             public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 int position = viewHolder.getAdapterPosition();
                 SavedGameListAdapter SavedGameListAdapter = (SavedGameListAdapter) recyclerView.getAdapter();
-                if (SavedGameListAdapter.isUndoOn() && SavedGameListAdapter.isPendingRemoval(position)) {
-                    return 0;
-                }
+//                if (SavedGameListAdapter.isUndoOn() && SavedGameListAdapter.isPendingRemoval(position)) {
+//                    return 0;
+//                }
                 return super.getSwipeDirs(recyclerView, viewHolder);
             }
 
@@ -129,11 +129,11 @@ public class SavedListFragment extends Fragment {
                 int swipedPosition = viewHolder.getAdapterPosition();
                 SavedGameListAdapter adapter = (SavedGameListAdapter) mRecyclerView.getAdapter();
                 boolean undoOn = adapter.isUndoOn();
-                if (undoOn) {
-                    adapter.pendingRemoval(swipedPosition);
-                } else {
-                    adapter.remove(swipedPosition);
-                }
+//                if (undoOn) {
+//                    adapter.pendingRemoval(swipedPosition);
+//                } else {
+//                    adapter.remove(swipedPosition);
+//                }
             }
 
             @Override

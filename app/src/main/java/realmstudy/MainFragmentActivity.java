@@ -3,6 +3,7 @@ package realmstudy;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -21,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.InningsData;
@@ -42,16 +44,16 @@ import io.realm.RealmConfiguration;
 /**
  * Created by developer on 26/12/16.
  */
-public class MainFragmentActivity extends AppCompatActivity implements MsgToFragment, MsgFromDialog,Toolbar.OnMenuItemClickListener {
+public class MainFragmentActivity extends AppCompatActivity implements MsgToFragment, MsgFromDialog, Toolbar.OnMenuItemClickListener {
 
     private FrameLayout content_frame, shadow;
     private android.support.v4.widget.DrawerLayout drawer_layout;
     private android.support.v7.widget.Toolbar tool_bar;
     private ImageView toolbar_logo;
-//    private TextView toolbar_title;
+    //    private TextView toolbar_title;
 //    private LinearLayout toolbar_titletm;
-  //  private ImageView imageee;
-   // private ImageButton left_icon;
+    //  private ImageView imageee;
+    // private ImageButton left_icon;
     private ImageButton right_icon;
     private TextView cancel_b;
     private android.support.v7.widget.SwitchCompat switch_right_icon;
@@ -65,6 +67,7 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setLocale();
         setContentView(realmstudy.R.layout.home_fragment);
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder()
@@ -85,10 +88,10 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
         tool_bar = (android.support.v7.widget.Toolbar) findViewById(realmstudy.R.id.tool_bar);
         tool_bar.inflateMenu(R.menu.main_menu);
         toolbar_logo = (ImageView) findViewById(realmstudy.R.id.toolbar_logo);
-       // toolbar_title = (TextView) findViewById(realmstudy.R.id.toolbar_title);
-       // toolbar_titletm = (LinearLayout) findViewById(realmstudy.R.id.toolbar_titletm);
-      //  imageee = (ImageView) findViewById(realmstudy.R.id.imageee);
-       // left_icon = (ImageButton) findViewById(realmstudy.R.id.left_icon);
+        // toolbar_title = (TextView) findViewById(realmstudy.R.id.toolbar_title);
+        // toolbar_titletm = (LinearLayout) findViewById(realmstudy.R.id.toolbar_titletm);
+        //  imageee = (ImageView) findViewById(realmstudy.R.id.imageee);
+        // left_icon = (ImageButton) findViewById(realmstudy.R.id.left_icon);
         right_icon = (ImageButton) findViewById(realmstudy.R.id.right_icon);
         cancel_b = (TextView) findViewById(realmstudy.R.id.cancel_b);
         switch_right_icon = (android.support.v7.widget.SwitchCompat) findViewById(realmstudy.R.id.switch_right_icon);
@@ -104,6 +107,15 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
 
         return true;
         //  return super.onCreateOptionsMenu(menu);
+    }
+
+    public void setLocale() {
+        Locale locale = new Locale("en");
+        Locale.setDefault(locale);
+        Configuration config = getBaseContext().getResources().getConfiguration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,
+                getBaseContext().getResources().getDisplayMetrics());
     }
 
     private void setFragment(String id) {
@@ -131,10 +143,12 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
 
 
     public void onClick(View v) {
+        System.out.println("________dottt1");
         Fragment f = getSupportFragmentManager().findFragmentById(realmstudy.R.id.mainFrag);
-        if (f instanceof MainActivity)
+        if (f instanceof MainActivity) {
+            System.out.println("________dottt2");
             ((MainActivity) f).onClick(v);
-        else if (f instanceof MenuActivity)
+        } else if (f instanceof MenuActivity)
             ((MenuActivity) f).onClick(v);
 
     }

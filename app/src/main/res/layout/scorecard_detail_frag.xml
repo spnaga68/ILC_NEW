@@ -8,7 +8,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/edit_hint_color"
+        android:background="@color/appbg"
         android:orientation="horizontal"
         android:padding="5dp"
         android:weightSum="8">

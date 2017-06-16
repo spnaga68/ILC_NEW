@@ -1,16 +1,24 @@
 package realmstudy.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import javax.inject.Inject;
 
 import io.realm.OrderedRealmCollection;
+import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
+import realmstudy.MyApplication;
 import realmstudy.R;
 import realmstudy.data.RealmObjectData.Team;
+import realmstudy.databaseFunctions.RealmDB;
 
 /**
  * Created by developer on 21/2/17.
@@ -19,12 +27,15 @@ import realmstudy.data.RealmObjectData.Team;
 public class TeamListAdapter extends RealmRecyclerViewAdapter<Team, TeamListAdapter.MyViewHolder> {
 
     private Context context;
-
+    @Inject
+    Realm realm;
 
     public TeamListAdapter(Context activity, OrderedRealmCollection<Team> realmResults) {
-        super(activity,realmResults,true);
+        super(activity, realmResults, true);
         this.context = activity;
+        ((MyApplication) ((Activity) context).getApplication()).getComponent().inject(this);
     }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -41,13 +52,24 @@ public class TeamListAdapter extends RealmRecyclerViewAdapter<Team, TeamListAdap
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
-        public TextView title,ph_no;
+        public TextView title, ph_no;
         public Team data;
+        public ImageView delete_item;
 
         public MyViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.playername);
-            ph_no= (TextView) view.findViewById(R.id.time);
+            ph_no = (TextView) view.findViewById(R.id.time);
+            delete_item = (ImageView) view.findViewById(R.id.delete_item);
+            delete_item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int id = getData().get(getAdapterPosition()).team_id;
+                    boolean removed = RealmDB.removeTeam(realm, id);
+                    if (!removed)
+                        Toast.makeText(context, context.getString(R.string.team_in_match), Toast.LENGTH_SHORT).show();
+                }
+            });
             view.setOnLongClickListener(this);
         }
 

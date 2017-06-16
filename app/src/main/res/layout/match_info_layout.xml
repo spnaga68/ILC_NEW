@@ -69,6 +69,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/series_lay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -194,10 +195,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/umpire_lay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:orientation="horizontal"
+
         android:weightSum="2">
 
         <TextView
@@ -219,6 +222,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/third_umpire_lay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
@@ -244,6 +248,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/refree_lay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="right"

@@ -7,8 +7,10 @@ import realmstudy.MainFragmentActivity;
 import realmstudy.MatchDetailActivity;
 import realmstudy.adapter.PlayerListAdapter;
 import realmstudy.adapter.SavedGameListAdapter;
+import realmstudy.adapter.TeamListAdapter;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.di.modules.StorageModule;
+import realmstudy.fragments.EditPlayerProfile;
 import realmstudy.fragments.InfoFragment;
 import realmstudy.fragments.OversFragment;
 import realmstudy.fragments.PlayerListFragment;
@@ -51,4 +53,8 @@ public interface StorageComponent {
     void inject(PlayerListAdapter playerListAdapter);
 
     void inject(MatchDetailActivity matchDetailActivity);
+
+    void inject(TeamListAdapter teamListAdapter);
+
+    void inject(EditPlayerProfile editPlayerProfile);
 }

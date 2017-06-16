@@ -6,6 +6,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -73,7 +74,7 @@ public class SelectMultiPlayerDialog extends DialogFragment {
         butConfirmTime = (Button) v.findViewById(R.id.butConfirmTime);
         header_txt = (TextView) v.findViewById(R.id.header_txt);
         header_txt.setText(getString(R.string.add_player));
-
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         RealmResults<Player> playerList = RealmDB.getAllPlayer(realm);
         multiplayerListAdapter = new MultiplayerListAdapter(getActivity(), playerList);

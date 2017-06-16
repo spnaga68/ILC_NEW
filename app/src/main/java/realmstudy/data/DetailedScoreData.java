@@ -11,6 +11,17 @@ public class DetailedScoreData {
     List<OverAdapterData> overAdapterData=new ArrayList<>();
     ScoreBoardData scoreBoardData=new ScoreBoardData();
     ScoreCardDetailData scoreCardDetailData=new ScoreCardDetailData();
+    ScoreCardDetailData secscoreCardDetailData=new ScoreCardDetailData();
+
+    public ScoreCardDetailData getSecscoreCardDetailData() {
+        return secscoreCardDetailData;
+    }
+
+    public void setSecscoreCardDetailData(ScoreCardDetailData secscoreCardDetailData) {
+        this.secscoreCardDetailData = secscoreCardDetailData;
+    }
+
+
 
     public List<OverAdapterData> getOverAdapterData() {
         return overAdapterData;

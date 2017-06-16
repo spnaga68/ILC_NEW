@@ -12,8 +12,57 @@ public class Player extends RealmObject {
 //    BowlingProfile recentBowlingProfile;
 
     int status;
-    @PrimaryKey
+
+    public String getPhone_number() {
+        return phone_number;
+    }
+
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
+
     String ph_no;
+    String dob;
+    String battingSytle;
+    String bowlingStyle;
+    String allRounder;
+    String phone_number;
+    @PrimaryKey
+    int pID;
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public String getBattingSytle() {
+        return battingSytle;
+    }
+
+    public void setBattingSytle(String battingSytle) {
+        this.battingSytle = battingSytle;
+    }
+
+    public String getBowlingStyle() {
+        return bowlingStyle;
+    }
+
+    public void setBowlingStyle(String bowlingStyle) {
+        this.bowlingStyle = bowlingStyle;
+    }
+
+    public String getAllRounder() {
+        return allRounder;
+    }
+
+    public void setAllRounder(String allRounder) {
+        this.allRounder = allRounder;
+    }
+
+
 
     public int getStatus() {
         return status;
@@ -59,7 +108,7 @@ public class Player extends RealmObject {
         this.pID = pID;
     }
 
-    int pID;
+
 
     public String getName() {
         return name;
@@ -72,7 +121,8 @@ public class Player extends RealmObject {
 
     @Override
     public String toString() {
-        String phno = ph_no != null ? "  (" + ph_no + ")" : "";
+       // String phno = ph_no != null ? "  (" + ph_no + ")" : "";
+        String phno = "";
         return name + phno;
     }
 }

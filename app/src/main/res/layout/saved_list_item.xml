@@ -1,170 +1,167 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--<FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+   >-->
 
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/titleView"
-        app:cardBackgroundColor="@android:color/transparent"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/titleView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:clickable="true"
+    app:cardBackgroundColor="@android:color/transparent">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/delete_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-       >
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginRight="5dp"
+        android:padding="10dp"
+        android:src="@drawable/delete_icon" />
 
-        <RelativeLayout
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView_top"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:background="@color/semi_transperant"
+            android:padding="15dp"
+            android:text="WED,05 APR 2017"
+            android:textAllCaps="true"
+            android:visibility="gone"
 
-            <LinearLayout
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/venue"
+                android:textColor="@color/text" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text=" \u00B7 "
+                android:textColor="@color/text"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/venue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:text="Hyderabad"
+                android:textColor="@color/colorPrimary" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/textView_top"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/date"
-                    android:padding="15dp"
-                    android:text="WED,05 APR 2017"
-                    android:textAllCaps="true"
-                    android:textColor="@color/black"
-                    android:typeface="sans" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="10dp">
+            <ImageView
+                android:id="@+id/home_team_image"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/flag"
+                android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="1st Match"
-                        android:textColor="@color/text" />
+            <realmstudy.lib.customViews.SemiLargeTextView
+                android:id="@+id/home_team_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/colorAccent"
+                tools:text="SRH" />
 
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text=" \u00B7 "
-                        android:textColor="@color/text"
+            <realmstudy.lib.customViews.SemiLargeTextView
+                android:id="@+id/home_team_scr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="65dp"
+                android:textColor="@color/black"
+                tools:text="207-4(20)" />
+        </LinearLayout>
 
-                        android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-                    <TextView
-                        android:id="@+id/venue"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Hyderabad"
-                        android:textColor="@color/text" />
-                </LinearLayout>
+            android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:orientation="horizontal"
+            <ImageView
+                android:id="@+id/away_team_image"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/flag"
+                android:transitionName="@string/activity_image_trans"
+                android:visibility="gone" />
 
-                    >
+            <realmstudy.lib.customViews.SemiLargeTextView
 
-                    <ImageView
-                        android:id="@+id/home_team_image"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/down_arrow" />
+                android:id="@+id/away_team_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/colorAccent"
+                tools:text="RCB" />
 
-                    <TextView
-                        android:id="@+id/home_team_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="20dp"
-                        android:text="SRH"
-                        android:textColor="@android:color/black"
-                        android:textStyle="bold"
+            <realmstudy.lib.customViews.SemiLargeTextView
+                android:id="@+id/away_team_scr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="65dp"
+                android:textColor="@color/black"
+                tools:text="172(19.4)" />
 
-                        />
+        </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/home_team_scr"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="65dp"
-                        android:text="207-4(20)"
-                        android:textColor="@android:color/black"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/away_team_image"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/down_arrow"
-                        android:transitionName="@string/activity_image_trans" />
-
-                    <TextView
-
-                        android:id="@+id/away_team_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="20dp"
-                        android:text="RCB"
-                        android:textColor="@color/text"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/away_team_scr"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="65dp"
-                        android:text="172(19.4)"
-                        android:textColor="@color/text"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="Sunrisers Hyderabad won by 35 runs"
-                    android:textColor="@color/result" />
-            </LinearLayout>
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="@color/result"
+            tools:text="Sunrisers Hyderabad won by 35 runs" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>
 
 
-    <Button
-        android:id="@+id/undo_button"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|center_vertical"
-        android:text="@string/button_undo"
-        android:textAllCaps="true"
-        android:textColor="@android:color/white"
-        android:visibility="gone" />
+    <!--  <Button
+          android:id="@+id/undo_button"
+          style="@style/Base.Widget.AppCompat.Button.Borderless"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end|center_vertical"
+          android:text="@string/button_undo"
+          android:textAllCaps="true"
+          android:textColor="@android:color/white"
+          android:visibility="gone" />
 
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="0.5dp"
-        android:layout_gravity="bottom"
-        android:background="@color/colorAccent" />
-</FrameLayout>
+      <View
+          android:layout_width="wrap_content"
+          android:layout_height="0.5dp"
+          android:layout_gravity="bottom"
+          android:background="@color/colorAccent" />
+  </FrameLayout>-->

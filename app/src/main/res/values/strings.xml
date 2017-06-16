@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RealmStudy</string>
+    <string name="app_name">ILC Cricket Scorer</string>
     <string name="ph_no">Phone Number</string>
     <string name="select_from_db">From DB :</string>
     <string name="or">OR</string>
@@ -135,6 +135,19 @@
     <string name="recent">Recent</string>
     <string name="upcoming">Up Coming</string>
     <string name="player_in_match">Player in ongoin match.Complete or delete the match to delete player</string>
+    <string name="pick_time">Pick Time</string>
+    <string name="save">save</string>
+    <string name="team_in_match">Team in ongoing or upcoming match.</string>
+    <string name="search">Search</string>
+    <string name="bowler_cant_change">Bowler should not change in mid of the over</string>
+    <string name="non_striker_cant_change">Batsman should not change after faced a ball</string>
+    <string name="striker_cant_change">Batsman should not change after faced a ball</string>
+    <string name="batting_style">Batting Sytle</string>
+    <string name="bowling_style">Bowling Style</string>
+    <string name="role">Role</string>
+    <string name="dob">DOB</string>
+    <string name="toss_mannually">Toss Manually</string>
+    <string name="team_won_toss">Team won toss</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>
@@ -156,5 +169,31 @@
         <item>11</item>
 
     </string-array>
+    <string-array name="bat_style">
+
+        <item>RHB</item>
+        <item>LHB</item>
+
+
+    </string-array>
+
+    <string-array name="bowl_style">
+        <item>None</item>
+        <item>Right Arm medium</item>
+        <item>Left Arm medium</item>
+
+
+    </string-array>
+
+    <string-array name="role_sytle">
+
+
+        <item>Batsman</item>
+        <item>Bowler</item>
+        <item>All Rounder</item>
+        <item>Wicket Keeper</item>
+
+    </string-array>
+
 
 </resources>

@@ -79,7 +79,7 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
         swipeLayout = (SwipeRefreshLayout) convertview.findViewById(R.id.swiperefresh);
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeColors(Color.RED);
-
+         listView = (AnimatedExpandableListView) convertview.findViewById(R.id.listView);
 
 //
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -133,18 +133,19 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
             }
 
         });
-        String d = SessionSave.getSession("checjjj", getActivity());
-        datas = new ArrayList<>();
-        datas.add(CommanData.fromJson(d, DetailedScoreData.class).getScoreCardDetailData());
-        setDatas(datas);
+//        String d = SessionSave.getSession("checjjj", getActivity());
+//        datas = new ArrayList<>();
+//        datas.add(CommanData.fromJson(d, DetailedScoreData.class).getScoreCardDetailData());
+//        setDatas(datas);
         return convertview;
     }
 
     public void setDatas(ArrayList<ScoreCardDetailData> datas) {
 
         this.datas = datas;
-        adapter = new ScorecardDetailAdapter(getActivity(), datas);
-        listView.setAdapter(adapter);
+
+        ScorecardDetailAdapter scorecardDetailAdapter = new ScorecardDetailAdapter(getActivity(), datas);
+        listView.setAdapter(scorecardDetailAdapter);
     }
 //    public String wicketToString(Wicket wicket) {
 //        String s = "";

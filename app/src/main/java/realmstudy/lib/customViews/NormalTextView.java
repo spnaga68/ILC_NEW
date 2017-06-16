@@ -6,10 +6,12 @@ package realmstudy.lib.customViews;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-public class NormalTextView extends TextView {
+public class NormalTextView extends AppCompatTextView {
 
 
     public NormalTextView(Context context) {

@@ -2,7 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
 
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<group
+
+    <item
+        android:id="@+id/next"
+        android:icon="@drawable/next_send"
+        android:orderInCategory="100"
+        android:title="@string/next"
+        android:visible="true"
+        app:showAsAction="never" />
+    <group
     android:id="@+id/menu_settings"
     >
     <item

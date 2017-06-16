@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -88,6 +90,17 @@ public class TossFragment extends Fragment {
     private RadioButton team_ask_away;
     @Inject
     Realm realm;
+    private String venue_text = "";
+    CheckBox manual_toss;
+
+    LinearLayout
+            auto_toss, team_won_toss_lay, retoss_lay;
+    TextView
+            toss_won;
+    RadioGroup
+            team_won_toss_radio;
+    RadioButton
+            team_won_home, team_won_away;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,6 +124,7 @@ public class TossFragment extends Fragment {
             String s[] = b.getString("teamIDs").split("__");
             homeTeam = realm.where(Team.class).equalTo("team_id", Integer.parseInt(s[0])).findFirst();
             awayTeam = realm.where(Team.class).equalTo("team_id", Integer.parseInt(s[1])).findFirst();
+            venue_text = b.getString("venue");
             match_id = b.getInt("match_id");
             System.out.println("TeamName____" + homeTeam.name + "___" + awayTeam.name);
         } catch (Exception e) {
@@ -147,7 +161,7 @@ public class TossFragment extends Fragment {
         start_match.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (flipCounter >= 1)
+                if (flipCounter >= 1 || manual_toss.isChecked())
                     if (!venue.getText().toString().trim().isEmpty())
                         if (!total_overs.getText().toString().trim().isEmpty()) {
 
@@ -451,7 +465,7 @@ public class TossFragment extends Fragment {
                         resetCoin();
                         before_toss_lay.setVisibility(View.GONE);
                         after_toss_lay.setVisibility(View.VISIBLE);
-
+                        retoss_lay.setVisibility(View.VISIBLE);
                         resetInstructions();
                         loadResources();
                         resumeListeners();
@@ -508,6 +522,14 @@ public class TossFragment extends Fragment {
         Noofplayers = (TextView) v.findViewById(R.id.Noofplayers);
         no_of_players = (Spinner) v.findViewById(R.id.no_of_players);
 
+        team_won_toss_lay = (LinearLayout) v.findViewById(R.id.team_won_toss_lay);
+        auto_toss = (LinearLayout) v.findViewById(R.id.auto_toss);
+        toss_won = (TextView) v.findViewById(R.id.toss_won);
+        team_won_toss_radio = (RadioGroup) v.findViewById(R.id.team_won_toss_radio);
+        team_won_home = (RadioButton) v.findViewById(R.id.team_won_home);
+        team_won_away = (RadioButton) v.findViewById(R.id.team_won_away);
+        manual_toss = (CheckBox) v.findViewById(R.id.manual_toss);
+        retoss_lay = (LinearLayout) v.findViewById(R.id.retoss_lay);
         overss = (TextView) v.findViewById(R.id.overss);
         total_overs = (EditText) v.findViewById(R.id.total_overs);
         venues = (TextView) v.findViewById(R.id.venues);
@@ -531,7 +553,7 @@ public class TossFragment extends Fragment {
         retoss = (TextView) v.findViewById(R.id.retoss);
         before_toss_lay = (LinearLayout) v.findViewById(R.id.before_toss_lay);
         after_toss_lay = (LinearLayout) v.findViewById(R.id.after_toss_lay);
-
+        venue.setText(venue_text);
 
         retoss.setOnClickListener(new View.OnClickListener() {
 
@@ -544,8 +566,44 @@ public class TossFragment extends Fragment {
 
         SpinnerAdapter adap = new ArrayAdapter<String>(getActivity(), R.layout.spinner_text_item, getResources().getStringArray(R.array.no_of_players_in_match));
         no_of_players.setAdapter(adap);
+        no_of_players.setSelection(adap.getCount() - 1);
         team_ask_home.setText(homeTeam.nick_name);
         team_ask_away.setText(awayTeam.nick_name);
+        team_won_home.setText(homeTeam.nick_name);
+        team_won_away.setText(awayTeam.nick_name);
+        manual_toss.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    auto_toss.setVisibility(View.GONE);
+                    after_toss_lay.setVisibility(View.VISIBLE);
+                    retoss_lay.setVisibility(View.GONE);
+                    team_won_toss_lay.setVisibility(View.VISIBLE);
+                    toss_won_detail.setVisibility(View.GONE);
+                } else {
+                    auto_toss.setVisibility(View.VISIBLE);
+                    after_toss_lay.setVisibility(View.GONE);
+                    retoss_lay.setVisibility(View.VISIBLE);
+                    team_won_toss_lay.setVisibility(View.GONE);
+                    toss_won_detail.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        team_won_away.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    homeWin = true;
+            }
+        });
+        team_won_away.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    homeWin = false;
+            }
+        });
     }
 
     private void pauseListeners() {

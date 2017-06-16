@@ -13,12 +13,14 @@ import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import realmstudy.R;
 import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.InningsData;
 import realmstudy.data.RealmObjectData.Wicket;
 import realmstudy.data.ScoreBoardData;
+import realmstudy.interfaces.ScoreBoardViewClickListner;
 import realmstudy.lib.customViews.AutoResizeTextView;
 
 /**
@@ -44,7 +46,7 @@ public class ScoreBoardFragment extends View {
     private TextView striker_score, non_striker_score, striker_balls, non_striker_balls;
     private TextView striker_name, non_striker_name;
     public static int legalRun = 1;
-
+    ScoreBoardViewClickListner listner;
     private TextView current_bowler_name, current_bowler_overs, current_bowler_runs,
             next_bowler_name, next_bowler_overs, next_bowler_runs,
             current_bowler_maiden, current_bowler_wicket, current_bowler_er,
@@ -61,6 +63,12 @@ public class ScoreBoardFragment extends View {
     public ScoreBoardFragment(Context context) {
         super(context);
         this.context = context;
+    }
+
+    public ScoreBoardFragment(Context context, ScoreBoardViewClickListner listner) {
+        super(context);
+        this.context = context;
+        this.listner = listner;
     }
 //    @Nullable
 //    @Override
@@ -119,6 +127,28 @@ public class ScoreBoardFragment extends View {
 
         shot = (TextView) v.findViewById(realmstudy.R.id.shot);
 
+        striker_name.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listner != null)
+                    listner.strikerClicked();
+            }
+        });
+        non_striker_name.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listner != null)
+                    listner.nonStrikerClicked();
+            }
+        });
+        current_bowler_name.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listner != null)
+                    listner.bowlerClicked();
+            }
+        });
+
     }
 
 
@@ -128,7 +158,7 @@ public class ScoreBoardFragment extends View {
      */
     public void updateUI(ScoreBoardData current_score_data) {
         System.out.println("___________updateUI");
-        System.out.println("nagacheckkk" + runs % 2 + "____" + current_score_data.getTotalBalls() + current_score_data.curr_bowlers.getName());
+        System.out.println("nagacheckkk" + runs % 2 + "____" + current_score_data.isBatsmanSwitched() + current_score_data.striker.getName());
         setPreviousDelivery(current_score_data.getLastThreeOvers());
 
 
@@ -176,6 +206,11 @@ public class ScoreBoardFragment extends View {
 
             striker_score.setText(String.valueOf(current_score_data.nonStriker.getRuns()));
             striker_balls.setText(String.valueOf(current_score_data.nonStriker.getBalls()));
+            striker_fours.setText(String.valueOf(current_score_data.nonStriker.getFours()));
+            striker_sixes.setText(String.valueOf(current_score_data.nonStriker.getSixes()));
+
+            non_striker_fours.setText(String.valueOf(current_score_data.striker.getFours()));
+            non_striker_sixes.setText(String.valueOf(current_score_data.striker.getSixes()));
             non_striker_score.setText(String.valueOf(current_score_data.striker.getRuns()));
             non_striker_balls.setText(String.valueOf(current_score_data.striker.getBalls()));
             striker_name.setText(current_score_data.nonStriker.getName() + "*");
@@ -250,37 +285,43 @@ public class ScoreBoardFragment extends View {
             last_twelve_balls.setVisibility(View.GONE);
     }
 
-    private void setPreviousDelivery(ArrayList<String> lpb) {
-
-        if (last_twelve_balls.getVisibility() == VISIBLE) {
-            last_twelve_balls.removeAllViews();
-            if (lpb != null)
-                for (String s : lpb) {
-                    TextView tv;
-                    if (s.trim().equals("|"))
-                        tv = new TextView(context);
-                    else {
-                        tv = new AutoResizeTextView(context);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(60, 60);
+    private void setPreviousDelivery(ArrayList<String> lpbf) {
+        List<String> lpb;
+        if (lpbf != null) {
+            if (lpbf.size() > 12)
+                lpb = lpbf.subList(lpbf.size() - 12, lpbf.size());
+            else
+                lpb = lpbf;
+            if (last_twelve_balls.getVisibility() == VISIBLE) {
+                last_twelve_balls.removeAllViews();
+                if (lpb != null)
+                    for (String s : lpb) {
+                        TextView tv;
+                        if (s.trim().equals("|"))
+                            tv = new TextView(context);
+                        else {
+                            tv = new AutoResizeTextView(context);
+                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(60, 60);
 //            layoutParams.width=20;
 //            layoutParams.height=20;
-                        layoutParams.setMargins(5, 5, 5, 5);
-                        tv.setLayoutParams(layoutParams);
-                        ((AutoResizeTextView) tv).setSolidColor("#BCAAA4");
-                        //   tv.setStrokeColor("#43A047");
-                        tv.setGravity(Gravity.CENTER);
-                        // tv.setPadding(8, 8, 8, 8);
+                            layoutParams.setMargins(5, 5, 5, 5);
+                            tv.setLayoutParams(layoutParams);
+                            ((AutoResizeTextView) tv).setSolidColor("#BCAAA4");
+                            //   tv.setStrokeColor("#43A047");
+                            tv.setGravity(Gravity.CENTER);
+                            // tv.setPadding(8, 8, 8, 8);
+                        }
+                        tv.setText(s);
+                        tv.setPadding(5, 5, 5, 5);
+                        // Log.d("ball added", s != null ? s : "");
+                        last_twelve_balls.addView(tv);
                     }
-                    tv.setText(s);
-                    tv.setPadding(5, 5, 5, 5);
-                    // Log.d("ball added", s != null ? s : "");
-                    last_twelve_balls.addView(tv);
-                }
+            }
         }
     }
 
     public void swapStrikerText(ScoreBoardData current_score_data, boolean withText, boolean redo) {
-
+        System.out.println("score_data_swap____" + current_score_data.striker.getName() + "___" + withText + "__" + redo + "__" + current_score_data.getTotalBalls());
         if (withText) {
             if (redo) {
                 striker_score.setText(String.valueOf(current_score_data.striker.getRuns()));
@@ -290,13 +331,9 @@ public class ScoreBoardFragment extends View {
                 non_striker_fours.setText("" + current_score_data.nonStriker.getFours());
                 non_striker_sixes.setText("" + current_score_data.nonStriker.getSixes());
                 non_striker_sr.setText(CommanData.getStrikeRate(current_score_data.nonStriker.getBalls(), current_score_data.nonStriker.getRuns()));
-
-
                 striker_fours.setText("" + current_score_data.striker.getFours());
                 striker_sixes.setText("" + current_score_data.striker.getSixes());
                 striker_sr.setText(CommanData.getStrikeRate(current_score_data.striker.getBalls(), current_score_data.striker.getRuns()));
-
-
                 striker_name.setText(current_score_data.striker.getName() + "*");
                 non_striker_name.setText(current_score_data.nonStriker.getName());
             } else {
@@ -306,13 +343,9 @@ public class ScoreBoardFragment extends View {
                 non_striker_balls.setText(String.valueOf(current_score_data.striker.getBalls()));
                 striker_name.setText(current_score_data.nonStriker.getName() + "*");
                 non_striker_name.setText(current_score_data.striker.getName());
-
-
                 striker_fours.setText("" + current_score_data.nonStriker.getFours());
                 striker_sixes.setText("" + current_score_data.nonStriker.getSixes());
                 striker_sr.setText(CommanData.getStrikeRate(current_score_data.nonStriker.getBalls(), current_score_data.nonStriker.getRuns()));
-
-
                 non_striker_fours.setText("" + current_score_data.striker.getFours());
                 non_striker_sixes.setText("" + current_score_data.striker.getSixes());
                 non_striker_sr.setText(CommanData.getStrikeRate(current_score_data.striker.getBalls(), current_score_data.striker.getRuns()));

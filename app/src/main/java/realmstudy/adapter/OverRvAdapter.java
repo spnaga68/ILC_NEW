@@ -2,6 +2,7 @@ package realmstudy.adapter;
 
 import android.content.Context;
 import android.support.v4.view.GravityCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -28,14 +29,14 @@ public class OverRvAdapter extends RecyclerView.Adapter<OverRvAdapter.MyViewHold
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView over_players, overs, over_total_run;
-        LinearLayout item_over_lay;
+        RecyclerView item_over_lay;
 
         public MyViewHolder(View view) {
             super(view);
             over_players = (TextView) view.findViewById(R.id.over_players);
             overs = (TextView) view.findViewById(R.id.overs);
             over_total_run = (TextView) view.findViewById(R.id.over_total_run);
-            item_over_lay = (LinearLayout) view.findViewById(R.id.item_over_lay);
+            item_over_lay = (RecyclerView) view.findViewById(R.id.item_over_lay);
         }
     }
 
@@ -59,21 +60,26 @@ public class OverRvAdapter extends RecyclerView.Adapter<OverRvAdapter.MyViewHold
         holder.over_players.setText(data.getBolwers() + " to " + data.getBatsmans());
         holder.overs.setText("Ov "+String.valueOf(data.getOver()));
         holder.over_total_run.setText(data.getTotal_run() + " runs");
-        for(int i=0;i<data.getDeliveries().size();i++){
-            AutoResizeTextView textView=new AutoResizeTextView(c);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(60,60);
-//            layoutParams.width=20;
-//            layoutParams.height=20;
-            layoutParams.setMargins(10,10,10,10);
-            textView.setLayoutParams(layoutParams);
-            textView.setSolidColor("#BCAAA4");
-         //   textView.setStrokeColor("#43A047");
-            textView.setGravity(Gravity.CENTER);
-            textView.setPadding(8,8,8,8);
 
-            textView.setText(data.getDeliveries().get(i));
-            holder.item_over_lay.addView(textView);
-        }
+        OverBallAdapter dd= new OverBallAdapter(c,data);
+        holder.item_over_lay.setLayoutManager(new LinearLayoutManager(c,LinearLayoutManager.HORIZONTAL, false));
+        holder.item_over_lay.setAdapter(dd);
+
+//        for(int i=0;i<data.getDeliveries().size();i++){
+//            AutoResizeTextView textView=new AutoResizeTextView(c);
+//            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(60,60);
+////            layoutParams.width=20;
+////            layoutParams.height=20;
+//            layoutParams.setMargins(10,10,10,10);
+//            textView.setLayoutParams(layoutParams);
+//            textView.setSolidColor("#BCAAA4");
+//         //   textView.setStrokeColor("#43A047");
+//            textView.setGravity(Gravity.CENTER);
+//            textView.setPadding(8,8,8,8);
+//
+//            textView.setText(data.getDeliveries().get(i));
+//            holder.item_over_lay.addView(textView);
+//        }
 
     }
 

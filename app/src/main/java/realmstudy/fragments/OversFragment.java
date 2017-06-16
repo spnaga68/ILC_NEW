@@ -73,15 +73,27 @@ public class OversFragment extends Fragment {
 
         // current_score_data = CommanData.fromJson(d.getScoreBoardData(), ScoreBoardData.class);
         overs_rv = (android.support.v7.widget.RecyclerView) v.findViewById(R.id.overs_rv);
+        overs_rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false){
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
         return v;
     }
 
-    public void setData(List<OverAdapterData> datas ) {
+    public void setData(List<OverAdapterData> datas,ScoreBoardData current_score_data ) {
 
 
         System.out.println("________sss" + datas.size());
         OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
         overs_rv.setAdapter(adapter);
+
         scoreBoardFragment.updateUI(current_score_data);
     }
 
@@ -110,7 +122,9 @@ public class OversFragment extends Fragment {
 //            over_home_score.setText(firstInningsScore);
 //            overs_away.setText(md.getAwayTeam().nick_name);
 
-            overs_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+           // overs_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+
             //  overs_match_quote.setText(md.);
 
 

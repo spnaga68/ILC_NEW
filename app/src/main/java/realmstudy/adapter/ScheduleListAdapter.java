@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import io.realm.RealmResults;
 import realmstudy.MainActivity;
 import realmstudy.MainFragmentActivity;
 import realmstudy.R;
+import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.interfaces.SlideRecyclerView;
 
@@ -28,14 +30,14 @@ import realmstudy.interfaces.SlideRecyclerView;
  * Created by developer on 7/3/17.
  */
 
-public class ScheduleListAdapter extends RecyclerView.Adapter  implements SlideRecyclerView {
+public class ScheduleListAdapter extends RecyclerView.Adapter implements SlideRecyclerView {
     private Context context;
     private static final int PENDING_REMOVAL_TIMEOUT = 3000; // 3sec
 
     List<String> items;
     List<String> itemsPendingRemoval;
     int lastInsertedIndex; // so we can add some more items for testing purposes
-    boolean undoOn=true; // is undo on, you can turn it on from the toolbar menu
+    boolean undoOn = true; // is undo on, you can turn it on from the toolbar menu
 
     private Handler handler = new Handler(); // hanlder for running delayed runnables
     HashMap<String, Runnable> pendingRunnables = new HashMap<>(); // map of items to pending runnables, so we can cancel a removal if need be
@@ -52,12 +54,12 @@ public class ScheduleListAdapter extends RecyclerView.Adapter  implements SlideR
 //    }
 
     public ScheduleListAdapter(Context context, RealmResults<MatchDetails> data) {
-        this.data=data;
+        this.data = data;
         items = new ArrayList<>();
         itemsPendingRemoval = new ArrayList<>();
-        lastInsertedIndex=data.size();
+        lastInsertedIndex = data.size();
         // let's generate some items
-        ScheduleListAdapter.this.context=context;
+        ScheduleListAdapter.this.context = context;
         for (int i = 1; i <= data.size(); i++) {
             items.add("Item " + i);
         }
@@ -77,20 +79,20 @@ public class ScheduleListAdapter extends RecyclerView.Adapter  implements SlideR
             // we need to show the "undo" state of the row
             viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
             viewHolder.titleView.setVisibility(View.GONE);
-            viewHolder.undoButton.setVisibility(View.VISIBLE);
-            viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // user wants to undo the removal, let's cancel the pending task
-                    Runnable pendingRemovalRunnable = pendingRunnables.get(item);
-                    pendingRunnables.remove(item);
-                    if (pendingRemovalRunnable != null)
-                        handler.removeCallbacks(pendingRemovalRunnable);
-                    itemsPendingRemoval.remove(item);
-                    // this will rebind the row in "normal" state
-                    notifyItemChanged(items.indexOf(item));
-                }
-            });
+//            viewHolder.undoButton.setVisibility(View.VISIBLE);
+//            viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    // user wants to undo the removal, let's cancel the pending task
+//                    Runnable pendingRemovalRunnable = pendingRunnables.get(item);
+//                    pendingRunnables.remove(item);
+//                    if (pendingRemovalRunnable != null)
+//                        handler.removeCallbacks(pendingRemovalRunnable);
+//                    itemsPendingRemoval.remove(item);
+//                    // this will rebind the row in "normal" state
+//                    notifyItemChanged(items.indexOf(item));
+//                }
+//            });
         } else {
             // we need to show the "normal" state
             viewHolder.itemView.setBackgroundColor(Color.WHITE);
@@ -99,17 +101,19 @@ public class ScheduleListAdapter extends RecyclerView.Adapter  implements SlideR
             viewHolder.venue.setText(data.get(position).getLocation());
             viewHolder.home_team_name.setText(data.get(position).getHomeTeam().nick_name);
             viewHolder.away_team_name.setText(data.get(position).getAwayTeam().nick_name);
-            viewHolder.undoButton.setVisibility(View.GONE);
-            viewHolder.undoButton.setOnClickListener(null);
+            viewHolder.home_team_scr.setText("20-0");
+
+//            viewHolder.undoButton.setVisibility(View.GONE);
+//            viewHolder.undoButton.setOnClickListener(null);
             viewHolder.titleView.setTag(position);
             viewHolder.titleView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Bundle b=new Bundle();
-                    MainActivity fragment=new MainActivity();
-                    b.putInt("match_id",data.get((Integer) view.getTag()).getMatch_id());
+                    Bundle b = new Bundle();
+                    MainActivity fragment = new MainActivity();
+                    b.putInt("match_id", data.get((Integer) view.getTag()).getMatch_id());
                     fragment.setArguments(b);
-                    ((MainFragmentActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag,fragment).commit();
+                    ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
                 }
             });
         }
@@ -169,26 +173,28 @@ public class ScheduleListAdapter extends RecyclerView.Adapter  implements SlideR
  */
 class ViewHolder extends RecyclerView.ViewHolder {
 
-    realmstudy.lib.customViews.CircleImageView
-            home_team_image,away_team_image;
+    ImageView
+            home_team_image, away_team_image;
     realmstudy.lib.customViews.SemiLargeTextView home_team_name;
     realmstudy.lib.customViews.SemiLargeTextView away_team_name;
     TextView venue;
     TextView time;
     RelativeLayout titleView;
-    Button undoButton;
+    TextView away_team_scr, home_team_scr;
+    // Button undoButton;
 
 
     public ViewHolder(ViewGroup parent) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.saved_list_item, parent, false));
-        titleView=(RelativeLayout) itemView.findViewById(R.id.titleView);
-        undoButton=(Button) itemView.findViewById(R.id.undo_button);
-        home_team_image=(realmstudy.lib.customViews.CircleImageView)itemView.findViewById(R.id.home_team_image);
-        home_team_name=(realmstudy.lib.customViews.SemiLargeTextView)itemView.findViewById(R.id.home_team_name);
-        away_team_name=(realmstudy.lib.customViews.SemiLargeTextView)itemView.findViewById(R.id.away_team_name);
-        venue=(TextView)itemView.findViewById(R.id.venue);
-        time=(TextView)itemView.findViewById(R.id.time);
-        away_team_image=(realmstudy.lib.customViews.CircleImageView)itemView.findViewById(R.id.away_team_image);
+        titleView = (RelativeLayout) itemView.findViewById(R.id.titleView);
+        away_team_scr = (TextView) itemView.findViewById(R.id.away_team_scr);
+        home_team_scr = (TextView) itemView.findViewById(R.id.home_team_scr);
+        home_team_image = (ImageView) itemView.findViewById(R.id.home_team_image);
+        home_team_name = (realmstudy.lib.customViews.SemiLargeTextView) itemView.findViewById(R.id.home_team_name);
+        away_team_name = (realmstudy.lib.customViews.SemiLargeTextView) itemView.findViewById(R.id.away_team_name);
+        venue = (TextView) itemView.findViewById(R.id.venue);
+        time = (TextView) itemView.findViewById(R.id.time);
+        away_team_image = (ImageView) itemView.findViewById(R.id.away_team_image);
     }
 
 }

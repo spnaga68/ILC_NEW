@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/tools"
-   android:id="@+id/create_new_player"
+    android:id="@+id/create_new_player"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/back_ground_dark"
@@ -23,8 +23,8 @@
         android:layout_gravity="center_horizontal"
         android:background="@color/transperant"
         android:hint="@string/player_name"
-        android:inputType="textCapSentences"
         android:imeOptions="actionNext"
+        android:inputType="textCapSentences"
         android:paddingBottom="5dp"
         android:paddingLeft="15dp"
         android:paddingTop="15dp"
@@ -40,6 +40,57 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/background_shadow" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+
+            android:text="@string/batting_style" />
+
+        <Spinner
+            android:id="@+id/bat_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.3"
+            android:entries="@array/bat_style"
+            android:padding="10dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:text="@string/bowling_style" />
+
+        <Spinner
+            android:id="@+id/bowl_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.3"
+            android:entries="@array/bowl_style"
+            android:padding="10dp" />
+    </LinearLayout>
 
 
     <EditText
@@ -57,7 +108,8 @@
         android:singleLine="true"
         android:textColor="@color/edit_text_color"
         android:textColorHint="@color/shade"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:visibility="gone" />
 
     <View
         android:layout_width="match_parent"
@@ -65,7 +117,8 @@
         android:layout_marginBottom="15dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="15dp"
-        android:background="@drawable/background_shadow" />
+        android:background="@drawable/background_shadow"
+        android:visibility="gone" />
 
 
     <LinearLayout

@@ -15,6 +15,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -96,6 +97,7 @@ public class OutDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.out_dialog, null);
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         init(v, getString(R.string.wicket));
         return v;
     }

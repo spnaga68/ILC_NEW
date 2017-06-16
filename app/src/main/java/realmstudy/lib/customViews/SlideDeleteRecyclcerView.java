@@ -88,13 +88,13 @@ public class SlideDeleteRecyclcerView extends RecyclerView {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 int swipedPosition = viewHolder.getAdapterPosition();
-                SavedGameListAdapter adapter = (SavedGameListAdapter) SlideDeleteRecyclcerView.this.getAdapter();
-                boolean undoOn = adapter.isUndoOn();
-                if (undoOn) {
-                    adapter.pendingRemoval(swipedPosition);
-                } else {
-                    adapter.remove(swipedPosition);
-                }
+//                SavedGameListAdapter adapter = (SavedGameListAdapter) SlideDeleteRecyclcerView.this.getAdapter();
+//                boolean undoOn = adapter.isUndoOn();
+//                if (undoOn) {
+//                    adapter.pendingRemoval(swipedPosition);
+//                } else {
+//                    adapter.remove(swipedPosition);
+//                }
             }
 
             @Override

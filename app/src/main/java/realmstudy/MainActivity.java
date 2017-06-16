@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -34,6 +35,7 @@ import io.realm.Sort;
 import okhttp3.ResponseBody;
 import realmstudy.data.CommanData;
 import realmstudy.data.DetailedScoreData;
+import realmstudy.data.MatchShortSummaryData;
 import realmstudy.data.OverAdapterData;
 import realmstudy.data.RealmObjectData.BatingProfile;
 import realmstudy.data.RealmObjectData.BowlingProfile;
@@ -49,6 +51,7 @@ import realmstudy.fragments.ScoreBoardFragment;
 import realmstudy.interfaces.DialogInterface;
 import realmstudy.interfaces.MsgFromDialog;
 import realmstudy.interfaces.MsgToFragment;
+import realmstudy.interfaces.ScoreBoardViewClickListner;
 import realmstudy.lib.Util;
 import realmstudy.service.CoreClient;
 import realmstudy.service.ServiceGenerator;
@@ -57,7 +60,7 @@ import retrofit2.Callback;
 
 import static realmstudy.data.CommanData.wicketIdToString;
 
-public class MainActivity extends Fragment implements DialogInterface, MsgToFragment, MsgFromDialog {
+public class MainActivity extends Fragment implements DialogInterface, MsgToFragment, MsgFromDialog, ScoreBoardViewClickListner {
 
     private static final int COLOR_SELECT = Color.RED;
     private static final int COLOR_UNSELECT = Color.BLACK;
@@ -95,6 +98,10 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     private ScoreBoardFragment scoreBoardFragment;
     private ImageButton view_icon;
     private MenuItem redo, undo, swap_batsman, view_scoreCard;
+    private int firstInningsRun;
+    private int firstInningsWicket;
+    private String firstInningsOver;
+
 
     @Override
     public void msg(String s) {
@@ -118,17 +125,15 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
 
         realm = ((MainFragmentActivity) (getActivity())).getRealm();
-//getActivity().getBaseContext()
 
         try {
             Bundle b = getArguments();
             int match_id = b.getInt("match_id");
             matchDetails = RealmDB.getMatchById(getActivity(), realm, match_id);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-        scoreBoardFragment = new ScoreBoardFragment(getActivity());
+        scoreBoardFragment = new ScoreBoardFragment(getActivity(), this);
         scoreBoardFragment.initialize(v);
         init(v);
         resumeMatch(matchDetails);
@@ -139,6 +144,13 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     //initialize views
     public void init(View v) {
         dot_txt = (TextView) v.findViewById(realmstudy.R.id.dot_txt);
+        //  dot_txt.setOnClickListener(MainActivity.this);
+//        dot_txt.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                System.out.println("_______newc");
+//            }
+//        });
         one_run_txt = (TextView) v.findViewById(realmstudy.R.id.one_run_txt);
         two_run_txt = (TextView) v.findViewById(realmstudy.R.id.two_run_txt);
         three_run_txt = (TextView) v.findViewById(realmstudy.R.id.three_run_txt);
@@ -152,16 +164,6 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         leg_byes_txt = (TextView) v.findViewById(realmstudy.R.id.leg_byes_txt);
         granted_txt = (TextView) v.findViewById(realmstudy.R.id.granted_txt);
         legal_ball_txt = (TextView) v.findViewById(realmstudy.R.id.legal_ball_txt);
-//        undo = (ImageButton) getActivity().findViewById(realmstudy.R.id.undo);
-//        redo = (ImageButton) getActivity().findViewById(realmstudy.R.id.redo);
-        // view_icon = (ImageButton) getActivity().findViewById(realmstudy.R.id.view_icon);
-
-//       swap_batsman.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
         submit = (AppCompatButton) v.findViewById(realmstudy.R.id.submit);
         out = (AppCompatButton) v.findViewById(realmstudy.R.id.out);
         // groundFragment = (CanvasStudy) getChildFragmentManager().findFragmentById(R.id.ground_frag);
@@ -257,6 +259,9 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             clearRunSelection();
             legal_ball_txt.setTextColor(COLOR_SELECT);
             checkInningsGoingOn();
+            System.out.println("batsman_switched_____" + detailedScoreBoardData.getScoreBoardData().isBatsmanSwitched());
+//            if (detailedScoreBoardData.getScoreBoardData().isBatsmanSwitched())
+//                scoreBoardFragment.swapStrikerText(detailedScoreBoardData.getScoreBoardData(), true, true);
             // dot_txt.setTextColor(COLOR_SELECT);
         }
     }
@@ -349,8 +354,16 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
                 striker = RealmDB.getPlayer(realm, lastInningsDataItem.getStriker());
                 non_striker = RealmDB.getPlayer(realm, lastInningsDataItem.getNonStriker());
-                current_bowler = RealmDB.getPlayer(realm, lastInningsDataItem.getCurrentBowler());
+                if (lastInningsDataItem.getOver() % 1 != 0)
+                    current_bowler = RealmDB.getPlayer(realm, lastInningsDataItem.getCurrentBowler());
                 next_bowler = RealmDB.getPlayer(realm, lastInningsDataItem.getNextBowler());
+
+                if (lastInningsDataItem.getWicket() != null) {
+                    if (lastInningsDataItem.getWicket().isStrikerOut())
+                        striker = null;
+                    else
+                        non_striker = null;
+                }
 
 
                 //  RealmDB.updateBattingBowlingProfile(realm, matchDetails);
@@ -415,7 +428,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         for (Integer data : bf)
             RealmDB.updateBattingProfile(realm, matchDetails, data);
         for (Integer data : bwf)
-            RealmDB.updateBowlingProfile(realm, matchDetails, data);
+            RealmDB.updateBowlingProfile(realm, matchDetails, data, legalRun);
         System.out.println("Alllllllll" + "___" + bf.size() + "___" + bwf.size());
     }
 
@@ -474,7 +487,6 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         boolean overCompleted = (lastInningsDataItem.getOver() >= (matchDetails.getOvers()));
         boolean wicketOver = (RealmDB.noOfWicket(getActivity(), realm, matchDetails.getMatch_id(), !matchDetails.isFirstInningsCompleted()) >= (matchDetails.getTotalPlayers() - 1));
 
-        System.out.println("_________WW" + overCompleted + "__" + wicketOver);
         if ((detailedScoreBoardData != null && (overCompleted || wicketOver))) {
             System.out.println("_________WWs");
             if (matchDetails.getMatchStatus() == CommanData.MATCH_STARTED_SI) {
@@ -663,6 +675,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
         switch (v.getId()) {
             case realmstudy.R.id.dot_txt:
+                System.out.println("________dottt");
                 runs = 0;
                 clearRunSelection();
                 submitbuttonClicked(SUBMIT_DELAY);
@@ -771,7 +784,8 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 matchDetails.getMatch_id(), matchDetails.isFirstInningsCompleted());
         ScoreBoardData score_data = null;
         List<OverAdapterData> overAdapterData = null;
-        ScoreCardDetailData scoreCardDetailData = null;
+        ScoreCardDetailData firstInningsscoreCardDetailData = null;
+        ScoreCardDetailData secInningsscoreCardDetailData = null;
         realm.beginTransaction();
         swapCount = 0;
         if (matchDetails.getMatchStatus() == CommanData.MATCH_NOT_YET_STARTED)
@@ -825,31 +839,36 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         realm.commitTransaction();
 
 
-        RealmDB.updateBowlingProfile(realm, matchDetails, current_bowler.getpID());
+        RealmDB.updateBowlingProfile(realm, matchDetails, current_bowler.getpID(), legalRun);
         RealmDB.updateBattingProfile(realm, matchDetails, striker.getpID());
         if (next_bowler != null)
-            RealmDB.updateBowlingProfile(realm, matchDetails, next_bowler.getpID());
+            RealmDB.updateBowlingProfile(realm, matchDetails, next_bowler.getpID(), legalRun);
         if (non_striker != null)
             RealmDB.updateBattingProfile(realm, matchDetails, non_striker.getpID());
         realm.beginTransaction();
         score_data = setScoreDataForDB(wicket, inningsData.getOver(), inningsData);
         overAdapterData = setOverDataForDB();
-        scoreCardDetailData = createScoreDetailData(false, score_data);
+        if (!matchDetails.isFirstInningsCompleted()) {
+            firstInningsscoreCardDetailData = createScoreDetailData(true, score_data);
+        } else {
+            firstInningsscoreCardDetailData = createScoreDetailData(false, score_data);
+            secInningsscoreCardDetailData = createScoreDetailData(true, score_data);
+        }
         DetailedScoreData detailedScoreData = new DetailedScoreData();
         detailedScoreData.setOverAdapterData(overAdapterData);
-        detailedScoreData.setScoreCardDetailData(scoreCardDetailData);
+        detailedScoreData.setScoreCardDetailData(firstInningsscoreCardDetailData);
+        if (secInningsscoreCardDetailData != null)
+            detailedScoreData.setSecscoreCardDetailData(secInningsscoreCardDetailData);
         detailedScoreData.setScoreBoardData(score_data);
         inningsData.setDetailedScoreBoardData(CommanData.toString(detailedScoreData));
         realm.commitTransaction();
         lastInningsDataItem = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).findAll().last();
         detailedScoreBoardData = CommanData.fromJson(lastInningsDataItem.getDetailedScoreBoardData(), DetailedScoreData.class);
-        System.out.println("____________AAAA" + lastInningsDataItem.getWicket());
         checkAndUpdateUI();
-        System.out.println("____________AAAA2" + lastInningsDataItem.getWicket());
 
     }
 
-    public ScoreCardDetailData createScoreDetailData(boolean forHomeTeam, ScoreBoardData scData) {
+    public ScoreCardDetailData createScoreDetailData(boolean forCurrentBattingTeam, ScoreBoardData scData) {
         ScoreCardDetailData scoreCardDetailData = new ScoreCardDetailData();
 
         InningsData InningsData = null;
@@ -857,28 +876,63 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         RealmResults<BowlingProfile> bowlingProfiles = null;
         RealmResults<InningsData> fow = null;
         RealmResults<InningsData> extraTypes = null;
-        if (forHomeTeam) {
-            scoreCardDetailData.setTeamName(matchDetails.getHomeTeam().nick_name);
+        if (forCurrentBattingTeam) {
+            scoreCardDetailData.setTeamName(matchDetails.getCurrentBattingTeam().nick_name);
             InningsData = lastInningsDataItem;
-            battingProfiles = realm.where(BatingProfile.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", matchDetails.isHomeTeamBattingFirst())
-                    .notEqualTo("currentStatus", CommanData.StatusFree).notEqualTo("currentStatus", CommanData.StatusInMatch).findAllSorted("battedAt", Sort.ASCENDING);
-            bowlingProfiles = realm.where(BowlingProfile.class).equalTo("currentBowlerStatus", CommanData.StatusBowling).equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", matchDetails.isHomeTeamBattingFirst()).findAll();
-            fow = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", matchDetails.isHomeTeamBattingFirst()).isNotNull("wicket").findAllSorted("delivery", Sort.ASCENDING);
-            extraTypes = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", matchDetails.isHomeTeamBattingFirst()).notEqualTo("ballType", 0).findAll();
+            battingProfiles = realm.where(BatingProfile.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", !matchDetails.isFirstInningsCompleted())
+                    .notEqualTo("currentStatus", CommanData.StatusFree)
+                    .greaterThan("ballFaced", 0).findAllSorted("battedAt", Sort.ASCENDING);
+            bowlingProfiles = realm.where(BowlingProfile.class)
+                    .greaterThan("ballsBowled", 0)
+//                    .equalTo("currentBowlerStatus", CommanData.StatusBowling)
+                    .equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", !matchDetails.isFirstInningsCompleted()).findAll();
+            fow = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).isNotNull("wicket").findAllSorted("delivery", Sort.ASCENDING);
+            extraTypes = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).notEqualTo("ballType", 0).findAll();
+            scoreCardDetailData.setTeamRun_over(scData.getTotalRuns() + "-" + scData.getTotal_wicket() + "(" + InningsData.getOver() + ")");
         } else {
             System.out.println("naaaaaaa" + !matchDetails.isHomeTeamBattingFirst());
-            scoreCardDetailData.setTeamName(matchDetails.getAwayTeam().nick_name);
-            InningsData = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isHomeTeamBattingFirst()).findAllSorted("delivery", Sort.DESCENDING).first();
-            battingProfiles = realm.where(BatingProfile.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", !matchDetails.isHomeTeamBattingFirst())
-                    .notEqualTo("currentStatus", CommanData.StatusFree).notEqualTo("currentStatus", CommanData.StatusInMatch).findAllSorted("battedAt", Sort.ASCENDING);
-            bowlingProfiles = realm.where(BowlingProfile.class).equalTo("currentBowlerStatus", CommanData.StatusBowling).equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", !matchDetails.isHomeTeamBattingFirst()).findAll();
+
+            InningsData = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", true).findAllSorted("delivery", Sort.DESCENDING).first();
+            battingProfiles = realm.where(BatingProfile.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", true)
+                    .notEqualTo("currentStatus", CommanData.StatusFree).greaterThan("ballFaced", 0).findAllSorted("battedAt", Sort.ASCENDING);
+            bowlingProfiles = realm.where(BowlingProfile.class)
+                    .greaterThan("ballsBowled", 0)
+//                    .equalTo("currentBowlerStatus", CommanData.StatusBowling)
+                    .equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", !matchDetails.isHomeTeamBattingFirst()).findAll();
 
             fow = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isHomeTeamBattingFirst()).isNotNull("wicket").findAllSorted("delivery", Sort.ASCENDING);
             extraTypes = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isHomeTeamBattingFirst()).notEqualTo("ballType", 0).findAll();
+            if (firstInningsOver == null) {
+                MatchShortSummaryData matchShortSummaryData = CommanData.fromJson(matchDetails.getmatchShortSummary(), MatchShortSummaryData.class);
+                firstInningsRun = matchShortSummaryData.getFirstInningsSummary().run;
+                firstInningsWicket = matchShortSummaryData.getFirstInningsSummary().wicket;
+                firstInningsOver = matchShortSummaryData.getFirstInningsSummary().overs;
+            }
+
+            boolean ishomeBatFirst = matchDetails.isHomeTeamBattingFirst();
+
+            String teamName;
+            if (ishomeBatFirst) {
+                if (!matchDetails.isFirstInningsCompleted())
+                    teamName = matchDetails.getHomeTeam().nick_name;
+                else
+                    teamName = matchDetails.getAwayTeam().nick_name;
+            } else {
+                if (!matchDetails.isFirstInningsCompleted())
+                    teamName = matchDetails.getAwayTeam().nick_name;
+                else
+                    teamName = matchDetails.getHomeTeam().nick_name;
+            }
+
+            scoreCardDetailData.setTeamName(teamName);
+            scoreCardDetailData.setTeamRun_over(firstInningsRun + "-" + firstInningsWicket + "(" + firstInningsOver + ")");
         }
         //scData = CommanData.fromJson(InningsData.getDetailedScoreBoardData(), ScoreBoardData.class);
-        scoreCardDetailData.setTeamRun_over(scData.getTotalRuns() + "-" + scData.getTotal_wicket() + "(" + InningsData.getOver() + ")");
-        System.out.println("naaaaaaa" + !matchDetails.isHomeTeamBattingFirst()+"__"+battingProfiles.size() + "__" + bowlingProfiles.size());
+        // if((matchDetails.isHomeTeamBatting() && forHomeTeam) && (!matchDetails.isHomeTeamBatting() && !forHomeTeam))
+
+        // else
+
+        System.out.println("naaaaaaa" + !matchDetails.isHomeTeamBattingFirst() + "__" + battingProfiles.size() + "__" + bowlingProfiles.size());
         for (int i = 0; i < battingProfiles.size(); i++) {
             ScoreCardDetailData.BatsmanDetail data = new ScoreCardDetailData.BatsmanDetail();
             data.balls = battingProfiles.get(i).getBallFaced();
@@ -1098,7 +1152,8 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             score_data.nonStriker.setName(non_striker.getName());
             score_data.nonStriker.setBalls(non_strikerProfile.getBallFaced());
             score_data.nonStriker.setRuns(non_strikerProfile.getRuns());
-
+            score_data.nonStriker.setFours(non_strikerProfile.getFours());
+            score_data.nonStriker.setSixes(non_strikerProfile.getSixes());
 
             //CURRENT BOWLER
             score_data.curr_bowlers.setName(current_bowler.getName());
@@ -1157,7 +1212,6 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             RealmDB.getFirstInningsTotal(realm, matchDetails);
             int overRemaining = (matchDetails.getOvers() * 6) - total_balls;
             score_data.setReqRunRate(CommanData.getReqRunRate(fstInningsTotal, total_balls, total_run, overRemaining));
-
         }
 
         detailedScoreBoardData.setScoreBoardData(score_data);
@@ -1263,6 +1317,23 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         //if(runs==4||runs==6)
 
 
+        MatchShortSummaryData matchShortSummaryData = CommanData.fromJson(matchDetails.getmatchShortSummary(), MatchShortSummaryData.class);
+        if (matchShortSummaryData == null)
+            matchShortSummaryData = new MatchShortSummaryData();
+        matchShortSummaryData.setBattingTeamName(matchDetails.getCurrentBattingTeam().name);
+        matchShortSummaryData.setBowlingTeamName(matchDetails.getCurrentBowlingTeam().name);
+        matchShortSummaryData.setFirstInnings(!matchDetails.isFirstInningsCompleted());
+        MatchShortSummaryData.InningsSummary currentInningsSummary = matchShortSummaryData.new InningsSummary();
+
+        currentInningsSummary.overs = new DecimalFormat("##.##").format(over);
+        currentInningsSummary.run = total_run;
+        currentInningsSummary.wicket = score_data.getTotal_wicket();
+        if (!matchDetails.isFirstInningsCompleted()) {
+            matchShortSummaryData.setFirstInningsSummary(currentInningsSummary);
+        } else {
+            matchShortSummaryData.setSecondInningsSummary(currentInningsSummary);
+        }
+        matchDetails.setmatchShortSummary(CommanData.toString(matchShortSummaryData));
         return score_data;
     }
 
@@ -1346,7 +1417,9 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         score_data.setBatsmanSwitched(false);
         inningsData.setNormalDelivery(normal_delivery);
         inningsData.setRun(runs);
-        inningsData.setDetailedScoreBoardData(CommanData.toString(score_data));
+        DetailedScoreData detailedScoreData = new DetailedScoreData();
+        detailedScoreData.setScoreBoardData(score_data);
+        inningsData.setDetailedScoreBoardData(CommanData.toString(detailedScoreData));
         inningsData.setStriker(striker.getpID());
         inningsData.setNonStriker(non_striker.getpID());
         inningsData.setCurrentBowler(current_bowler.getpID());
@@ -1494,7 +1567,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 else
                     matchDetails.addHomePlayer(current_bowler);
                 realm.commitTransaction();
-                checkAndUpdateUI();
+                //checkAndUpdateUI();
 
                 //ScoreBoardData dummySData = detailedScoreBoardData;
 
@@ -1521,10 +1594,10 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                     matchDetails.addAwayPlayer(dummy);
                 else
                     matchDetails.addHomePlayer(dummy);
-
                 detailedScoreBoardData.getScoreBoardData().next_bowlers.setName(dummy.getName());
                 detailedScoreBoardData.getScoreBoardData().next_bowlers.setBalls(bf.getBallFaced());
                 detailedScoreBoardData.getScoreBoardData().next_bowlers.setRuns(bf.getRuns());
+
                 lastInningsDataItem.setDetailedScoreBoardData(CommanData.toString(detailedScoreBoardData));
                 realm.commitTransaction();
                 if (striker == null) {
@@ -1570,12 +1643,13 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
 
             if (striker != null) {
+                System.out.println("next_striker____" + striker.getName());
                 BatingProfile strikerProfile = RealmDB.getBattingProfile(realm, striker.getpID(), matchDetails.getMatch_id());
-//            score_data.nonStriker.setRuns(non_strikerProfile.getRuns());
                 score_data.striker.setName(striker.getName());
                 score_data.striker.setRuns(strikerProfile.getRuns());
                 score_data.striker.setBalls(strikerProfile.getBallFaced());
-                // score_data.striker.setRuns(strikerProfile.getRuns());
+                score_data.striker.setSixes(strikerProfile.getSixes());
+                score_data.striker.setFours(strikerProfile.getFours());
             }
             //NON_STRIKER
             if (non_striker != null) {
@@ -1583,7 +1657,10 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 score_data.nonStriker.setName(non_striker.getName());
                 score_data.nonStriker.setBalls(non_strikerProfile.getBallFaced());
                 score_data.nonStriker.setRuns(non_strikerProfile.getRuns());
+                score_data.nonStriker.setSixes(non_strikerProfile.getSixes());
+                score_data.nonStriker.setFours(non_strikerProfile.getFours());
             }
+            score_data.setBatsmanSwitched(false);
             return score_data;
 
         }
@@ -1594,6 +1671,83 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     @Override
     public void messageFromDialog(int dialogType, boolean success, ArrayList<Integer> data, String message) {
 
+    }
+
+    @Override
+    public void strikerClicked() {
+        if (striker != null) {
+            BatingProfile bf = RealmDB.getBattingProfile(realm, striker.getpID(), matchDetails.getMatch_id());
+            if (bf.getBallFaced() == 0) {
+                realm.beginTransaction();
+                bf.setCurrentStatus(CommanData.StatusInMatch);
+                realm.commitTransaction();
+                striker = null;
+                checkPlayerNotNull();
+            } else {
+                showAlertDialog(getString(R.string.striker_cant_change));
+            }
+        }
+    }
+
+    @Override
+    public void nonStrikerClicked() {
+        if (non_striker != null) {
+            BatingProfile bf = RealmDB.getBattingProfile(realm, non_striker.getpID(), matchDetails.getMatch_id());
+            if (bf.getBallFaced() == 0) {
+                realm.beginTransaction();
+                bf.setCurrentStatus(CommanData.StatusInMatch);
+                realm.commitTransaction();
+                non_striker = null;
+                checkPlayerNotNull();
+            } else {
+                showAlertDialog(getString(R.string.non_striker_cant_change));
+            }
+        }
+    }
+
+    @Override
+    public void bowlerClicked() {
+        if (current_bowler != null) {
+            BowlingProfile bf = RealmDB.getBowlingProfile(realm, current_bowler.getpID(), matchDetails.getMatch_id());
+            if (bf.getBallsBowled() == 0) {
+                realm.beginTransaction();
+                bf.setCurrentBowlerStatus(CommanData.StatusInMatch);
+                realm.commitTransaction();
+                current_bowler = null;
+                checkPlayerNotNull();
+            } else {
+                showAlertDialog(getString(R.string.bowler_cant_change));
+            }
+        }
+    }
+
+
+    private void showAlertDialog(String dialog_message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(dialog_message);
+
+        String positiveText = getString(android.R.string.ok);
+        builder.setPositiveButton(positiveText,
+                new android.content.DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(android.content.DialogInterface dialog, int which) {
+                        // positive button logic
+                        dialog.dismiss();
+                    }
+                });
+
+//        String negativeText = getString(android.R.string.cancel);
+//        builder.setNegativeButton(negativeText,
+//                new android.content.DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(android.content.DialogInterface dialog, int which) {
+//                        // negative button logic
+//                    }
+//                });
+
+        AlertDialog dialog = builder.create();
+        // display dialog
+        dialog.show();
     }
 }
 

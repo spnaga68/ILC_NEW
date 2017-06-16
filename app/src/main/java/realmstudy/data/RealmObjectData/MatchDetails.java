@@ -5,6 +5,7 @@ import android.content.Context;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -231,12 +232,14 @@ public class MatchDetails extends RealmObject {
     public RealmList<Player> getAwayTeamPlayers() {
         return awayTeamPlayers;
     }
-public RealmList<Player> getAllPlayers(){
-    RealmList<Player> allPlayer;
-    allPlayer=awayTeamPlayers;
-    allPlayer.addAll(homeTeamPlayers);
-    return allPlayer;
-}
+
+    public RealmList<Player> getAllPlayers() {
+        RealmList<Player> allPlayer;
+        allPlayer = awayTeamPlayers;
+        allPlayer.addAll(homeTeamPlayers);
+        return allPlayer;
+    }
+
     public Team getCurrentBattingTeam() {
         if (!firstInningsCompleted) {
             if (toss.team_id == homeTeam.team_id) {
@@ -264,6 +267,41 @@ public RealmList<Player> getAllPlayers(){
                     return homeTeam;
                 } else {
                     return awayTeam;
+                }
+            }
+        }
+
+
+    }
+
+
+    public Team getCurrentBowlingTeam() {
+        if (!firstInningsCompleted) {
+            if (toss.team_id == homeTeam.team_id) {
+                if (chooseTo.equals("bat")) {
+                    return awayTeam;
+                } else {
+                    return homeTeam;
+                }
+            } else {
+                if (chooseTo.equals("bat")) {
+                    return homeTeam;
+                } else {
+                    return awayTeam;
+                }
+            }
+        } else {
+            if (toss.team_id == homeTeam.team_id) {
+                if (chooseTo.equals("bat")) {
+                    return homeTeam;
+                } else {
+                    return awayTeam;
+                }
+            } else {
+                if (chooseTo.equals("bat")) {
+                    return awayTeam;
+                } else {
+                    return homeTeam;
                 }
             }
         }
@@ -310,11 +348,12 @@ public RealmList<Player> getAllPlayers(){
 
         return homeTeamBatting;
     }
-public boolean isHomeTeamBattingFirst(){
-    if(toss.team_id==homeTeam.team_id && chooseTo.equals("bat") ||toss.team_id==awayTeam.team_id && chooseTo.equals("bowl"))
-        return true;
-    return false;
-}
+
+    public boolean isHomeTeamBattingFirst() {
+        if (toss.team_id == homeTeam.team_id && chooseTo.equals("bat") || toss.team_id == awayTeam.team_id && chooseTo.equals("bowl"))
+            return true;
+        return false;
+    }
 
     public boolean isFirstInningsCompleted() {
         return firstInningsCompleted;
@@ -340,28 +379,26 @@ public boolean isHomeTeamBattingFirst(){
     }
 
 
-    public String[] PlayerWhoLossWicketArray() {
-        String[] s;
-        if (playerWhoLoseWicket.equals("")) {
-            s = null;
-        } else {
-            s = playerWhoLoseWicket.split(",");
-        }
-        return s;
-    }
+//    public String[] PlayerWhoLossWicketArray() {
+//        String[] s;
+//        if (playerWhoLoseWicket.equals("")) {
+//            s = null;
+//        } else {
+//            s = playerWhoLoseWicket.split(",");
+//        }
+//        return s;
+//    }
 
 
-
-
-
-
-@PrimaryKey
+    @PrimaryKey
     private int match_id;
     private int overs;
     private int totalPlayers;
     private Long time;
-            private String location;
-    private Team homeTeam, awayTeam, toss;
+    private String location;
+
+    private Team homeTeam, awayTeam;
+    private Team toss;
     private String chooseTo;
     private boolean firstInningsCompleted;
     private boolean homeTeamBatting;
@@ -370,15 +407,15 @@ public boolean isHomeTeamBattingFirst(){
     private RealmList<Player> awayTeamPlayers = new RealmList<>();
     private RealmList<Player> notAssignedPlayers = new RealmList<>();
 
-    public String getPlayerWhoLoseWicket() {
-        return playerWhoLoseWicket;
+    public String getmatchShortSummary() {
+        return matchShortSummary;
     }
 
-    public void setPlayerWhoLoseWicket(String playerWhoLoseWicket) {
-        this.playerWhoLoseWicket = playerWhoLoseWicket;
+    public void setmatchShortSummary(String matchShortSummary) {
+        this.matchShortSummary = matchShortSummary;
     }
 
-    private String playerWhoLoseWicket = "";
+    private String matchShortSummary = "";
 
     public int getMatchStatus() {
         return matchStatus;

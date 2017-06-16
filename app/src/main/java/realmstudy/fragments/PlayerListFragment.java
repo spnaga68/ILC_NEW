@@ -33,7 +33,7 @@ import io.realm.Realm;
  * Created by developer on 27/12/16.
  */
 
-public class PlayerListFragment extends Fragment implements DialogInterface{
+public class PlayerListFragment extends Fragment implements DialogInterface {
 
     private static final int MY_PERMISSIONS_REQUEST_CONTACTS = 420;
     private static final int PICK_CONTACT = 421;
@@ -43,13 +43,13 @@ public class PlayerListFragment extends Fragment implements DialogInterface{
     private android.support.design.widget.FloatingActionButton add_from_contacts;
     PlayerListAdapter adapter;
     @Inject
-     Realm realm;
+    Realm realm;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.player_list_view, container, false);
-        ((MyApplication)getActivity().getApplication()).getComponent().inject(this);
+        ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
         list_view = (RecyclerView) v.findViewById(R.id.list_view);
         add = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.add);
         add_from_contacts = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.add_from_contacts);
@@ -59,7 +59,7 @@ public class PlayerListFragment extends Fragment implements DialogInterface{
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainFragmentActivity) getActivity()).showNewTeamDialog(1,PlayerListFragment.this);
+                ((MainFragmentActivity) getActivity()).showNewTeamDialog(1, PlayerListFragment.this);
             }
         });
         add_from_contacts.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +67,7 @@ public class PlayerListFragment extends Fragment implements DialogInterface{
             public void onClick(View view) {
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
                         ) {
-                   // PlayerListFragment
+                    // PlayerListFragment
                     requestPermissions(
                             new String[]{Manifest.permission.READ_CONTACTS},
                             MY_PERMISSIONS_REQUEST_CONTACTS);
@@ -149,10 +149,9 @@ public class PlayerListFragment extends Fragment implements DialogInterface{
 
                     if (!name.trim().isEmpty()) {
                         realm.beginTransaction();
-                        Player playerObj = realm.createObject(Player.class);
-                        playerObj.setpID(realm.where(Player.class).findAll().size());
-                        playerObj.setName(name);
+                        Player playerObj = realm.createObject(Player.class, realm.where(Player.class).findAll().size());
                         playerObj.setPh_no(cNumber);
+                        playerObj.setName(name);
                         realm.commitTransaction();
                     }
 

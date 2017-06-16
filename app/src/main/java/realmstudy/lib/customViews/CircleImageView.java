@@ -11,6 +11,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -20,7 +21,7 @@ import android.widget.ImageView;
  */
 
 @SuppressLint("DrawAllocation")
-public class CircleImageView extends ImageView {
+public class CircleImageView extends AppCompatImageView {
 
     public CircleImageView(Context context)
     {
