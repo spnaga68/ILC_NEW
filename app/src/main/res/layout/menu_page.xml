@@ -151,7 +151,6 @@ android:id="@+id/new_game_menu_lay"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/profile_image"
                 android:layout_centerHorizontal="true"
-                
                 android:textSize="@dimen/header_text"
                 android:textColor="@color/black"
                 android:text="@string/viewer" />
