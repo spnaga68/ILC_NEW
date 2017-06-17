@@ -57,7 +57,7 @@ public class PlayerListAdapter extends RealmRecyclerViewAdapter<Player, PlayerLi
         Player obj = getData().get(position);
         holder.data = obj;
         holder.title.setText(obj.getName());
-        holder.ph_no.setText(obj.getPh_no());
+        holder.ph_no.setText(obj.getBattingSytle()+(obj.getBowlingStyle().equalsIgnoreCase("none")?"":" | "+obj.getBowlingStyle()));
         holder.delete_item.setTag(position);
 
     }

@@ -101,7 +101,7 @@ public class NewPlayerDialog extends DialogFragment {
 //                    realm.executeTransaction(new Realm.Transaction() {
 //                        @Override
 //                        public void execute(Realm realm) {
-                    RealmDB.AddPlayer(getActivity(), realm, nameS, phno, bat_style.getSelectedItem().toString(), bowl_style.getSelectedItem().toString(), getResources().getStringArray(R.array.role_sytle)[0]);
+                    RealmDB.AddPlayer( realm, nameS, phno, bat_style.getSelectedItem().toString(), bowl_style.getSelectedItem().toString(), getResources().getStringArray(R.array.role_sytle)[0]);
                     if (dialogInterface != null)
                         dialogInterface.onSuccess(name + "____" + phno, true);
 

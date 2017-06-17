@@ -256,7 +256,7 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
 
     }
 
-    public void showOutDialog(int striker, int non_striker, int assignToPlayer, int matchDetails) {
+    public void showOutDialog(int striker, int non_striker,int current_bowler, int matchDetails,float over) {
 
         // DialogFragment.show() will take care of adding the fragment
         // in a transaction.  We also want to remove any currently showing
@@ -271,7 +271,7 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        DialogFragment newFragment = OutDialogFragment.newInstance(striker, non_striker, assignToPlayer, matchDetails);
+        DialogFragment newFragment = OutDialogFragment.newInstance(striker,non_striker,current_bowler, matchDetails,over);
         //   ((SelectMultiPlayerDialog) newFragment).setDialogInterface(dialogInterface, match_id, ishomeTeam, current_bowler);
 
 

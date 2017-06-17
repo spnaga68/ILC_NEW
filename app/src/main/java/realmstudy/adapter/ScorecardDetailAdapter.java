@@ -85,8 +85,8 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
                     batsman_txt, overs_text, maiden_text, runs_text, wicket_text, ec_rate_text, out_as;
             batsman_txt = (TextView) v.findViewById(R.id.batsman_txt);
             overs_text = (TextView) v.findViewById(R.id.runs_txt);
-            maiden_text = (TextView) v.findViewById(R.id.balls_txt);
-            runs_text = (TextView) v.findViewById(R.id.fours_txt);
+            maiden_text = (TextView) v.findViewById(R.id.fours_txt);
+            runs_text = (TextView) v.findViewById(R.id.balls_txt);
             wicket_text = (TextView) v.findViewById(R.id.six_txt);
             ec_rate_text = (TextView) v.findViewById(R.id.strike_rate_txt);
             out_as = (TextView) v.findViewById(R.id.out_as);

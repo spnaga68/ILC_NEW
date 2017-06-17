@@ -30,11 +30,8 @@ import io.realm.RealmConfiguration;
 import realmstudy.MainFragmentActivity;
 import realmstudy.R;
 import realmstudy.data.CommanData;
-import realmstudy.data.DetailedScoreData;
-import realmstudy.data.RealmObjectData.InningsData;
 import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.data.RealmObjectData.Player;
-import realmstudy.data.ScoreBoardData;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.interfaces.MsgFromDialog;
 import realmstudy.mainFunctions.GRadioGroup;
@@ -53,14 +50,14 @@ public class OutDialogFragment extends DialogFragment {
     MatchDetails matchDetails;
     private int striker;
     private int non_striker;
-    int current_bowler;
-    private ScoreBoardData current_score_data;
+  //  private ScoreBoardData current_score_data;
     LinearLayout create_new_player, player_to_bowling_team_lay, out_lay;
     private Spinner db_players;
     private TextView back, add_player_button;
+    private String over;
 
 
-    public static OutDialogFragment newInstance(int striker, int non_striker, int current_bowler_id, int matchDetails) {
+    public static OutDialogFragment newInstance(int striker, int non_striker, int current_bowler_id, int matchDetails,float over) {
         OutDialogFragment f = new OutDialogFragment();
 
         // Supply num input as an argument.
@@ -68,6 +65,7 @@ public class OutDialogFragment extends DialogFragment {
         args.putInt("striker", striker);
         args.putInt("matchDetails", matchDetails);
         args.putInt("non_striker", non_striker);
+        args.putFloat("over",over);
         // args.putInt("assignToPlayer", assignToPlayer);
         args.putInt("current_bowler_id", current_bowler_id);
         f.setArguments(args);
@@ -83,14 +81,14 @@ public class OutDialogFragment extends DialogFragment {
         int match_id = getArguments().getInt("matchDetails");
         non_striker = getArguments().getInt("non_striker");
         current_bowler_id = getArguments().getInt("current_bowler_id");
-
+over=String.valueOf(getArguments().getFloat("over"));
         Realm.init(getActivity());
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .build();
         realm = Realm.getInstance(config);
         // current_bowler=RealmDB.getPlayer(getActivity(),realm,current_bowler_id);
         matchDetails = RealmDB.getMatchById(getActivity(), realm, match_id);
-        current_score_data = CommanData.fromJson(realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).findAll().sort("index").last().getDetailedScoreBoardData(), DetailedScoreData.class).getScoreBoardData();
+       // current_score_data = CommanData.fromJson(realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).findAll().sort("index").last().getDetailedScoreBoardData(), DetailedScoreData.class).getScoreBoardData();
     }
 
     @Nullable
@@ -192,6 +190,8 @@ public class OutDialogFragment extends DialogFragment {
                     //     assignToPlayer = 5;
                     int id = newPlayerAdded(name.getText().toString(), ph_no.getText().toString());
                     addPlayerToBowlingTeam(id);
+                    out_lay.setVisibility(View.VISIBLE);
+                    player_to_bowling_team_lay.setVisibility(View.GONE);
                 }
             }
         });
@@ -311,33 +311,34 @@ public class OutDialogFragment extends DialogFragment {
                 switch (s.getTag().toString()) {
                     case "caught":
                         w = RealmDB.wicketCaught(getActivity(), realm, striker, current_bowler_id, CommanData.W_CAUGHT,
-                                ((Player) caught_by.getSelectedItem()).getpID(), current_score_data.getTotalOver(), matchDetails.getMatch_id());
+                                ((Player) caught_by.getSelectedItem()).getpID(), over, matchDetails.getMatch_id());
 
                         break;
                     case "lbw":
                         w = RealmDB.wicketOther(getActivity(), realm, striker, current_bowler_id, CommanData.W_LBW,
-                                current_score_data.getTotalOver(), matchDetails.getMatch_id());
+                                over, matchDetails.getMatch_id());
 
                         break;
                     case "bowled":
                         w = RealmDB.wicketOther(getActivity(), realm, striker, current_bowler_id, CommanData.W_BOWLED,
-                                current_score_data.getTotalOver(), matchDetails.getMatch_id());
+                                over, matchDetails.getMatch_id());
 
                         break;
                     case "runout":
                         w = RealmDB.wicketRunout(getActivity(), realm, ((Player) wicket_of.getSelectedItem()).getpID(), current_bowler_id,
                                 CommanData.W_RUNOUT, ((Player) run_out_by.getSelectedItem()).getpID(),
-                                current_score_data.getTotalOver(), matchDetails.getMatch_id());
+                                over, matchDetails.getMatch_id());
 
                         break;
                     case "hitout":
-                        w = RealmDB.wicketOther(getActivity(), realm, striker, current_bowler, CommanData.W_HITOUT,
-                                current_score_data.getTotalOver(), matchDetails.getMatch_id());
+                        System.out.println("_________hit"+current_bowler_id);
+                        w = RealmDB.wicketOther(getActivity(), realm, striker, current_bowler_id, CommanData.W_HITOUT,
+                                over, matchDetails.getMatch_id());
 
                         break;
                     case "stumped":
-                        w = RealmDB.wicketOther(getActivity(), realm, striker, current_bowler, CommanData.W_STUMPED,
-                                current_score_data.getTotalOver(), matchDetails.getMatch_id());
+                        w = RealmDB.wicketOther(getActivity(), realm, striker, current_bowler_id, CommanData.W_STUMPED,
+                                over, matchDetails.getMatch_id());
 
                         break;
 

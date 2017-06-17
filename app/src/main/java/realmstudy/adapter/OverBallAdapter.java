@@ -42,12 +42,11 @@ public class OverBallAdapter extends RecyclerView.Adapter<OverBallAdapter.MyView
         // for (int i = 0; i < datas.getDeliveries().size(); i++) {
         AutoResizeTextView textView = holder.main_lay;
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(60, 60);
-        layoutParams.setMargins(5, 5, 5, 5);
+        layoutParams.setMargins(20, 20, 20, 10);
         textView.setLayoutParams(layoutParams);
         textView.setSolidColor("#BCAAA4");
         textView.setGravity(Gravity.CENTER);
         textView.setPadding(5, 5, 5, 5);
-
         textView.setText(datas.getDeliveries().get(position));
         //holder.main_lay.addView(textView);
         //  }

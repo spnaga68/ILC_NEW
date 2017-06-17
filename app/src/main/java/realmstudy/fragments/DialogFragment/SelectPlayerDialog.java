@@ -51,7 +51,7 @@ public class SelectPlayerDialog extends DialogFragment {
     private String title_txt;
     private Player current_bowler;
     private int assignTo;
-
+    Spinner bat_style, bowl_style;
     static SelectPlayerDialog f;
 
     public static SelectPlayerDialog newInstance(int match_id, boolean ishomeTeam, int current_bowler_id, String title, int assignTo) {
@@ -181,6 +181,8 @@ public class SelectPlayerDialog extends DialogFragment {
         player_db_spinner = (Spinner) selectPlayerDialog.findViewById(R.id.player_db_spinner);
         name = (EditText) selectPlayerDialog.findViewById(R.id.name);
         ph_no = (EditText) selectPlayerDialog.findViewById(R.id.time);
+        bat_style = (Spinner) selectPlayerDialog.findViewById(R.id.bat_style);
+        bowl_style = (Spinner) selectPlayerDialog.findViewById(R.id.bowl_style);
         submit_new_player = (AppCompatButton) selectPlayerDialog.findViewById(R.id.submit_new_player);
         submit_from_db = (AppCompatButton) selectPlayerDialog.findViewById(R.id.submit_from_db);
         TextView from_contacts = (TextView) selectPlayerDialog.findViewById(R.id.from_contacts);
@@ -211,7 +213,8 @@ public class SelectPlayerDialog extends DialogFragment {
 
                 if (!name.getText().toString().isEmpty()) {
                     // addPlayerToMatch(name.getText().toString(), ph_no.getText().toString());
-                    int pID = RealmDB.addNewPlayerToMatch(name.getText().toString(), ph_no.getText().toString(), getActivity(), realm, matchDetails, ishomeTeam);
+
+                    int pID =                           RealmDB.addNewPlayerToMatch(getActivity(), realm,name.getText().toString(), "", bat_style.getSelectedItem().toString(), bowl_style.getSelectedItem().toString(), getResources().getStringArray(R.array.role_sytle)[0],matchDetails,ishomeTeam);
                     if (pID != -1 && getDialog() != null) {
                         dismiss();
                         ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, true, String.valueOf(pID), "success", assignTo);
@@ -387,7 +390,8 @@ public class SelectPlayerDialog extends DialogFragment {
                         // RealmDB.AddPlayer(getActivity(), realm, name, cNumber);
 
                         if (!name.isEmpty()) {
-                            int pID = RealmDB.addNewPlayerToMatch(name, cNumber, getActivity(), realm, matchDetails, ishomeTeam);
+
+                            int pID = RealmDB.addNewPlayerToMatch(getActivity(), realm, name, cNumber, bat_style.getSelectedItem().toString(), bowl_style.getSelectedItem().toString(), getResources().getStringArray(R.array.role_sytle)[0], matchDetails, ishomeTeam);
                             if (getDialog() != null && pID != -1 ? true : false)
                                 dismiss();
 

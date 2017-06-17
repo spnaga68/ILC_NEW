@@ -203,18 +203,24 @@ public class ScoreBoardFragment extends View {
 
         if (current_score_data.isBatsmanSwitched()) {
             //SwaponlyText
+            swapStrikerText(current_score_data,true,false);
 
-            striker_score.setText(String.valueOf(current_score_data.nonStriker.getRuns()));
-            striker_balls.setText(String.valueOf(current_score_data.nonStriker.getBalls()));
-            striker_fours.setText(String.valueOf(current_score_data.nonStriker.getFours()));
-            striker_sixes.setText(String.valueOf(current_score_data.nonStriker.getSixes()));
-
-            non_striker_fours.setText(String.valueOf(current_score_data.striker.getFours()));
-            non_striker_sixes.setText(String.valueOf(current_score_data.striker.getSixes()));
-            non_striker_score.setText(String.valueOf(current_score_data.striker.getRuns()));
-            non_striker_balls.setText(String.valueOf(current_score_data.striker.getBalls()));
-            striker_name.setText(current_score_data.nonStriker.getName() + "*");
-            non_striker_name.setText(current_score_data.striker.getName());
+//            striker_score.setText(String.valueOf(current_score_data.nonStriker.getRuns()));
+//            striker_balls.setText(String.valueOf(current_score_data.nonStriker.getBalls()));
+//            striker_fours.setText(String.valueOf(current_score_data.nonStriker.getFours()));
+//            striker_sixes.setText(String.valueOf(current_score_data.nonStriker.getSixes()));
+//            non_striker_sr.setText(CommanData.getStrikeRate(current_score_data.striker.getBalls(), current_score_data.striker.getRuns()));
+//
+//
+//
+//
+//            non_striker_fours.setText(String.valueOf(current_score_data.striker.getFours()));
+//            non_striker_sixes.setText(String.valueOf(current_score_data.striker.getSixes()));
+//            non_striker_score.setText(String.valueOf(current_score_data.striker.getRuns()));
+//            non_striker_balls.setText(String.valueOf(current_score_data.striker.getBalls()));
+//            striker_name.setText(current_score_data.nonStriker.getName() + "*");
+//            non_striker_name.setText(current_score_data.striker.getName());
+//            non_striker_sr.setText(CommanData.getStrikeRate(current_score_data.striker.getBalls(), current_score_data.striker.getRuns()));
             // Toast.makeText(getActivity(), "switching1", Toast.LENGTH_SHORT).show();
         }
         System.out.println("_______________sss" + current_score_data.getWicket() + "__" + current_score_data.isBatsmanSwitched());

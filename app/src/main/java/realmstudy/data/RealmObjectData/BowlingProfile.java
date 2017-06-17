@@ -53,6 +53,7 @@ public class BowlingProfile extends RealmObject {
     }
 
     public void addWicketsAll(RealmList<Wicket> wickets) {
+        this.wickets.clear();
         this.wickets=(wickets);
     }
 

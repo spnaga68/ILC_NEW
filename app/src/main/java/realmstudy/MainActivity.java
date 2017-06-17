@@ -184,7 +184,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             public void onClick(View view) {
                 //outDialog(getString(realmstudy.R.string.wicket));
                 if (checkPlayerNotNull())
-                    ((MainFragmentActivity) getActivity()).showOutDialog(striker.getpID(), non_striker.getpID(), assignToPlayer, matchDetails.getMatch_id());
+                    ((MainFragmentActivity) getActivity()).showOutDialog(striker.getpID(),non_striker.getpID(), current_bowler.getpID(),  matchDetails.getMatch_id(),lastInningsDataItem.getOver());
             }
         });
 //
@@ -194,6 +194,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     public void onPrepareOptionsMenu(Menu menu) {
         swap_batsman = menu.findItem(R.id.swap_batsman);
         undo = menu.findItem(R.id.undo);
+
         redo = menu.findItem(R.id.redo);
         view_scoreCard = menu.findItem(R.id.view_icon);
 
@@ -429,6 +430,8 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             RealmDB.updateBattingProfile(realm, matchDetails, data);
         for (Integer data : bwf)
             RealmDB.updateBowlingProfile(realm, matchDetails, data, legalRun);
+
+        RealmDB.updateWicket(realm,matchDetails);
         System.out.println("Alllllllll" + "___" + bf.size() + "___" + bwf.size());
     }
 
@@ -841,10 +844,12 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
         RealmDB.updateBowlingProfile(realm, matchDetails, current_bowler.getpID(), legalRun);
         RealmDB.updateBattingProfile(realm, matchDetails, striker.getpID());
+        RealmDB.updateWicket(realm,matchDetails);
         if (next_bowler != null)
             RealmDB.updateBowlingProfile(realm, matchDetails, next_bowler.getpID(), legalRun);
         if (non_striker != null)
             RealmDB.updateBattingProfile(realm, matchDetails, non_striker.getpID());
+
         realm.beginTransaction();
         score_data = setScoreDataForDB(wicket, inningsData.getOver(), inningsData);
         overAdapterData = setOverDataForDB();
@@ -962,6 +967,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             data.overs = bowlingProfiles.get(i).OversBowled();
             data.maiden = bowlingProfiles.get(i).getMaiden();
             data.ecnomic_rate = CommanData.getER(data.runs, data.overs);
+            data.wicket=bowlingProfiles.get(i).getWickets().size();
             scoreCardDetailData.addBowlersDetails(data);
 
         }
@@ -1002,9 +1008,9 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             as = RealmDB.getPlayer(realm, wicket.getCaughtBy()).getName();
         else if (wicket.getType() == CommanData.W_RUNOUT)
             as = RealmDB.getPlayer(realm, wicket.getRunoutBy()).getName();
-        else if (wicket.getType() != CommanData.W_STUMPED)
-            as = RealmDB.getPlayer(realm, wicket.getBowler()).getName();
-        s += wicketIdToString(wicket.getType()) + " b " + as;
+
+
+        s += wicketIdToString(wicket.getType()) +" "+as+ " b " +RealmDB.getPlayer(realm, wicket.getBowler()).getName();
         return s;
     }
 
@@ -1016,6 +1022,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         Set<String> batsmans = new TreeSet<>();
         Set<String> bowlers = new TreeSet<>();
         int total_run = 0;
+        int extras = 0;
         float epsilon = (float) 0.00000001;
         ArrayList<String> deliveries = new ArrayList<>();
 
@@ -1031,6 +1038,9 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                     , currentdata.getWicket(), currentdata.isLegal(), currentdata.getBallType()));
             total_run += currentdata.getRun();
 
+            if (currentdata.getBallType() == CommanData.BALL_WIDE || currentdata.getBallType() == CommanData.BALL_NO_BALL)
+                total_run += legalRun;
+//            total_run += extras;
             System.out.println("_______****ssvv" + datas.size());
 
             if (isOverCompleted || i == (data.size() - 1)) {
@@ -1298,14 +1308,14 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         ss.add(Util.get_delivery_result(runs, wicket, normal_delivery, extraType));
         if (current_overCompleted) {
             boolean maiden = true;
-            if (ss.size() > 6)
-                for (int i = ss.size() - 1; i >= ss.size() - 6; i--) {
-                    if (ss.get(i).charAt(0) != '0') {
-                        maiden = false;
-                    }
-                }
+//            if (ss.size() >= 6)
+//                for (int i = ss.size() - 1; i >= ss.size() - 6; i--) {
+//                    if (ss.get(i).charAt(0) != '0') {
+//                        maiden = false;
+//                    }
+//                }
             ss.add("|");
-            current_bowler_bf.setMaiden(maiden ? current_bowler_bf.getMaiden() + 1 : current_bowler_bf.getMaiden());
+            // current_bowler_bf.setMaiden(maiden ? current_bowler_bf.getMaiden() + 1 : current_bowler_bf.getMaiden());
             inningsData.setOversCompleted(true);
         }
         score_data.setLastThreeOvers(ss);
@@ -1320,8 +1330,8 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         MatchShortSummaryData matchShortSummaryData = CommanData.fromJson(matchDetails.getmatchShortSummary(), MatchShortSummaryData.class);
         if (matchShortSummaryData == null)
             matchShortSummaryData = new MatchShortSummaryData();
-        matchShortSummaryData.setBattingTeamName(matchDetails.getCurrentBattingTeam().name);
-        matchShortSummaryData.setBowlingTeamName(matchDetails.getCurrentBowlingTeam().name);
+        matchShortSummaryData.setBattingTeamName(matchDetails.getCurrentBattingTeam().nick_name);
+        matchShortSummaryData.setBowlingTeamName(matchDetails.getCurrentBowlingTeam().nick_name);
         matchShortSummaryData.setFirstInnings(!matchDetails.isFirstInningsCompleted());
         MatchShortSummaryData.InningsSummary currentInningsSummary = matchShortSummaryData.new InningsSummary();
 

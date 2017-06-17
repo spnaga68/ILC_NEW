@@ -67,7 +67,7 @@ public class CommanData {
     public static String wicketIdToString(int id) {
         switch (id) {
             case W_BOWLED:
-                return "b";
+                return "bowled";
             case W_CAUGHT:
                 return "c";
             case W_HITOUT:

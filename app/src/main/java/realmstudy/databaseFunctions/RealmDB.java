@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -13,6 +14,7 @@ import io.realm.Sort;
 import realmstudy.R;
 import realmstudy.data.CommanData;
 import realmstudy.data.DetailedScoreData;
+import realmstudy.data.OverAdapterData;
 import realmstudy.data.RealmObjectData.BatingProfile;
 import realmstudy.data.RealmObjectData.BowlingProfile;
 import realmstudy.data.RealmObjectData.InningsData;
@@ -247,11 +249,11 @@ public class RealmDB {
 
     public static Player AddPlayer(Context c, Realm realm, String name, String Phno) {
 
-        return AddPlayer(c, realm, name, Phno, c.getResources().getStringArray(R.array.bat_style)[0], c.getResources().getStringArray(R.array.bowl_style)[0], c.getResources().getStringArray(R.array.role_sytle)[0]);
+        return AddPlayer(realm, name, Phno, c.getResources().getStringArray(R.array.bat_style)[0], c.getResources().getStringArray(R.array.bowl_style)[0], c.getResources().getStringArray(R.array.role_sytle)[0]);
 //
     }
 
-    public static Player AddPlayer(Context c, Realm realm, String name, String Phno, String batting_style, String bowling_style, String role) {
+    public static Player AddPlayer(Realm realm, String name, String Phno, String batting_style, String bowling_style, String role) {
 
         int id = 0;
         if (true) {
@@ -269,7 +271,7 @@ public class RealmDB {
             return realm.where(Player.class).equalTo("pID", id).findFirst();
 
         } else {
-            Toast.makeText(c, c.getString(R.string.phno_exist), Toast.LENGTH_SHORT).show();
+           // Toast.makeText(c, c.getString(R.string.phno_exist), Toast.LENGTH_SHORT).show();
             return realm.where(Player.class).equalTo("pID", id).findFirst();
         }
     }
@@ -338,6 +340,13 @@ public class RealmDB {
     public static int addNewPlayerToMatch(String name, String ph_no, Context c, Realm realm, MatchDetails matchDetails, boolean ishomeTeam) {
 
         int id = AddPlayer(c, realm, name, ph_no).getpID();
+        return addPlayerToMatch(id, c, realm, matchDetails, ishomeTeam);
+
+    }
+
+    public static int addNewPlayerToMatch(Context c, Realm realm,String name, String ph_no, String batting_style, String bowling_style, String role, MatchDetails matchDetails, boolean ishomeTeam) {
+
+        int id = AddPlayer( realm, name, ph_no,batting_style,bowling_style,role).getpID();
         return addPlayerToMatch(id, c, realm, matchDetails, ishomeTeam);
 
     }
@@ -577,6 +586,32 @@ public class RealmDB {
 
     }
 
+    public static void updateWicket(Realm realm, MatchDetails matchDetails) {
+        RealmResults<InningsData> wicketInInnings = realm.where(InningsData.class)
+                .equalTo("match_id", matchDetails.getMatch_id())
+                .isNotNull("wicket")
+                .notEqualTo("delivery", 0)
+                .findAll();
+
+        RealmResults<Wicket> WicketInDB = realm.where(Wicket.class).equalTo("match_id", matchDetails.getMatch_id()).findAll();
+        System.out.println("delete______"+wicketInInnings.size()+"___"+WicketInDB.size());
+        for (Wicket wicket : WicketInDB) {
+
+
+            boolean available = false;
+            for (int i = 0; i < wicketInInnings.size(); i++) {
+                if (wicket.getWicket_id().equals(wicketInInnings.get(i).getWicket().getWicket_id( ) )) {
+                    available = true;
+                }
+            }
+            realm.beginTransaction();
+            if (!available)
+                wicket.deleteFromRealm();
+            realm.commitTransaction();
+        }
+    }
+
+
     public static void updateBattingProfile(Realm realm, MatchDetails matchDetails, int player_id) {
         RealmResults<InningsData> batsmanData = realm.where(InningsData.class)
                 .equalTo("match_id", matchDetails.getMatch_id())
@@ -646,15 +681,36 @@ public class RealmDB {
         int wide = bowlerdata.where().equalTo("ballType", CommanData.BALL_WIDE).findAll().size();
         int no_balls = bowlerdata.where().equalTo("ballType", CommanData.BALL_NO_BALL).findAll().size();
         int byes = bowlerdata.where().equalTo("ballType", CommanData.BALL_LEGAL_BYES).findAll().size();
+
+        int maiden = 0;
         RealmList<Wicket> wickets = new RealmList<>();
+        RealmResults<InningsData> oversCompleted = bowlerdata.where().equalTo("oversCompleted", true).findAll();
+
+        for (InningsData data : oversCompleted) {
+            DetailedScoreData detaildata = CommanData.fromJson(data.getDetailedScoreBoardData(), DetailedScoreData.class);
+            List<OverAdapterData> d = detaildata.getOverAdapterData();
+            OverAdapterData forOver = null;
+            int fff = (int) (data.getOver() - 1);
+            for (int i = 0; i < d.size(); i++) {
+                if (d.get(i).getOver() == data.getOver()) {
+                    forOver = d.get(i);
+                }
+            }
+
+            if (forOver.getTotal_run() == 0)
+                maiden += 1;
+        }
         for (InningsData data : bowlerdata) {
+
+
             if (data.getBallType() != CommanData.BALL_LB && data.getBallType() != CommanData.BALL_LEGAL_BYES) {
                 runs += data.getRun();
                 if (data.getWicket() != null) {
+                    System.out.println("WWWWWWWWWW"+data.getWicket().getType());
                     if (data.getWicket().getType() != CommanData.W_RUNOUT) {
+                        System.out.println("WWWWWWWWWWe"+data.getWicket().getType());
                         wickets.add(data.getWicket());
                     }
-
                 }
                 //  System.out.println("___________dddd" + bowlerdata.size() + "_" + runs);
             }
@@ -669,6 +725,7 @@ public class RealmDB {
             bf.setByes(byes);
             bf.setNoBall(no_balls);
             bf.setWide(wide);
+            bf.setMaiden(maiden);
             bf.addWicketsAll(wickets);
             if (balls == 0 || balls % 6 == 0)
                 bf.setCurrentBowlerStatus(CommanData.StatusInMatch);
