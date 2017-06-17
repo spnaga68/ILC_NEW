@@ -77,7 +77,6 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
     public View getBowlingItemView(int groupPosition) {
         LinearLayout ll = new LinearLayout(c);
         ll.setOrientation(LinearLayout.VERTICAL);
-//    ll.getLayoutParams().width= ViewGroup.LayoutParams.MATCH_PARENT;
         for (int i = 0; i < datas.get(groupPosition).getBowlersDetails().size(); i++) {
             ScoreCardDetailData.BowlersDetail bData = datas.get(groupPosition).getBowlersDetails().get(i);
             View v = inflater.inflate(R.layout.team_scorecard_item, null);
