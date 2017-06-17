@@ -866,12 +866,15 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
         realm.beginTransaction();
         score_data = setScoreDataForDB(wicket, inningsData.getOver(), inningsData);
-        overAdapterData = setOverDataForDB();
+
         if (!matchDetails.isFirstInningsCompleted()) {
+            overAdapterData = setOverDataForDB(true);
             firstInningsscoreCardDetailData = createScoreDetailData(true, score_data);
         } else {
             firstInningsscoreCardDetailData = createScoreDetailData(false, score_data);
             secInningsscoreCardDetailData = createScoreDetailData(true, score_data);
+            overAdapterData = setOverDataForDB(false);
+            overAdapterData.addAll(setOverDataForDB(true));
         }
         DetailedScoreData detailedScoreData = new DetailedScoreData();
         detailedScoreData.setOverAdapterData(overAdapterData);
@@ -1028,10 +1031,10 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         return s;
     }
 
-    private List<OverAdapterData> setOverDataForDB() {
+    private List<OverAdapterData> setOverDataForDB(boolean isFirstInnings) {
         List<OverAdapterData> datas = new ArrayList<>();
         RealmResults<InningsData> data = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id())
-                .equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).notEqualTo("delivery", 0).findAllSorted("delivery", Sort.DESCENDING);
+                .equalTo("firstInnings", isFirstInnings).notEqualTo("delivery", 0).findAllSorted("delivery", Sort.DESCENDING);
         // recOver = data.get(0).getOver();
         Set<String> batsmans = new TreeSet<>();
         Set<String> bowlers = new TreeSet<>();
@@ -1311,10 +1314,12 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             score_data.setFirstIinningsOver(RealmDB.getFirstInningsOver(realm, matchDetails));
             int reqRun = ((scoreBoardData.getFirstInningsTotal() + 1) - total_run);
             int ballrem= ((matchDetails.getOvers() * 6) - CommanData.overToBall(String.valueOf(over)));
-            if (reqRun<=0 || ballrem<=0)
+            if (reqRun<=0 )
                 score_data.setMatchQuote(matchDetails.getCurrentBattingTeam().name + " " + getString(R.string.won_by) + " " + (matchDetails.getTotalPlayers() - totalWicket) + " " + getString(R.string.wickets));
-            else if (matchDetails.getTotalPlayers() == (totalWicket - 1))
-                score_data.setMatchQuote(matchDetails.getCurrentBowlingTeam().name + " " + getString(R.string.won_by) + " " + reqRun + " " + getString(R.string.runs));
+//            else if(ballrem<=0)
+//                score_data.setMatchQuote(matchDetails.getCurrentBattingTeam().name + " " + getString(R.string.won_by) + " " + (matchDetails.getTotalPlayers() - totalWicket) + " " + getString(R.string.wickets));
+            else if (matchDetails.getTotalPlayers() == (totalWicket - 1)||ballrem<=0)
+                score_data.setMatchQuote(matchDetails.getCurrentBowlingTeam().name + " " + getString(R.string.won_by) + " " + (reqRun-1) + " " + getString(R.string.runs));
             else
                 score_data.setMatchQuote(matchDetails.getCurrentBattingTeam().name + " " + getString(R.string.needs) + " " + reqRun + " " + getString(R.string.runs_in) + " " +ballrem + " " + getString(R.string.balls));
         } else {
