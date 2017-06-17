@@ -168,9 +168,11 @@ public class TossFragment extends Fragment {
 
                             String chooseTo = "bowl";
                             if (choose_to_bat_bowl.getCheckedRadioButtonId() == choose_to_bat.getId())
-                                chooseTo = "bat";
+                                                                chooseTo = "bat";
 
-
+                            System.out.println("homeWinnnnnn__________start"+homeWin);
+                            if(manual_toss.isChecked())
+                                homeWin=team_won_home.isChecked();
                             md = RealmDB.UpdateorCreateMatchDetail(getActivity(), realm, homeTeam, awayTeam, chooseTo, homeWin ? homeTeam : awayTeam, Integer.parseInt(total_overs.getText().toString()), venue.getText().toString(), no_of_players.getSelectedItemPosition() + 2, 0, match_id);
 
                             new Handler().postDelayed(new Runnable() {
@@ -590,20 +592,26 @@ public class TossFragment extends Fragment {
             }
         });
 
-        team_won_away.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        team_won_home.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked)
                     homeWin = true;
+                else
+                    homeWin=false;
+
+                System.out.println("homeWinnnnnn__________"+homeWin);
+
+
             }
         });
-        team_won_away.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    homeWin = false;
-            }
-        });
+//        team_won_away.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked)
+//                    homeWin = false;
+//            }
+//        });
     }
 
     private void pauseListeners() {

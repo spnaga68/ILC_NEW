@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.stetho.common.StringUtil;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -203,7 +205,7 @@ public class ScoreBoardFragment extends View {
 
         if (current_score_data.isBatsmanSwitched()) {
             //SwaponlyText
-            swapStrikerText(current_score_data,true,false);
+            swapStrikerText(current_score_data, true, false);
 
 //            striker_score.setText(String.valueOf(current_score_data.nonStriker.getRuns()));
 //            striker_balls.setText(String.valueOf(current_score_data.nonStriker.getBalls()));
@@ -253,9 +255,16 @@ public class ScoreBoardFragment extends View {
 
         if (current_score_data.isFirstInnings())
             rrr_lay.setVisibility(GONE);
-        else
-            reqRR.setText(current_score_data.getReqRunRate());
+        else {
 
+            rrr_lay.setVisibility(VISIBLE);
+            reqRR.setText(current_score_data.getReqRunRate());
+            if (current_score_data.getReqRunRate() != null)
+                if (!current_score_data.getReqRunRate().matches("^-?\\d+$"))
+                    rrr_lay.setVisibility(GONE);
+                else if (Float.parseFloat(current_score_data.getReqRunRate()) < 0)
+            rrr_lay.setVisibility(GONE);
+        }
         wicket_away.setText(String.valueOf(current_score_data.getfirstIinningsWicket()));
 //        if (current_score_data.isHomeTeamBatting()) {
 //            //home_total.setText(current_score_data.getTotalOver());
