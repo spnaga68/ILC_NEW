@@ -154,7 +154,7 @@ android:id="@+id/new_game_menu_lay"
                 
                 android:textSize="@dimen/header_text"
                 android:textColor="@color/black"
-                android:text="@string/profile" />
+                android:text="@string/viewer" />
 
             <TextView
                 android:id="@+id/profile_desc"
@@ -165,7 +165,7 @@ android:id="@+id/new_game_menu_lay"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:text="@string/profile_desc" />
+                android:text="@string/view_desc" />
 
             <ImageView
                 android:layout_width="wrap_content"

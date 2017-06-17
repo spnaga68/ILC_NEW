@@ -12,10 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import realmstudy.R;
-import realmstudy.data.CommanData;
 import realmstudy.data.ScoreCardDetailData;
 import realmstudy.extras.AnimatedExpandableListView;
-import realmstudy.fragments.ScorecardDetailFragment;
 
 public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
     private LayoutInflater inflater;
@@ -175,10 +173,13 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
         holder.bowlers_lay.addView(bowlingItemView.get(groupPosition));
         bowlingItemView.get(groupPosition).getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
 
-
-        if (fow.get(groupPosition).getParent() != null) {
-            holder.fow_head_lay.setVisibility(View.VISIBLE);
+        System.out.println("FallOfWicke"+fow.size()+"___"+datas.get(groupPosition).getFow().size()+"__"+groupPosition);
+        if (fow.get(groupPosition).getParent() != null)
             ((ViewGroup) fow.get(groupPosition).getParent()).removeView(fow.get(groupPosition));
+
+        if(datas.get(groupPosition).getFow().size()>0){
+        holder.fow_head_lay.setVisibility(View.VISIBLE);
+
             holder.fall_of_wicket_lay.addView(fow.get(groupPosition));
             fow.get(groupPosition).getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
         } else {

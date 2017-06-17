@@ -12,6 +12,16 @@ public class MatchShortSummaryData {
     InningsSummary firstInningsSummary;
     InningsSummary secondInningsSummary;
 
+    public String getQuotes() {
+        return quotes;
+    }
+
+    public void setQuotes(String quotes) {
+        this.quotes = quotes;
+    }
+
+    String quotes;
+
 
     public boolean isFirstInnings() {
         return isFirstInnings;

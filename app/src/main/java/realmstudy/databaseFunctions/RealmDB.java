@@ -249,11 +249,11 @@ public class RealmDB {
 
     public static Player AddPlayer(Context c, Realm realm, String name, String Phno) {
 
-        return AddPlayer(realm, name, Phno, c.getResources().getStringArray(R.array.bat_style)[0], c.getResources().getStringArray(R.array.bowl_style)[0], c.getResources().getStringArray(R.array.role_sytle)[0]);
+        return AddPlayer(realm, name, Phno, 0,0,0);
 //
     }
 
-    public static Player AddPlayer(Realm realm, String name, String Phno, String batting_style, String bowling_style, String role) {
+    public static Player AddPlayer(Realm realm, String name, String Phno, int batting_style, int bowling_style, int role) {
 
         int id = 0;
         if (true) {
@@ -276,7 +276,28 @@ public class RealmDB {
         }
     }
 
+    public static Player editPlayer(Realm realm, String name,String dob,String email, String Phno, int batting_style, int bowling_style, int role,int id) {
 
+        if (true) {
+            realm.beginTransaction();
+
+
+            Player playerObj = getPlayer(realm, id);
+            playerObj.setPh_no(Phno);
+            playerObj.setName(name);
+            playerObj.setDob(dob);
+            playerObj.setEmail(email);
+            playerObj.setBattingSytle(batting_style);
+            playerObj.setBowlingStyle(bowling_style);
+            playerObj.setAllRounder(role);
+            realm.commitTransaction();
+            return realm.where(Player.class).equalTo("pID", id).findFirst();
+
+        } else {
+            // Toast.makeText(c, c.getString(R.string.phno_exist), Toast.LENGTH_SHORT).show();
+            return realm.where(Player.class).equalTo("pID", id).findFirst();
+        }
+    }
     private static String Wicket(Context c, Realm realm, int batsmans, int bowlers, int type, int caughtBys, int runOutBys, String over, int match_id) {
 
         if (getWicket(c, realm, batsmans + "_" + match_id) == null) {
@@ -344,7 +365,7 @@ public class RealmDB {
 
     }
 
-    public static int addNewPlayerToMatch(Context c, Realm realm,String name, String ph_no, String batting_style, String bowling_style, String role, MatchDetails matchDetails, boolean ishomeTeam) {
+    public static int addNewPlayerToMatch(Context c, Realm realm,String name, String ph_no, int batting_style, int bowling_style, int role, MatchDetails matchDetails, boolean ishomeTeam) {
 
         int id = AddPlayer( realm, name, ph_no,batting_style,bowling_style,role).getpID();
         return addPlayerToMatch(id, c, realm, matchDetails, ishomeTeam);

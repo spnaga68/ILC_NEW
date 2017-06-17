@@ -865,6 +865,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         if (secInningsscoreCardDetailData != null)
             detailedScoreData.setSecscoreCardDetailData(secInningsscoreCardDetailData);
         detailedScoreData.setScoreBoardData(score_data);
+        inningsData.setTotal_score(score_data.getTotalRuns());
         inningsData.setDetailedScoreBoardData(CommanData.toString(detailedScoreData));
         realm.commitTransaction();
         lastInningsDataItem = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).findAll().last();
@@ -975,8 +976,8 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         for (int i = 0; i < fow.size(); i++) {
             ScoreCardDetailData.FOW data = new ScoreCardDetailData.FOW();
             data.name = RealmDB.getPlayer(realm, fow.get(i).getWicket().getBatsman()).getName();
-            data.score = (fow.get(i).getRun());
-            data.overs = fow.get(i).getDelivery();
+            data.score = (fow.get(i).getTotal_score());
+            data.overs = String.valueOf(fow.get(i).getOver());
             scoreCardDetailData.addFow(data);
 
         }
@@ -1334,7 +1335,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         matchShortSummaryData.setBowlingTeamName(matchDetails.getCurrentBowlingTeam().nick_name);
         matchShortSummaryData.setFirstInnings(!matchDetails.isFirstInningsCompleted());
         MatchShortSummaryData.InningsSummary currentInningsSummary = matchShortSummaryData.new InningsSummary();
-
+        matchShortSummaryData.setQuotes(detailedScoreBoardData.getScoreBoardData().getMatchQuote());
         currentInningsSummary.overs = new DecimalFormat("##.##").format(over);
         currentInningsSummary.run = total_run;
         currentInningsSummary.wicket = score_data.getTotal_wicket();

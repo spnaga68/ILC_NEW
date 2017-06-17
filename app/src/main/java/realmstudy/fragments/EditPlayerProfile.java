@@ -8,18 +8,20 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
 
@@ -49,26 +51,64 @@ public class EditPlayerProfile extends Fragment implements AppBarLayout.OnOffset
     private TextView editdob;
 
     private int mYear, mMonth, mDay, mHour, mMinute;
-    @Inject
-    Realm realm;
     int pID;
     Player player;
+    private EditText playerPhno, playerEmail, playerName;
+    private Spinner playerBatStyle, playerBowlStyle, playerRole;
+    LinearLayout save;
+
+    TextView name_center,textview_title;
+    @Inject
+    Realm realm;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.edit_player_profile, container, false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+
 
         ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
         bindActivity(v);
+        playerBatStyle = (Spinner) v.findViewById(R.id.player_bat_style);
+        playerBowlStyle = (Spinner) v.findViewById(R.id.player_bowl_style);
+        playerRole = (Spinner) v.findViewById(R.id.player_role);
+        playerPhno = (EditText) v.findViewById(R.id.player_phno);
+        playerName = (EditText) v.findViewById(R.id.player_name);
+        playerEmail = (EditText) v.findViewById(R.id.player_email_id);
+        name_center= (TextView) v.findViewById(R.id.name_center);
+        textview_title= (TextView) v.findViewById(R.id.textview_title);
+        save = (LinearLayout) v.findViewById(R.id.saveLay);
         mAppBarLayout.addOnOffsetChangedListener(this);
-        if (getArguments() != null && getArguments().getInt("id") != 0) {
+        if (getArguments() != null) {
+            System.out.println("iddddddd"+getArguments().getInt("id"));
             pID = getArguments().getInt("id");
             player = RealmDB.getPlayer(realm, pID);
-        }
+            name_center.setText(player.getName());
+            textview_title.setText(player.getName());
+            playerName.setText(player.getName());
+            editdob.setText(player.getDob());
+            playerPhno.setText(player.getPh_no());
+            playerEmail.setText(player.getEmail());
+            playerBatStyle.setSelection(player.getBattingSytle());
+            playerBowlStyle.setSelection(player.getBowlingStyle());
+            playerRole.setSelection(player.getRole());
+
+        }else
+            System.out.println("idddddddnull");
+
         //  mToolbar.inflateMenu(R.menu.menu_main);
         startAlphaAnimation(mTitle, 0, View.INVISIBLE);
+
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RealmDB.editPlayer(realm, playerName.getText().toString(), editdob.getText().toString(),playerEmail.getText().toString(), playerPhno.getText().toString(), playerBatStyle.getSelectedItemPosition(), playerBowlStyle.getSelectedItemPosition(), playerRole.getSelectedItemPosition(), pID);
+           getActivity().onBackPressed();
+            }
+        });
+
+
         return v;
     }
 
@@ -79,9 +119,15 @@ public class EditPlayerProfile extends Fragment implements AppBarLayout.OnOffset
         super.onStop();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+    }
+
     private void bindActivity(View v) {
         mToolbar = (Toolbar) v.findViewById(R.id.main_toolbar);
-        mTitle = (TextView) v.findViewById(R.id.main_textview_title);
+        mTitle = (TextView) v.findViewById(R.id.textview_title);
         mTitleContainer = (LinearLayout) v.findViewById(R.id.main_linearlayout_title);
         mAppBarLayout = (AppBarLayout) v.findViewById(R.id.main_appbar);
 
@@ -107,7 +153,10 @@ public class EditPlayerProfile extends Fragment implements AppBarLayout.OnOffset
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                editdob.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                Calendar calendar=new GregorianCalendar(year,monthOfYear,dayOfMonth);
+                                SimpleDateFormat sdf = new SimpleDateFormat("EEE' , 'dd' 'MMM yyyy");
+                                String ss = sdf.format(calendar.getTime());
+                                editdob.setText(ss);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -117,8 +166,6 @@ public class EditPlayerProfile extends Fragment implements AppBarLayout.OnOffset
         });
 
     }
-
-
 
 
     @Override
@@ -133,7 +180,7 @@ public class EditPlayerProfile extends Fragment implements AppBarLayout.OnOffset
     private void handleToolbarTitleVisibility(float percentage) {
         if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
 
-            if(!mIsTheTitleVisible) {
+            if (!mIsTheTitleVisible) {
                 startAlphaAnimation(mTitle, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
                 mIsTheTitleVisible = true;
             }
@@ -149,7 +196,7 @@ public class EditPlayerProfile extends Fragment implements AppBarLayout.OnOffset
 
     private void handleAlphaOnTitle(float percentage) {
         if (percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
-            if(mIsTheTitleContainerVisible) {
+            if (mIsTheTitleContainerVisible) {
                 startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
                 mIsTheTitleContainerVisible = false;
             }
@@ -163,7 +210,7 @@ public class EditPlayerProfile extends Fragment implements AppBarLayout.OnOffset
         }
     }
 
-    public static void startAlphaAnimation (View v, long duration, int visibility) {
+    public static void startAlphaAnimation(View v, long duration, int visibility) {
         AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
                 ? new AlphaAnimation(0f, 1f)
                 : new AlphaAnimation(1f, 0f);

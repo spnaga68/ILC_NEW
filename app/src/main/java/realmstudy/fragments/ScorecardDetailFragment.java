@@ -92,7 +92,7 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
 //
 //
 
-                    adapter.notifyDataSetChanged();
+                  //  adapter.notifyDataSetChanged();
                 }
                 addOnOddRefresh += 1;
                 swipeLayout.setRefreshing(false);

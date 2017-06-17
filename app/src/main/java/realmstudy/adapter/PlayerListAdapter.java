@@ -5,8 +5,10 @@ package realmstudy.adapter;
  */
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,11 +39,13 @@ public class PlayerListAdapter extends RealmRecyclerViewAdapter<Player, PlayerLi
     private Context context;
     @Inject
     Realm realm;
+    String[] batStyleArray, bowlStyleArray;
 
     public PlayerListAdapter(Context activity, OrderedRealmCollection<Player> data) {
         super(activity, data, true);
         this.context = activity;
-
+        batStyleArray = (context.getResources().getStringArray(R.array.bat_style));
+        bowlStyleArray = (context.getResources().getStringArray(R.array.bowl_style));
         ((MyApplication) ((Activity) context).getApplication()).getComponent().inject(this);
     }
 
@@ -57,7 +61,7 @@ public class PlayerListAdapter extends RealmRecyclerViewAdapter<Player, PlayerLi
         Player obj = getData().get(position);
         holder.data = obj;
         holder.title.setText(obj.getName());
-        holder.ph_no.setText(obj.getBattingSytle()+(obj.getBowlingStyle().equalsIgnoreCase("none")?"":" | "+obj.getBowlingStyle()));
+        holder.ph_no.setText(batStyleArray[obj.getBattingSytle()] + (bowlStyleArray[obj.getBowlingStyle()].equalsIgnoreCase("none") ? "" : " | " + bowlStyleArray[obj.getBowlingStyle()]));
         holder.delete_item.setTag(position);
 
     }
@@ -87,7 +91,12 @@ public class PlayerListAdapter extends RealmRecyclerViewAdapter<Player, PlayerLi
             list_item_lay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction().add(R.id.mainFrag, new EditPlayerProfile()).commit();
+
+                    Bundle b = new Bundle();
+                    b.putInt("id", getData().get(getAdapterPosition()).getpID());
+                    EditPlayerProfile f = new EditPlayerProfile();
+                    f.setArguments(b);
+                    ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction().add(R.id.mainFrag, f).addToBackStack(null).commit();
                 }
             });
             view.setOnLongClickListener(this);

@@ -29,8 +29,8 @@ public class ScoreCardDetailData {
         public   int maiden,runs,wicket;
     }
     public static class FOW{
-        public   String name;
-        public int overs,score;
+        public   String name,overs;
+        public int score;
     }
     public static class PowerPlay{
         public String name,overs;

@@ -62,6 +62,16 @@ public class InningsData extends RealmObject {
     boolean boundaries;
     Wicket wicket;
     int ballType;
+
+    public int getTotal_score() {
+        return total_score;
+    }
+
+    public void setTotal_score(int total_score) {
+        this.total_score = total_score;
+    }
+
+    int total_score;
     public boolean isBoundaries() {
         return boundaries;
     }

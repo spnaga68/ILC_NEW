@@ -148,12 +148,22 @@
     <string name="dob">DOB</string>
     <string name="toss_mannually">Toss Manually</string>
     <string name="team_won_toss">Team won toss</string>
+    <string name="email">email id</string>
+    <string name="viewer">Viewer</string>
+    <string name="view_desc">Catch the action live</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
     </string-array>
+
+
+
+
+    <integer name="name_length">16</integer>
+    <integer  name="email_length">64</integer>
+    <integer name="phNoLength">13</integer>
 
     <string-array name="no_of_players_in_match">
 

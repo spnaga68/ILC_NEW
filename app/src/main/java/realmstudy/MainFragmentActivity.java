@@ -67,7 +67,7 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setLocale();
+      //  setLocale();
         setContentView(realmstudy.R.layout.home_fragment);
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder()

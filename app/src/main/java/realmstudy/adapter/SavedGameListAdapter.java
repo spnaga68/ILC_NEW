@@ -123,6 +123,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                 viewHolder.home_team_scr.setVisibility(View.VISIBLE);
                 viewHolder.home_team_scr.setVisibility(View.VISIBLE);
                 viewHolder.away_team_scr.setVisibility(View.GONE);
+                viewHolder.status.setText(matchShortSummaryData.getQuotes());
             }
 //                } else {
 //                    viewHolder.away_team_scr.setText("193-4");
@@ -141,6 +142,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                         matchShortSummaryData.getSecondInningsSummary().overs + ")");
                 viewHolder.home_team_scr.setVisibility(View.VISIBLE);
                 viewHolder.away_team_scr.setVisibility(View.VISIBLE);
+                viewHolder.status.setText(matchShortSummaryData.getQuotes());
             }
         } else {
 

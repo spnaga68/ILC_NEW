@@ -7,11 +7,21 @@ import io.realm.annotations.PrimaryKey;
  * Created by developer on 26/12/16.
  */
 public class Player extends RealmObject {
-    String name;
+    String name,nick_name;
 //    BatingProfile recentBatingProfile;
 //    BowlingProfile recentBowlingProfile;
 
     int status;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    String email;
 
     public String getPhone_number() {
         return phone_number;
@@ -23,9 +33,9 @@ public class Player extends RealmObject {
 
     String ph_no;
     String dob;
-    String battingSytle;
-    String bowlingStyle;
-    String allRounder;
+    int battingSytle;
+    int bowlingStyle;
+    int allRounder;
     String phone_number;
     @PrimaryKey
     int pID;
@@ -38,27 +48,27 @@ public class Player extends RealmObject {
         this.dob = dob;
     }
 
-    public String getBattingSytle() {
+    public int getBattingSytle() {
         return battingSytle;
     }
 
-    public void setBattingSytle(String battingSytle) {
+    public void setBattingSytle(int battingSytle) {
         this.battingSytle = battingSytle;
     }
 
-    public String getBowlingStyle() {
+    public int getBowlingStyle() {
         return bowlingStyle;
     }
 
-    public void setBowlingStyle(String bowlingStyle) {
+    public void setBowlingStyle(int bowlingStyle) {
         this.bowlingStyle = bowlingStyle;
     }
 
-    public String getAllRounder() {
+    public int getRole() {
         return allRounder;
     }
 
-    public void setAllRounder(String allRounder) {
+    public void setAllRounder(int allRounder) {
         this.allRounder = allRounder;
     }
 
