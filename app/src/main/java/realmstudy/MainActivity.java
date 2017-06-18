@@ -390,7 +390,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
     private void removeBallsFromProfile(int totalSize) {
 
-        RealmResults<InningsData> result = realm.where(InningsData.class).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
+        RealmResults<InningsData> result = realm.where(InningsData.class).equalTo("firstInnings",!matchDetails.isFirstInningsCompleted()).equalTo("match_id",matchDetails.getMatch_id()).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
         System.out.println("nnnnnnnnnna" + result.size());
         ArrayList<Integer> bf = new ArrayList<>();
         ArrayList<Integer> bwf = new ArrayList<>();
@@ -400,12 +400,12 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
         System.out.println("updating battt___" + bf.size());
 
-        result = realm.where(InningsData.class).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
+        result = realm.where(InningsData.class).equalTo("firstInnings",!matchDetails.isFirstInningsCompleted()).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
         RealmResults<InningsData> non_strikers = result.distinct("nonStriker");
         for (int i = 0; i < non_strikers.size(); i++)
             bf.add(non_strikers.get(i).getNonStriker());
 
-        result = realm.where(InningsData.class).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
+        result = realm.where(InningsData.class).equalTo("firstInnings",!matchDetails.isFirstInningsCompleted()).equalTo("match_id",matchDetails.getMatch_id()).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
         RealmResults<InningsData> currentBowlers = result.distinct("currentBowler");
         for (int i = 0; i < currentBowlers.size(); i++) {
             bwf.add(currentBowlers.get(i).getCurrentBowler());
@@ -413,7 +413,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
         }
 
-        result = realm.where(InningsData.class).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
+        result = realm.where(InningsData.class).equalTo("match_id",matchDetails.getMatch_id()).equalTo("firstInnings",!matchDetails.isFirstInningsCompleted()).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
         RealmResults<InningsData> nextBowlers = result.distinct("nextBowler");
         for (int i = 0; i < nextBowlers.size(); i++) {
             bwf.add(nextBowlers.get(i).getNextBowler());
@@ -422,7 +422,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         }
         System.out.println("nnnnnnnnnnb" + result.size());
 
-        result = realm.where(InningsData.class).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
+        result = realm.where(InningsData.class).equalTo("firstInnings",!matchDetails.isFirstInningsCompleted()).equalTo("match_id",matchDetails.getMatch_id()).between("delivery", lastInningsDataItem.getDelivery() + 1, totalSize).findAll();
         realm.beginTransaction();
         if (matchDetails.getMatchStatus() == CommanData.MATCH_NOT_YET_STARTED)
             matchDetails.setMatchStatus(CommanData.MATCH_STARTED_FI);
@@ -823,7 +823,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         inningsData.setNonStriker(non_striker.getpID());
         inningsData.setCurrentBowler(current_bowler.getpID());
         inningsData.setNextBowler(next_bowler == null ? -1 : next_bowler.getpID());
-        inningsData.setWicket(wicket);
+         inningsData.setWicket(wicket);
         inningsData.setDelivery(getNextKey(inningsData, "delivery"));
         if (!normal_delivery && (extraType == CommanData.typeExtraEnum.NO_BALL || extraType == CommanData.typeExtraEnum.WIDE)) {
             System.out.println("_______OVer" + lastInningsDataItem.getOver() + "__" + Math.floor(lastInningsDataItem.getOver()) + "__" + (lastInningsDataItem.getOver() - Math.floor(lastInningsDataItem.getOver())));

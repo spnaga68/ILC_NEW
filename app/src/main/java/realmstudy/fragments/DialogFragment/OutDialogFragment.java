@@ -55,6 +55,7 @@ public class OutDialogFragment extends DialogFragment {
     private Spinner db_players;
     private TextView back, add_player_button;
     private String over;
+    private AppCompatButton submit_from_db;
 
 
     public static OutDialogFragment newInstance(int striker, int non_striker, int current_bowler_id, int matchDetails,float over) {
@@ -134,6 +135,7 @@ over=String.valueOf(getArguments().getFloat("over"));
         wicket_of = (Spinner) v.findViewById(realmstudy.R.id.wicket_of);
         db_players = (Spinner) v.findViewById(realmstudy.R.id.db_players);
         submit = (android.support.v7.widget.AppCompatButton) v.findViewById(realmstudy.R.id.submit);
+        submit_from_db = (android.support.v7.widget.AppCompatButton) v.findViewById(realmstudy.R.id.submit_from_db);
         create_new_player = (LinearLayout) v.findViewById(R.id.create_new_player);
         TextView from_contacts = (TextView) v.findViewById(realmstudy.R.id.from_contacts);
         TextView new_player_dialog_title = (TextView) v.findViewById(realmstudy.R.id.new_player_dialog_title);
@@ -159,7 +161,6 @@ over=String.valueOf(getArguments().getFloat("over"));
             }
         });
 
-
         AppCompatButton submit_new_player = (android.support.v7.widget.AppCompatButton) v.findViewById(realmstudy.R.id.submit_new_player);
 
         from_contacts.setOnClickListener(new View.OnClickListener() {
@@ -177,6 +178,17 @@ over=String.valueOf(getArguments().getFloat("over"));
 
                     pickFromContacts();
                 }
+            }
+        });
+
+        submit_from_db.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    //     assignToPlayer = 5;
+                    int id =(((Player) db_players.getSelectedItem()).getpID());
+                    addPlayerToBowlingTeam(id);
+                    out_lay.setVisibility(View.VISIBLE);
+                    player_to_bowling_team_lay.setVisibility(View.GONE);
             }
         });
 

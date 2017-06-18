@@ -738,11 +738,13 @@ public class RealmDB {
         }
 
         BowlingProfile bf = getBowlingProfile(realm, player_id, matchDetails.getMatch_id());
+
         if (bf != null) {
             realm.beginTransaction();
-
+            System.out.println("updating bowl"+(bf.getPlayerID()+"")+"__ "+matchDetails.isFirstInningsCompleted());
+            Log.d("updating bowl",(bf.getPlayerID()+""));
             bf.setBallsBowled(balls);
-            bf.setRunsGranted(runs + (extraRun * wide) + (extraRun * byes) + (extraRun * no_balls));
+            bf.setRunsGranted(runs + (extraRun * wide) -+ (extraRun * no_balls));
             bf.setByes(byes);
             bf.setNoBall(no_balls);
             bf.setWide(wide);
