@@ -21,7 +21,7 @@ public class ScoreCardDetailData {
     public static class BatsmanDetail{
         public  String name,outAs;
         public  int runs,balls,fours,sixes;
-                public String strike_rate;
+                public String strike_rate="";
     }
     public static class BowlersDetail{
         public String name,outAs,overs,ecnomic_rate;

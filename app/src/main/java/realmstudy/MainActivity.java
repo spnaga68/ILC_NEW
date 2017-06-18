@@ -904,19 +904,19 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             InningsData = lastInningsDataItem;
             battingProfiles = realm.where(BatingProfile.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", !matchDetails.isFirstInningsCompleted())
                     .notEqualTo("currentStatus", CommanData.StatusFree)
-                    .greaterThan("ballFaced", 0).findAllSorted("battedAt", Sort.ASCENDING);
+                    .greaterThan("battedAt", 0).findAll();
             bowlingProfiles = realm.where(BowlingProfile.class)
                     .greaterThan("ballsBowled", 0)
 //                    .equalTo("currentBowlerStatus", CommanData.StatusBowling)
                     .equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", !matchDetails.isFirstInningsCompleted()).findAll();
             fow = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).isNotNull("wicket").findAllSorted("delivery", Sort.ASCENDING);
             extraTypes = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isFirstInningsCompleted()).notEqualTo("ballType", 0).findAll();
-            scoreCardDetailData.setTeamRun_over(scData.getTotalRuns() + "-" + scData.getTotal_wicket() + "(" + InningsData.getOver() + ")");
+            scoreCardDetailData.setTeamRun_over(scData.getTotalRuns() + "-" + scData.getTotal_wicket() + "(" + scData.getTotalOver() + ")");
         } else {
 
             InningsData = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", true).findAllSorted("delivery", Sort.DESCENDING).first();
             battingProfiles = realm.where(BatingProfile.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", true)
-                    .notEqualTo("currentStatus", CommanData.StatusFree).greaterThan("ballFaced", 0).findAllSorted("battedAt", Sort.ASCENDING);
+                    .notEqualTo("currentStatus", CommanData.StatusFree).greaterThan("battedAt", 0).findAllSorted("battedAt", Sort.ASCENDING);
             bowlingProfiles = realm.where(BowlingProfile.class)
                     .greaterThan("ballsBowled", 0)
 //                    .equalTo("currentBowlerStatus", CommanData.StatusBowling)
