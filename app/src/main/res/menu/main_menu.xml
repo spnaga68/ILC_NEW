@@ -16,7 +16,6 @@
     <item
         android:id="@+id/redo"
         android:actionLayout="@layout/tool_bar"
-        android:icon="@drawable/eye"
         android:orderInCategory="100"
         android:visible="false"
         android:title="@string/redo"
@@ -25,7 +24,6 @@
     <item
         android:id="@+id/undo"
         android:actionLayout="@layout/tool_bar"
-        android:icon="@drawable/eye"
         android:orderInCategory="200"
         android:title="@string/undo"
         android:visible="false"
@@ -34,7 +32,6 @@
     <item
         android:id="@+id/view_icon"
         android:actionLayout="@layout/tool_bar"
-        android:icon="@drawable/eye"
         android:orderInCategory="200"
         android:title="@string/view_score_card"
         android:visible="false"
@@ -43,7 +40,6 @@
     <item
         android:id="@+id/swap_batsman"
         android:actionLayout="@layout/tool_bar"
-        android:icon="@drawable/eye"
         android:orderInCategory="200"
         android:title="@string/swap_batsman"
         android:visible="false"

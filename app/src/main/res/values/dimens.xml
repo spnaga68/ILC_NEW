@@ -14,4 +14,21 @@
     <dimen name="image_final_width">32dp</dimen>
     <dimen name="spacing_normal">16dp</dimen>
 
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+
+
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="cannot_load_page_text_below_no_connectivity">20dp</dimen>
+    <dimen name="padding_left_no_internet_connection_text">30dp</dimen>
+    <dimen name="padding_right_no_internet_connection_text">30dp</dimen>
+    <dimen name="notify_button_height">35dp</dimen>
+    <dimen name="googleplay_img_text_bottom_margin">30dp</dimen>
+    <dimen name="padding_googleplay_text">8dp</dimen>
+
+    <dimen name="content_min">11dp</dimen>
+    <dimen name="content_mid">12dp</dimen>
+    <dimen name="content_max">13dp</dimen>
+
 </resources>

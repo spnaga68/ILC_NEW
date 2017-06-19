@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?><!--<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+
+        <variable
+            name="mainViewModel"
+            type="ndot.taxidispatcher.dispatcher.viewModel.MainViewModel" />
+    </data>-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/no_data_lay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:visibility="gone"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/error_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/no_data_sam" />
+
+        <TextView
+            android:id="@+id/error_short_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cannot_load_page_text_below_no_connectivity"
+            android:textColor="@color/text_dark"
+            android:textSize="@dimen/content_max"
+            tools:text="No Data found" />
+
+        <TextView
+            android:id="@+id/error_long_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="@dimen/padding_right_no_internet_connection_text"
+            android:paddingRight="@dimen/padding_left_no_internet_connection_text"
+            android:text="Create new game and enjoy scoring"
+            android:textSize="@dimen/content_max" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/error_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Create"
+            android:textColor="@color/text_dark" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+
+        android:layout_marginBottom="@dimen/googleplay_img_text_bottom_margin"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/play_img"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/play_img"
+            android:padding="@dimen/padding_googleplay_text"
+            android:text="@string/app_name" />
+    </RelativeLayout>
+
+</RelativeLayout>

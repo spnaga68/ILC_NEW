@@ -4,43 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    tools:context=".MainActivity"
-    >
+    android:background="@color/background_title_dialog"
+    tools:context=".MainActivity">
 
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/butt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:layout_marginTop="250dp"
-        app:fabSize="mini"
-        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        app:srcCompat="@color/colorAccent"
-        android:id="@+id/butt"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="250dp"
+        android:clickable="true"
         android:visibility="gone"
-        />
+        app:fabSize="mini"
+        app:srcCompat="@color/colorAccent" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true">
 
         <realmstudy.extras.AnimatedExpandableListView
             android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="12dp"
-            android:groupIndicator="@null"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true" />
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="16dp"
+            android:groupIndicator="@null" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
-
 
 
 </RelativeLayout>

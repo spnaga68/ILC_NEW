@@ -153,6 +153,12 @@
     <string name="view_desc">Catch the action live</string>
     <string name="wickets">wicket(s)</string>
     <string name="won_by">won by</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
+
+
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_add_team"
+            android:title="@string/add_team" />
+        <item
+            android:id="@+id/nav_add_player"
+            android:title="@string/add_player" />
+        <item
+            android:id="@+id/nav_viewer"
+            android:title="@string/viewer" />
+        <item
+            android:id="@+id/nav_saved_game"
+            android:title="@string/saved_game" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_new_game"
+                android:title="@string/new_game" />
+            <item
+                android:id="@+id/nav_schedule_game"
+                android:title="@string/schedule_game" />
+        </menu>
+    </item>
+
+</menu>

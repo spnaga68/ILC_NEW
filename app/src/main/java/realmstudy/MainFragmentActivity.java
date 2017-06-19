@@ -7,9 +7,14 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,33 +23,37 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-import realmstudy.data.CommanData;
-import realmstudy.data.RealmObjectData.InningsData;
-import realmstudy.data.RealmObjectData.Player;
-import realmstudy.fragments.DialogFragment.NewPlayerDialog;
-import realmstudy.fragments.DialogFragment.OutDialogFragment;
-import realmstudy.fragments.DialogFragment.SelectMultiPlayerDialog;
-import realmstudy.fragments.DialogFragment.SelectTeamDialog;
-import realmstudy.fragments.MenuActivity;
-import realmstudy.interfaces.DialogInterface;
-import realmstudy.fragments.DialogFragment.NewTeamDialog;
-import realmstudy.fragments.DialogFragment.SelectPlayerDialog;
-import realmstudy.interfaces.MsgFromDialog;
-import realmstudy.interfaces.MsgToFragment;
-
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import realmstudy.data.CommanData;
+import realmstudy.data.RealmObjectData.Player;
+import realmstudy.fragments.DialogFragment.NewPlayerDialog;
+import realmstudy.fragments.DialogFragment.NewTeamDialog;
+import realmstudy.fragments.DialogFragment.OutDialogFragment;
+import realmstudy.fragments.DialogFragment.SelectMultiPlayerDialog;
+import realmstudy.fragments.DialogFragment.SelectPlayerDialog;
+import realmstudy.fragments.DialogFragment.SelectTeamDialog;
+import realmstudy.fragments.MenuActivity;
+import realmstudy.fragments.PlayerListFragment;
+import realmstudy.fragments.ScheduleNewGame;
+import realmstudy.fragments.TeamListFragment;
+import realmstudy.fragments.TeamListSelectionFragment;
+import realmstudy.fragments.ViewMatch;
+import realmstudy.interfaces.DialogInterface;
+import realmstudy.interfaces.MsgFromDialog;
+import realmstudy.interfaces.MsgToFragment;
+import realmstudy.matchList.MatchListMainFragment;
 
 /**
  * Created by developer on 26/12/16.
  */
-public class MainFragmentActivity extends AppCompatActivity implements MsgToFragment, MsgFromDialog, Toolbar.OnMenuItemClickListener {
+public class MainFragmentActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener, MsgToFragment, MsgFromDialog, Toolbar.OnMenuItemClickListener {
 
     private FrameLayout content_frame, shadow;
     private android.support.v4.widget.DrawerLayout drawer_layout;
@@ -58,7 +67,7 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
     private TextView cancel_b;
     private android.support.v7.widget.SwitchCompat switch_right_icon;
     private FrameLayout mainFrag;
-    private LinearLayout left_drawer;
+    // private LinearLayout left_drawer;
     public Realm realm;
     private int dialogType;
     public static DialogInterface dialogInterface;
@@ -67,7 +76,7 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-      //  setLocale();
+        //  setLocale();
         setContentView(realmstudy.R.layout.home_fragment);
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder()
@@ -84,10 +93,26 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
 //        realm.delete(InningsData.class);
 //        realm.commitTransaction();
         content_frame = (FrameLayout) findViewById(realmstudy.R.id.content_frame);
-        drawer_layout = (android.support.v4.widget.DrawerLayout) findViewById(realmstudy.R.id.drawer_layout);
-        tool_bar = (android.support.v7.widget.Toolbar) findViewById(realmstudy.R.id.tool_bar);
-        tool_bar.inflateMenu(R.menu.main_menu);
-        toolbar_logo = (ImageView) findViewById(realmstudy.R.id.toolbar_logo);
+        //   drawer_layout = (android.support.v4.widget.DrawerLayout) findViewById(realmstudy.R.id.drawer_layout);
+//        tool_bar = (android.support.v7.widget.Toolbar) findViewById(realmstudy.R.id.tool_bar);
+//        tool_bar.inflateMenu(R.menu.main_menu);
+//        toolbar_logo = (ImageView) findViewById(realmstudy.R.id.toolbar_logo);
+
+
+        tool_bar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(tool_bar);
+
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, tool_bar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+
         // toolbar_title = (TextView) findViewById(realmstudy.R.id.toolbar_title);
         // toolbar_titletm = (LinearLayout) findViewById(realmstudy.R.id.toolbar_titletm);
         //  imageee = (ImageView) findViewById(realmstudy.R.id.imageee);
@@ -97,7 +122,7 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
         switch_right_icon = (android.support.v7.widget.SwitchCompat) findViewById(realmstudy.R.id.switch_right_icon);
         mainFrag = (FrameLayout) findViewById(realmstudy.R.id.mainFrag);
         shadow = (FrameLayout) findViewById(realmstudy.R.id.shadow);
-        left_drawer = (LinearLayout) findViewById(realmstudy.R.id.left_drawer);
+        //  left_drawer = (LinearLayout) findViewById(realmstudy.R.id.left_drawer);
     }
 
     @Override
@@ -122,7 +147,7 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
         switch (id) {
             case CommanData.AddNewTeam:
                 getSupportFragmentManager().beginTransaction()
-                        .add(realmstudy.R.id.mainFrag, new MenuActivity())
+                        .add(realmstudy.R.id.mainFrag, new MatchListMainFragment())
                         .commit();
                 break;
         }
@@ -256,7 +281,7 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
 
     }
 
-    public void showOutDialog(int striker, int non_striker,int current_bowler, int matchDetails,float over) {
+    public void showOutDialog(int striker, int non_striker, int current_bowler, int matchDetails, float over) {
 
         // DialogFragment.show() will take care of adding the fragment
         // in a transaction.  We also want to remove any currently showing
@@ -271,7 +296,7 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        DialogFragment newFragment = OutDialogFragment.newInstance(striker,non_striker,current_bowler, matchDetails,over);
+        DialogFragment newFragment = OutDialogFragment.newInstance(striker, non_striker, current_bowler, matchDetails, over);
         //   ((SelectMultiPlayerDialog) newFragment).setDialogInterface(dialogInterface, match_id, ishomeTeam, current_bowler);
 
 
@@ -364,5 +389,58 @@ public class MainFragmentActivity extends AppCompatActivity implements MsgToFrag
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return false;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_saved_game) {
+            getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new MatchListMainFragment()).commit();
+        } else if (id == R.id.nav_viewer) {
+            ViewMatch f = new ViewMatch();
+//                Bundle b=new Bundle();
+//                b.putInt("match_id",1492432485);
+//                f.setArguments(b);
+            getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, f).commit();
+        } else if (id == R.id.nav_schedule_game) {
+            getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new ScheduleNewGame()).commit();
+        } else if (id == R.id.nav_add_player) {
+            getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new PlayerListFragment()).commit();
+        } else if (id == R.id.nav_add_team) {
+            getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new TeamListFragment()).commit();
+        } else if (id == R.id.nav_new_game) {
+            getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new TeamListSelectionFragment()).commit();
+        }
+
+//
+//        case R.id.new_game_menu_lay:
+//        
+//        break;
+//        case R.id.saved_game_menu_lay:
+//
+//        
+//        break;
+//        case R.id.profile_menu_lay:
+//        ViewMatch f=new ViewMatch();
+////                Bundle b=new Bundle();
+////                b.putInt("match_id",1492432485);
+////                f.setArguments(b);
+//       
+//        break;
+//        case R.id.schedule_game_menu_lay:
+//        
+//
+//        break;
+//        case R.id.add_player_lay:
+//        
+//        break;
+//        case R.id.add_team_menu_lay:
+//        
+//        break;
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

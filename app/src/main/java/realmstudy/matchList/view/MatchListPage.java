@@ -35,6 +35,7 @@ import realmstudy.data.RealmObjectData.MatchDetails;
 public class MatchListPage extends Fragment {
     private RecyclerView mRecyclerView;
     private SavedGameListAdapter adapter;
+    ViewGroup no_data_lay;
     @Inject
      Realm realm;
 
@@ -46,6 +47,7 @@ public class MatchListPage extends Fragment {
         ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
         v.findViewById(R.id.add).setVisibility(View.GONE);
         v.findViewById(R.id.add_from_contacts).setVisibility(View.GONE);
+        no_data_lay= (ViewGroup) v.findViewById(R.id.no_data_lay);
         if (getArguments() != null)
             setUpRecyclerView(getArguments().getInt("type"));
         else
@@ -68,6 +70,8 @@ public class MatchListPage extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(new SavedGameListAdapter(getActivity(),data ));
         mRecyclerView.setHasFixedSize(true);
+        if(data.size()==0)
+            no_data_lay.setVisibility(View.VISIBLE);
 //        setUpItemTouchHelper();
 //        setUpAnimationDecoratorHelper();
     }

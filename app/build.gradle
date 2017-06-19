@@ -22,7 +22,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId "pasu.ilc.test"
+        applicationId "pasu.ilc"
         minSdkVersion 16
         maxSdkVersion 24
         targetSdkVersion 23
@@ -49,6 +49,7 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     compile 'com.uphyca:stetho_realm:2.0.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'io.realm:android-adapters:1.4.0'
     compile 'com.android.support:support-v4:25.3.1'
     compile "com.android.support:recyclerview-v7:25.3.1"

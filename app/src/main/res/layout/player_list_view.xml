@@ -35,4 +35,5 @@
         android:layout_margin="@dimen/fab_margin"
         android:visibility="gone"
         android:src="@android:drawable/ic_media_play" />
+    <include layout="@layout/no_data"/>
 </android.support.design.widget.CoordinatorLayout>
