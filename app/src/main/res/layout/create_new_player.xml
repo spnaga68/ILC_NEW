@@ -142,7 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:background="@color/colorAccent"
+                android:background="@color/button_color"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text="@string/from_contacts"
@@ -165,7 +165,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:background="@color/colorAccent"
+                android:background="@color/button_color"
                 android:text="@string/submit"
                 android:textColor="@color/button_text_color" />
         </android.support.v7.widget.CardView>

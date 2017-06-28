@@ -96,7 +96,7 @@
                 android:layout_gravity="center"
                 android:layout_weight=".6"
                 android:layout_marginLeft="10dp"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/black"
                 tools:text="SRH" />
 
             <realmstudy.lib.customViews.SemiLargeTextView
@@ -137,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/black"
                 tools:text="RCB" />
 
             <realmstudy.lib.customViews.SemiLargeTextView

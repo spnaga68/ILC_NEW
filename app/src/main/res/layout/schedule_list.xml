@@ -229,7 +229,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="5dp"
-            android:background="@color/colorAccent"
+            android:background="@color/button_color"
             android:text="@string/save"
             android:textColor="@color/white" />
     </LinearLayout>
@@ -285,7 +285,7 @@
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_margin="5dp"
-            android:background="@color/colorAccent"
+            android:background="@color/button_color"
             android:padding="10dp"
             android:src="@android:drawable/ic_menu_share"
             android:text="@string/save"

@@ -28,16 +28,41 @@
                 android:orientation="vertical"
                 android:visibility="visible">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/home_team_select"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+
+                    android:gravity="left"
+                    android:textSize="16sp"
+
+                    android:hint="@string/home_team"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:maxLength="2"
+               />
+
+
+                <TextView
+                    android:id="@+id/away_team_select"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:gravity="left"
+                    android:textSize="16sp"
+                    android:hint="@string/away_team"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:maxLength="2"
+             />
+
+
+
 
                     <TextView
                         android:id="@+id/Noofplayers"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
 
                         android:layout_weight=".7"
                         android:text="@string/Noofplayers"
@@ -45,7 +70,7 @@
                         android:textSize="16sp" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="60dp"
 
                         android:layout_weight="1.3"
@@ -61,7 +86,6 @@
                             android:hint="@string/Noofplayers"
                             android:singleLine="true" />
                     </LinearLayout>
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -130,6 +154,7 @@
                     android:text="@string/toss_mannually"
                     android:textColor="@color/dialog_text_color"
                     android:textSize="16sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -168,13 +193,14 @@
                             android:text="Away" />
                     </RadioGroup>
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/team_won_toss_lay"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:visibility="gone"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/toss_won"
@@ -208,8 +234,6 @@
                             android:text="Away" />
                     </RadioGroup>
                 </LinearLayout>
-
-
 
 
                 <LinearLayout
@@ -325,16 +349,16 @@
                     android:id="@+id/retoss_lay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="left"
+                    android:layout_margin="10dp"
                     android:background="@color/dots_c"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:rotation="180"
                         android:layout_gravity="center"
+                        android:rotation="180"
                         android:src="@drawable/ic_arrow_forward_black_24dp" />
 
                     <TextView
@@ -343,8 +367,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
                         android:padding="10dp"
-                        android:textColor="@color/white"
-                        android:text="@string/re_toss_r_edit" />
+                        android:text="@string/re_toss_r_edit"
+                        android:textColor="@color/white" />
                 </LinearLayout>
 
                 <TextView
@@ -401,7 +425,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
-                    android:background="@color/colorAccent"
+                    android:background="@color/button_color"
                     android:text="@string/start_match"
                     android:textColor="@color/button_text_color" />
             </LinearLayout>

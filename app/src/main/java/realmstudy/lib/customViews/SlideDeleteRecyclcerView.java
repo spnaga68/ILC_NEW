@@ -62,7 +62,7 @@ public class SlideDeleteRecyclcerView extends RecyclerView {
             boolean initiated;
 
             private void init() {
-                background = new ColorDrawable(ContextCompat.getColor(context, R.color.colorAccent));
+                background = new ColorDrawable(ContextCompat.getColor(context, R.color.button_color));
                 xMark = ContextCompat.getDrawable(context, R.drawable.tap_me);
                 xMark.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                 xMarkMargin = (int) context.getResources().getDimension(R.dimen.ic_clear_margin);
@@ -148,7 +148,7 @@ public class SlideDeleteRecyclcerView extends RecyclerView {
             boolean initiated;
 
             private void init() {
-                background = new ColorDrawable(ContextCompat.getColor(context,R.color.colorAccent));
+                background = new ColorDrawable(ContextCompat.getColor(context,R.color.button_color));
                 initiated = true;
             }
 

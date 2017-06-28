@@ -77,7 +77,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter implements SlideRe
 
         if (itemsPendingRemoval.contains(item)) {
             // we need to show the "undo" state of the row
-            viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+            viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.black));
             viewHolder.titleView.setVisibility(View.GONE);
 //            viewHolder.undoButton.setVisibility(View.VISIBLE);
 //            viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {

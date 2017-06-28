@@ -6,9 +6,9 @@
      team color 635540
      -->
 
-    <!--<color name="colorPrimary">#2b333b</color>
+   <!-- <color name="colorPrimary">#F57C00</color>
     <color name="colorPrimaryDark">#E65100</color>
-    <color name="colorAccent">#F57C00</color>-->
+    <color name="colorAccent">#2b333b</color>-->
     <color name="colorPrimary">#2b333b</color>
     <color name="colorPrimaryDark">#333</color>
     <color name="colorAccent">#fff</color>
@@ -22,7 +22,7 @@
     <color name="white">#fff</color>
     <color name="black">#000</color>
 
-
+<color name="button_color">#000</color>
     <color name="blue">#f5f5f0</color>
     <color name="red_M">#FF4433</color>
     <color name="green_M">#43A047</color>

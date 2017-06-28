@@ -17,7 +17,7 @@
                 android:id="@+id/butConfirmTime"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
+                android:background="@color/button_color"
                 android:paddingLeft="10dp"
                 android:layout_alignParentBottom="true"
                 android:paddingRight="10dp"

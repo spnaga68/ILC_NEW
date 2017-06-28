@@ -101,7 +101,7 @@ public class SavedListFragment extends Fragment {
             boolean initiated;
 
             private void init() {
-                background = new ColorDrawable(ContextCompat.getColor(getActivity(),R.color.colorAccent));
+                background = new ColorDrawable(ContextCompat.getColor(getActivity(),R.color.black));
                 xMark = ContextCompat.getDrawable(getActivity(), R.drawable.tap_me);
                 xMark.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                 xMarkMargin = (int) getActivity().getResources().getDimension(R.dimen.ic_clear_margin);
@@ -187,7 +187,7 @@ public class SavedListFragment extends Fragment {
             boolean initiated;
 
             private void init() {
-                background = new ColorDrawable(ContextCompat.getColor(getActivity(),R.color.colorAccent));
+                background = new ColorDrawable(ContextCompat.getColor(getActivity(),R.color.black));
                 initiated = true;
             }
 
