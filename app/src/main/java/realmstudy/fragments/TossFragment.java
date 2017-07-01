@@ -185,11 +185,6 @@ public class TossFragment extends Fragment {
             }
         });
 
-        /*statsResetButton.setOnClickListener(new OnClickListener() {
-            public void onClick(final View v) {
-                resetStatistics();
-            }
-        })*/
         ;
         return v;
     }
