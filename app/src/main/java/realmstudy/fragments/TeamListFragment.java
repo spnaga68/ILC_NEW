@@ -48,7 +48,7 @@ public class TeamListFragment extends Fragment implements DialogInterface,MsgToF
         next = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.next);
         selected_teams = (TextView) v.findViewById(R.id.selected_teams);
         selected_teams.setSelected(true);
-        adapter = new TeamListAdapter(getActivity(), realm.where(Team.class).findAll());
+        adapter = new TeamListAdapter(getActivity(), realm.where(Team.class).findAll(),true);
         list_view.setAdapter(adapter);
         list_view.setLayoutManager(new LinearLayoutManager(getActivity()));
 

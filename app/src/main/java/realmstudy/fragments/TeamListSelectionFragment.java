@@ -60,6 +60,7 @@ public class TeamListSelectionFragment extends Fragment implements DialogInterfa
                 if (!s.trim().isEmpty()) {
                     Bundle b = new Bundle();
                     b.putString("teamIDs", s);
+
                     TossFragment mf = new TossFragment();
                     mf.setArguments(b);
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, mf).commit();

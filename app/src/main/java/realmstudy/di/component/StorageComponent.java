@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import realmstudy.MainFragmentActivity;
 import realmstudy.MatchDetailActivity;
+import realmstudy.TeamPickerActivity;
 import realmstudy.adapter.PlayerListAdapter;
 import realmstudy.adapter.SavedGameListAdapter;
 import realmstudy.adapter.TeamListAdapter;
@@ -12,6 +13,7 @@ import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.di.modules.StorageModule;
 import realmstudy.fragments.EditPlayerProfile;
 import realmstudy.fragments.InfoFragment;
+import realmstudy.fragments.MatchInfo;
 import realmstudy.fragments.OversFragment;
 import realmstudy.fragments.PlayerListFragment;
 import realmstudy.fragments.ScheduleListFragment;
@@ -57,4 +59,7 @@ public interface StorageComponent {
     void inject(TeamListAdapter teamListAdapter);
 
     void inject(EditPlayerProfile editPlayerProfile);
+    void inject(TeamPickerActivity teamPickerActivity);
+    void inject(MatchInfo matchInfo);
+
 }

@@ -170,12 +170,15 @@ public class RealmDB {
             md.setToss(realm.where(Team.class).equalTo("team_id", wonToss.team_id).findFirst());
         md.setTime(tsLong);
         md.setMatchStatus(CommanData.MATCH_NOT_YET_STARTED);
+        if(!location.equals(""))
         md.setLocation(location);
+        if(overs!=-1)
         md.setOvers(overs);
         if (home_team != null && wonToss != null) {
             boolean homeTeamWonToss = wonToss.team_id == home_team.team_id ? true : false;
             md.setHomeTeamBatting((homeTeamWonToss && chosse_to.equals("bat")) || (!homeTeamWonToss && chosse_to.equals("bowl")));
         }
+        if(totalPlayers!=-1)
         md.setTotalPlayers(totalPlayers);
         realm.commitTransaction();
         // System.out.println("_____________vvv" + realm.where(MatchDetails.class).equalTo("match_id", id).findFirst().getHomeTeam().team_id);

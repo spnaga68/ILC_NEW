@@ -70,11 +70,8 @@ public class TossFragment extends Fragment {
 
     private LinearLayout main_layout, choose_to_lay;
     private TextView Noofplayers;
-    private Spinner no_of_players;
     private TextView overss;
-    private EditText total_overs;
     private TextView venues;
-    private EditText venue;
     private TextView toss;
     private TextView team, retoss;
     private RadioGroup like_bat_bowl;
@@ -145,13 +142,9 @@ public class TossFragment extends Fragment {
             tapper = new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!venue.getText().toString().trim().isEmpty())
-                        if (!total_overs.getText().toString().trim().isEmpty()) {
+
                             flipCoin();
-                        } else
-                            Toast.makeText(getActivity(), "total", Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), "venue", Toast.LENGTH_SHORT).show();
+
                 }
             };
         }
@@ -162,8 +155,7 @@ public class TossFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (flipCounter >= 1 || manual_toss.isChecked())
-                    if (!venue.getText().toString().trim().isEmpty())
-                        if (!total_overs.getText().toString().trim().isEmpty()) {
+               {
 
 
                             String chooseTo = "bowl";
@@ -173,23 +165,20 @@ public class TossFragment extends Fragment {
                             System.out.println("homeWinnnnnn__________start"+homeWin);
                             if(manual_toss.isChecked())
                                 homeWin=team_won_home.isChecked();
-                            md = RealmDB.UpdateorCreateMatchDetail(getActivity(), realm, homeTeam, awayTeam, chooseTo, homeWin ? homeTeam : awayTeam, Integer.parseInt(total_overs.getText().toString()), venue.getText().toString(), no_of_players.getSelectedItemPosition() + 2, 0, match_id);
+                            md = RealmDB.UpdateorCreateMatchDetail(getActivity(), realm, homeTeam, awayTeam, chooseTo, homeWin ? homeTeam : awayTeam, -1, "", -1, 0, match_id);
 
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     Bundle b = new Bundle();
                                     b.putInt("match_id", md.getMatch_id());
-                                    MainActivity mf = new MainActivity();
+                                    TeamDetialsSlide mf = new TeamDetialsSlide();
                                     mf.setArguments(b);
                                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, mf).commit();
                                 }
                             }, 100);
 
-                        } else
-                            Toast.makeText(getActivity(), "total", Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), "venue", Toast.LENGTH_SHORT).show();
+                        }
                 else
                     Toast.makeText(getActivity(), "coin", Toast.LENGTH_SHORT).show();
 
@@ -522,7 +511,6 @@ public class TossFragment extends Fragment {
 
         main_layout = (LinearLayout) v.findViewById(R.id.main_layout);
         Noofplayers = (TextView) v.findViewById(R.id.Noofplayers);
-        no_of_players = (Spinner) v.findViewById(R.id.no_of_players);
 
         team_won_toss_lay = (LinearLayout) v.findViewById(R.id.team_won_toss_lay);
         auto_toss = (LinearLayout) v.findViewById(R.id.auto_toss);
@@ -532,10 +520,8 @@ public class TossFragment extends Fragment {
         team_won_away = (RadioButton) v.findViewById(R.id.team_won_away);
         manual_toss = (CheckBox) v.findViewById(R.id.manual_toss);
         retoss_lay = (LinearLayout) v.findViewById(R.id.retoss_lay);
-        overss = (TextView) v.findViewById(R.id.overss);
-        total_overs = (EditText) v.findViewById(R.id.total_overs);
-        venues = (TextView) v.findViewById(R.id.venues);
-        venue = (EditText) v.findViewById(R.id.venue);
+       // overss = (TextView) v.findViewById(R.id.overss);
+       // venues = (TextView) v.findViewById(R.id.venues);
         toss = (TextView) v.findViewById(R.id.toss);
         team = (TextView) v.findViewById(R.id.team);
         toss_won_detail = (TextView) v.findViewById(R.id.toss_won_detail);
@@ -555,7 +541,6 @@ public class TossFragment extends Fragment {
         retoss = (TextView) v.findViewById(R.id.retoss);
         before_toss_lay = (LinearLayout) v.findViewById(R.id.before_toss_lay);
         after_toss_lay = (LinearLayout) v.findViewById(R.id.after_toss_lay);
-        venue.setText(venue_text);
 
         retoss.setOnClickListener(new View.OnClickListener() {
 
@@ -566,9 +551,6 @@ public class TossFragment extends Fragment {
             }
         });
 
-        SpinnerAdapter adap = new ArrayAdapter<String>(getActivity(), R.layout.spinner_text_item, getResources().getStringArray(R.array.no_of_players_in_match));
-        no_of_players.setAdapter(adap);
-        no_of_players.setSelection(adap.getCount() - 1);
         team_ask_home.setText(homeTeam.nick_name);
         team_ask_away.setText(awayTeam.nick_name);
         team_won_home.setText(homeTeam.nick_name);

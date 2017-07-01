@@ -1276,7 +1276,6 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                         ((MainFragmentActivity) getActivity()).showSelectplayer(matchDetails.getMatch_id(), ishome, current_bowler, getString(R.string.next_bowler), assignToPlayer);
                         score_data.setAskNextBowler(true);
 
-
                     } else
                         score_data.setAskNextBowler(false);
                 }
@@ -1287,8 +1286,8 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                     if ((scoreBoardData.getTotalBalls() + (legal ? 1 : 0)) % 6 == 0) {
                         if (!legal) {
                             InningsData prevDel = RealmDB.getInningsData(getActivity(), realm, inningsData.getIndex() - 1, matchDetails.getMatch_id(), !matchDetails.isFirstInningsCompleted());
-                            if(prevDel.isOversCompleted()==true)
-                                evenRunOverComplete=false;
+                            if (prevDel.isOversCompleted() == true)
+                                evenRunOverComplete = false;
                         }
                     }
                 //  System.out.println("switching123_____" + oddRunAndOverNotComplete + "___" + evenRunOverComplete);
@@ -1553,7 +1552,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
             }
             System.out.println("__________nulled" + striker + "__" + non_striker);
-
+            checkPlayerNotNull();
         } else {
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }

@@ -38,6 +38,7 @@ import realmstudy.fragments.DialogFragment.OutDialogFragment;
 import realmstudy.fragments.DialogFragment.SelectMultiPlayerDialog;
 import realmstudy.fragments.DialogFragment.SelectPlayerDialog;
 import realmstudy.fragments.DialogFragment.SelectTeamDialog;
+import realmstudy.fragments.MatchInfo;
 import realmstudy.fragments.MenuActivity;
 import realmstudy.fragments.PlayerListFragment;
 import realmstudy.fragments.ScheduleNewGame;
@@ -45,6 +46,7 @@ import realmstudy.fragments.TeamListFragment;
 import realmstudy.fragments.TeamListSelectionFragment;
 import realmstudy.fragments.ViewMatch;
 import realmstudy.interfaces.DialogInterface;
+import realmstudy.interfaces.ItemClickInterface;
 import realmstudy.interfaces.MsgFromDialog;
 import realmstudy.interfaces.MsgToFragment;
 import realmstudy.matchList.MatchListMainFragment;
@@ -410,7 +412,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
         } else if (id == R.id.nav_add_team) {
             getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new TeamListFragment()).commit();
         } else if (id == R.id.nav_new_game) {
-            getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new TeamListSelectionFragment()).commit();
+            getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new MatchInfo()).commit();
         }
 
 //
@@ -443,4 +445,6 @@ public class MainFragmentActivity extends AppCompatActivity implements
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 }

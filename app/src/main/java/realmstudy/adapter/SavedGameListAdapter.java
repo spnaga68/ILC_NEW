@@ -39,7 +39,8 @@ import realmstudy.data.RealmObjectData.BowlingProfile;
 import realmstudy.data.RealmObjectData.InningsData;
 import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.databaseFunctions.RealmDB;
-import realmstudy.fragments.TossFragment;
+import realmstudy.fragments.MatchInfo;
+import realmstudy.fragments.MatchInfo;
 import realmstudy.interfaces.SlideRecyclerView;
 
 /**
@@ -168,7 +169,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                 MatchDetails md = RealmDB.getMatchById(context, realm, data.get(position).getMatch_id());
                 if (md.getToss() == null) {
                     Bundle b = new Bundle();
-                    TossFragment fragment = new TossFragment();
+                    MatchInfo fragment = new MatchInfo();
                     b.putInt("match_id", md.getMatch_id());
                     b.putString("venue", md.getLocation());
                     b.putString("teamIDs", String.valueOf(md.getHomeTeam().team_id) + "__" + String.valueOf(md.getAwayTeam().team_id));

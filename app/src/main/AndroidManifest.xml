@@ -39,9 +39,20 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
+        </activity>TeamPickerActivity
         <activity
             android:name=".MatchDetailActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            >
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".TeamPickerActivity"
             android:windowSoftInputMode="adjustPan|stateHidden"
             >
 

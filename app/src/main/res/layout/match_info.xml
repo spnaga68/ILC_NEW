@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/home_team_select"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:hint="@string/home_team"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:padding="10dp"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/view_line_color" />
+
+        <TextView
+            android:id="@+id/away_team_select"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:hint="@string/away_team"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:padding="10dp"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/view_line_color" />
+
+        <TextView
+            android:id="@+id/venue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:hint="@string/venue"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:maxLength="2"
+            android:padding="10dp"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/view_line_color" />
+
+
+        <TextView
+            android:id="@+id/Noofplayers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/Noofplayers"
+            android:textColor="@color/dialog_text_color"
+            android:textSize="16sp" />
+
+
+        <Spinner
+            android:id="@+id/no_of_players"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+
+            android:entries="@array/no_of_players_in_match"
+            android:gravity="center"
+            android:hint="@string/Noofplayers"
+            android:singleLine="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/view_line_color" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/total_overs"
+            android:textColor="@color/dialog_text_color"
+            android:textSize="16sp" />
+
+
+        <Spinner
+            android:id="@+id/no_of_overs"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+
+            android:entries="@array/no_of_overs_in_match"
+            android:gravity="center"
+            android:hint="@string/Noofplayers"
+            android:singleLine="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/view_line_color" />
+
+        <EditText
+            android:id="@+id/total_overs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="@string/total_overs"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:maxLength="2"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/continue_toss"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/button_color"
+        android:text="@string/toss"
+        android:textColor="@color/button_text_color" />
+
+
+</RelativeLayout>
