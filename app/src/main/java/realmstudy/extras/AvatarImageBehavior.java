@@ -3,6 +3,7 @@ package realmstudy.extras;
 /**
  * Created by developer on 7/6/17.
  */
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.design.widget.CoordinatorLayout;
@@ -13,11 +14,12 @@ import android.view.View;
 import realmstudy.R;
 import realmstudy.lib.customViews.CircleImageView;
 
+
 @SuppressWarnings("unused")
 public class AvatarImageBehavior extends CoordinatorLayout.Behavior<CircleImageView> {
 
-    private final static float MIN_AVATAR_PERCENTAGE_SIZE   = 0.3f;
-    private final static int EXTRA_FINAL_AVATAR_PADDING     = 80;
+    private final static float MIN_AVATAR_PERCENTAGE_SIZE = 0.0f;
+    private final static int EXTRA_FINAL_AVATAR_PADDING = 0;
 
     private final static String TAG = "behavior";
     private Context mContext;
@@ -83,9 +85,9 @@ public class AvatarImageBehavior extends CoordinatorLayout.Behavior<CircleImageV
             float heightFactor = (mChangeBehaviorPoint - expandedPercentageFactor) / mChangeBehaviorPoint;
 
             float distanceXToSubtract = ((mStartXPosition - mFinalXPosition)
-                    * heightFactor) + (child.getHeight()/2);////
+                    * heightFactor) + (child.getHeight() / 2);
             float distanceYToSubtract = ((mStartYPosition - mFinalYPosition)
-                    * (1f - expandedPercentageFactor)) + (child.getHeight()/2);//loop for image seting
+                    * (1f - expandedPercentageFactor)) + (child.getHeight() / 2);
 
             child.setX(mStartXPosition - distanceXToSubtract);
             child.setY(mStartYPosition - distanceYToSubtract);
@@ -98,9 +100,9 @@ public class AvatarImageBehavior extends CoordinatorLayout.Behavior<CircleImageV
             child.setLayoutParams(lp);
         } else {
             float distanceYToSubtract = ((mStartYPosition - mFinalYPosition)
-                    * (1f - expandedPercentageFactor)) + (mStartHeight/2);//loop for text seting
+                    * (1f - expandedPercentageFactor)) + (mStartHeight / 2);
 
-            child.setX(mStartXPosition - child.getWidth()/2);
+            child.setX(mStartXPosition - child.getWidth() / 2);
             child.setY(mStartYPosition - distanceYToSubtract);
 
             CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) child.getLayoutParams();
@@ -116,7 +118,7 @@ public class AvatarImageBehavior extends CoordinatorLayout.Behavior<CircleImageV
             mStartYPosition = (int) (dependency.getY());
 
         if (mFinalYPosition == 0)
-            mFinalYPosition = (dependency.getHeight() /2);//
+            mFinalYPosition = (dependency.getHeight() / 2);
 
         if (mStartHeight == 0)
             mStartHeight = child.getHeight();

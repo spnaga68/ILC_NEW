@@ -50,7 +50,7 @@ public class OutDialogFragment extends DialogFragment {
     MatchDetails matchDetails;
     private int striker;
     private int non_striker;
-  //  private ScoreBoardData current_score_data;
+    //  private ScoreBoardData current_score_data;
     LinearLayout create_new_player, player_to_bowling_team_lay, out_lay;
     private Spinner db_players;
     private TextView back, add_player_button;
@@ -58,7 +58,7 @@ public class OutDialogFragment extends DialogFragment {
     private AppCompatButton submit_from_db;
 
 
-    public static OutDialogFragment newInstance(int striker, int non_striker, int current_bowler_id, int matchDetails,float over) {
+    public static OutDialogFragment newInstance(int striker, int non_striker, int current_bowler_id, int matchDetails, float over) {
         OutDialogFragment f = new OutDialogFragment();
 
         // Supply num input as an argument.
@@ -66,7 +66,7 @@ public class OutDialogFragment extends DialogFragment {
         args.putInt("striker", striker);
         args.putInt("matchDetails", matchDetails);
         args.putInt("non_striker", non_striker);
-        args.putFloat("over",over);
+        args.putFloat("over", over);
         // args.putInt("assignToPlayer", assignToPlayer);
         args.putInt("current_bowler_id", current_bowler_id);
         f.setArguments(args);
@@ -82,14 +82,14 @@ public class OutDialogFragment extends DialogFragment {
         int match_id = getArguments().getInt("matchDetails");
         non_striker = getArguments().getInt("non_striker");
         current_bowler_id = getArguments().getInt("current_bowler_id");
-over=String.valueOf(getArguments().getFloat("over"));
+        over = String.valueOf(getArguments().getFloat("over"));
         Realm.init(getActivity());
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .build();
         realm = Realm.getInstance(config);
         // current_bowler=RealmDB.getPlayer(getActivity(),realm,current_bowler_id);
         matchDetails = RealmDB.getMatchById(getActivity(), realm, match_id);
-       // current_score_data = CommanData.fromJson(realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).findAll().sort("index").last().getDetailedScoreBoardData(), DetailedScoreData.class).getScoreBoardData();
+        // current_score_data = CommanData.fromJson(realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).findAll().sort("index").last().getDetailedScoreBoardData(), DetailedScoreData.class).getScoreBoardData();
     }
 
     @Nullable
@@ -103,11 +103,11 @@ over=String.valueOf(getArguments().getFloat("over"));
 
     private void init(View v, String title_txt) {
         RadioButton
-                caught, lbw, bowled, runnout, hitwicket,stumped;
+                caught, lbw, bowled, runnout, hitwicket, stumped;
         final LinearLayout caught_by_lay;
 
         final LinearLayout run_out_lay;
-        Spinner runs_scored_spinner;
+        final Spinner runs_scored_spinner;
 
         final Spinner wicket_of;
         android.support.v7.widget.AppCompatButton submit;
@@ -132,6 +132,7 @@ over=String.valueOf(getArguments().getFloat("over"));
         caught_by = (Spinner) v.findViewById(realmstudy.R.id.caught_by);
         run_out_lay = (LinearLayout) v.findViewById(realmstudy.R.id.run_out_lay);
         run_out_by = (Spinner) v.findViewById(realmstudy.R.id.run_out_by);
+        runs_scored_spinner = (Spinner) v.findViewById(R.id.runs_scored_spinner);
         wicket_of = (Spinner) v.findViewById(realmstudy.R.id.wicket_of);
         db_players = (Spinner) v.findViewById(realmstudy.R.id.db_players);
         submit = (android.support.v7.widget.AppCompatButton) v.findViewById(realmstudy.R.id.submit);
@@ -184,11 +185,11 @@ over=String.valueOf(getArguments().getFloat("over"));
         submit_from_db.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    //     assignToPlayer = 5;
-                    int id =(((Player) db_players.getSelectedItem()).getpID());
-                    addPlayerToBowlingTeam(id);
-                    out_lay.setVisibility(View.VISIBLE);
-                    player_to_bowling_team_lay.setVisibility(View.GONE);
+                //     assignToPlayer = 5;
+                int id = (((Player) db_players.getSelectedItem()).getpID());
+                addPlayerToBowlingTeam(id);
+                out_lay.setVisibility(View.VISIBLE);
+                player_to_bowling_team_lay.setVisibility(View.GONE);
             }
         });
 
@@ -242,7 +243,7 @@ over=String.valueOf(getArguments().getFloat("over"));
         ArrayAdapter<Player> non_players_adap;
         non_players_adap = new ArrayAdapter<>(getActivity(), realmstudy.R.layout.player_spinner_item, non_players);
         db_players.setAdapter(non_players_adap);
-        RadioButton[] rb = {caught, lbw, bowled, runnout, hitwicket,stumped};
+        RadioButton[] rb = {caught, lbw, bowled, runnout, hitwicket, stumped};
 
         rg.createRadioGroup(rb);
 
@@ -343,7 +344,7 @@ over=String.valueOf(getArguments().getFloat("over"));
 
                         break;
                     case "hitout":
-                        System.out.println("_________hit"+current_bowler_id);
+                        System.out.println("_________hit" + current_bowler_id);
                         w = RealmDB.wicketOther(getActivity(), realm, striker, current_bowler_id, CommanData.W_HITOUT,
                                 over, matchDetails.getMatch_id());
 
@@ -357,7 +358,7 @@ over=String.valueOf(getArguments().getFloat("over"));
                 }
                 if (w != null) {
                     dismiss();
-                    ((MsgFromDialog) getActivity()).messageFromDialog(CommanData.DIALOG_OUT, w != null, w, "");
+                    ((MsgFromDialog) getActivity()).messageFromDialog(CommanData.DIALOG_OUT, w != null, w, String.valueOf(runs_scored_spinner.getSelectedItemPosition()));
                 }
             }
 
@@ -411,7 +412,7 @@ over=String.valueOf(getArguments().getFloat("over"));
 
             //    String s[] = matchDetails.getBowlingTeamPlayer().split(",");
             for (int i = 0; i < matchDetails.getBowlingTeamPlayer().size(); i++) {
-                bowlingTeamPlayers.add(RealmDB.getPlayer( realm, (matchDetails.getBowlingTeamPlayer().get(i).getpID())));
+                bowlingTeamPlayers.add(RealmDB.getPlayer(realm, (matchDetails.getBowlingTeamPlayer().get(i).getpID())));
 
             }
             return bowlingTeamPlayers;

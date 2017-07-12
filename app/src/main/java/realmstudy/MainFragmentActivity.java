@@ -55,7 +55,7 @@ import realmstudy.matchList.MatchListMainFragment;
  * Created by developer on 26/12/16.
  */
 public class MainFragmentActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener, MsgToFragment, MsgFromDialog, Toolbar.OnMenuItemClickListener {
+        NavigationView.OnNavigationItemSelectedListener, MsgToFragment, MsgFromDialog, Toolbar.OnMenuItemClickListener,ItemClickInterface {
 
     private FrameLayout content_frame, shadow;
     private android.support.v4.widget.DrawerLayout drawer_layout;
@@ -190,7 +190,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
      * @param type 0-->TeamDialog
      *             1-->PlayerDialog
      */
-    public void showNewTeamDialog(int type, DialogInterface dialogInterface) {
+    public void showNewTeamDialog(int type, DialogInterface dialogInterface,int teamID) {
 
         // DialogFragment.show() will take care of adding the fragment
         // in a transaction.  We also want to remove any currently showing
@@ -212,7 +212,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
         if (type == 0)
             newFragment = NewTeamDialog.newInstance(0);
         else
-            newFragment = NewPlayerDialog.newInstance();
+            newFragment = NewPlayerDialog.newInstance(teamID);
 
         newFragment.show(ft, "dialog");
 
@@ -400,7 +400,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
         if (id == R.id.nav_saved_game) {
             getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new MatchListMainFragment()).commit();
         } else if (id == R.id.nav_viewer) {
-            ViewMatch f = new ViewMatch();
+            MatchDetailActivity f = new MatchDetailActivity();
 //                Bundle b=new Bundle();
 //                b.putInt("match_id",1492432485);
 //                f.setArguments(b);
@@ -447,4 +447,11 @@ public class MainFragmentActivity extends AppCompatActivity implements
     }
 
 
+    @Override
+    public void itemPicked(int id, String message) {
+       Fragment f= getSupportFragmentManager().findFragmentById(R.id.mainFrag);
+        if(f!=null)
+            if(f instanceof ItemClickInterface)
+                ((ItemClickInterface) f).itemPicked(id,message);
+    }
 }

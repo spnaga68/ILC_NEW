@@ -23,12 +23,13 @@ import realmstudy.adapter.TeamListAdapter;
 import realmstudy.adapter.TeamListSelectionAdapter;
 import realmstudy.data.RealmObjectData.Team;
 import realmstudy.interfaces.DialogInterface;
+import realmstudy.interfaces.ItemClickInterface;
 import realmstudy.interfaces.MsgToFragment;
 
 /**
  * Created by developer on 21/2/17.
  */
-public class TeamListFragment extends Fragment implements DialogInterface,MsgToFragment{
+public class TeamListFragment extends Fragment implements DialogInterface,MsgToFragment,ItemClickInterface {
     private RecyclerView
             list_view;
     private android.support.design.widget.FloatingActionButton add;
@@ -55,7 +56,7 @@ public class TeamListFragment extends Fragment implements DialogInterface,MsgToF
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainFragmentActivity) getActivity()).showNewTeamDialog(0, TeamListFragment.this);
+                ((MainFragmentActivity) getActivity()).showNewTeamDialog(0, TeamListFragment.this,-1);
             }
         });
 
@@ -71,5 +72,14 @@ public class TeamListFragment extends Fragment implements DialogInterface,MsgToF
     @Override
     public void msg(String s) {
         selected_teams.setText(s);
+    }
+
+    @Override
+    public void itemPicked(int id, String message) {
+        Fragment f=new PlayerListFragment();
+        Bundle b=new Bundle();
+        b.putInt("id",id);
+        f.setArguments(b);
+        getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag,f ).commit();
     }
 }

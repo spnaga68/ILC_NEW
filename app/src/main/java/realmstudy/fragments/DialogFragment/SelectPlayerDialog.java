@@ -53,6 +53,7 @@ public class SelectPlayerDialog extends DialogFragment {
     private int assignTo;
     Spinner bat_style, bowl_style;
     static SelectPlayerDialog f;
+    int teamID;
 
     public static SelectPlayerDialog newInstance(int match_id, boolean ishomeTeam, int current_bowler_id, String title, int assignTo) {
         if (f != null)
@@ -214,7 +215,7 @@ public class SelectPlayerDialog extends DialogFragment {
                 if (!name.getText().toString().isEmpty()) {
                     // addPlayerToMatch(name.getText().toString(), ph_no.getText().toString());
 
-                    int pID =                           RealmDB.addNewPlayerToMatch(getActivity(), realm,name.getText().toString(), "", bat_style.getSelectedItemPosition(), bowl_style.getSelectedItemPosition(), 0,matchDetails,ishomeTeam);
+                    int pID = RealmDB.addNewPlayerToMatch(getActivity(), realm,name.getText().toString(), "", bat_style.getSelectedItemPosition(), bowl_style.getSelectedItemPosition(), 0,matchDetails,ishomeTeam,ishomeTeam?matchDetails.getHomeTeam().team_id:matchDetails.getAwayTeam().team_id);
                     if (pID != -1 && getDialog() != null) {
                         dismiss();
                         ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, true, String.valueOf(pID), "success", assignTo);
@@ -391,7 +392,7 @@ public class SelectPlayerDialog extends DialogFragment {
 
                         if (!name.isEmpty()) {
 
-                            int pID = RealmDB.addNewPlayerToMatch(getActivity(), realm, name, cNumber, bat_style.getSelectedItemPosition(), bowl_style.getSelectedItemPosition(),0, matchDetails, ishomeTeam);
+                            int pID = RealmDB.addNewPlayerToMatch(getActivity(), realm, name, cNumber, bat_style.getSelectedItemPosition(), bowl_style.getSelectedItemPosition(),0, matchDetails, ishomeTeam,ishomeTeam?matchDetails.getHomeTeam().team_id:matchDetails.getAwayTeam().team_id);
                             if (getDialog() != null && pID != -1 ? true : false)
                                 dismiss();
 

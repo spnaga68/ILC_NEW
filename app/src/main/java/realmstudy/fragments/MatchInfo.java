@@ -105,7 +105,7 @@ public class MatchInfo extends Fragment {
     void saveMatchInfo() {
         if (homeTeam != null) {
             if (awayTeam != null) {
-                matchDetails = RealmDB.UpdateorCreateMatchDetail(getActivity(), realm, homeTeam, awayTeam, "", null, no_of_overs.getSelectedItemPosition() + 2, venue.getText().toString(), no_of_players.getSelectedItemPosition() + 2, 0, match_id);
+                matchDetails = RealmDB.UpdateorCreateMatchDetail(getActivity(), realm, homeTeam, awayTeam, "", null, no_of_overs.getSelectedItemPosition() + 1, venue.getText().toString(), no_of_players.getSelectedItemPosition() + 2, 0, match_id);
 
                 new Handler().postDelayed(new Runnable() {
                     @Override

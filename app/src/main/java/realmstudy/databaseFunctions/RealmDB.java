@@ -252,11 +252,11 @@ public class RealmDB {
 
     public static Player AddPlayer(Context c, Realm realm, String name, String Phno) {
 
-        return AddPlayer(realm, name, Phno, 0,0,0);
+        return AddPlayer(realm, name, Phno, 0,0,0,0);
 //
     }
 
-    public static Player AddPlayer(Realm realm, String name, String Phno, int batting_style, int bowling_style, int role) {
+    public static Player AddPlayer(Realm realm, String name, String Phno, int batting_style, int bowling_style, int role,int teamID) {
 
         int id = 0;
         if (true) {
@@ -270,6 +270,7 @@ public class RealmDB {
             playerObj.setBattingSytle(batting_style);
             playerObj.setBowlingStyle(bowling_style);
             playerObj.setAllRounder(role);
+            playerObj.setTeamID(teamID);
             realm.commitTransaction();
             return realm.where(Player.class).equalTo("pID", id).findFirst();
 
@@ -368,9 +369,9 @@ public class RealmDB {
 
     }
 
-    public static int addNewPlayerToMatch(Context c, Realm realm,String name, String ph_no, int batting_style, int bowling_style, int role, MatchDetails matchDetails, boolean ishomeTeam) {
+    public static int addNewPlayerToMatch(Context c, Realm realm,String name, String ph_no, int batting_style, int bowling_style, int role, MatchDetails matchDetails, boolean ishomeTeam,int teamID) {
 
-        int id = AddPlayer( realm, name, ph_no,batting_style,bowling_style,role).getpID();
+        int id = AddPlayer( realm, name, ph_no,batting_style,bowling_style,role,teamID).getpID();
         return addPlayerToMatch(id, c, realm, matchDetails, ishomeTeam);
 
     }

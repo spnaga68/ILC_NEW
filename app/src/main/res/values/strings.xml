@@ -155,8 +155,9 @@
     <string name="won_by">won by</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-
+    <string name="match_center">Match Center</string>
+    <string name="add_ground">Add Ground</string>
+    <string name="Scoring">Scoring</string>
 
 
     <string-array name="run_scored_before_runout">

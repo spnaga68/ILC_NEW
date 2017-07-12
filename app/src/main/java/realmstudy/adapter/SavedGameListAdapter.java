@@ -68,16 +68,6 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
 
         this.data = realm.copyFromRealm(data);
         this.context = context;
-//        items = new ArrayList<>();
-//        itemsPendingRemoval = new ArrayList<>();
-//        lastInsertedIndex = data.size();
-//
-//        // let's generate some items
-//        SavedGameListAdapter.this.context = context;
-//        for (int i = 0; i < data.size(); i++) {
-//            items.add(String.valueOf(data.get(i).getMatch_id()));
-//
-//        }
     }
 
     @Override
@@ -88,16 +78,6 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         TestViewHolder viewHolder = (TestViewHolder) holder;
-        //final String item = items.get(position);
-
-//        if (itemsPendingRemoval.contains(item)) {
-//            // we need to show the "undo" state of the row
-//            viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
-//            viewHolder.titleView.setVisibility(View.GONE);
-//            // viewHolder.undoButton.setVisibility(View.VISIBLE);
-//            viewHolder.titleView.setTag(position);
-////
-//        } else {
         // we need to show the "normal" state
         viewHolder.itemView.setBackgroundColor(Color.WHITE);
         viewHolder.titleView.setVisibility(View.VISIBLE);
@@ -106,13 +86,10 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
         viewHolder.home_team_name.setText(data.get(position).getHomeTeam().nick_name);
         viewHolder.away_team_name.setText(data.get(position).getAwayTeam().nick_name);
         viewHolder.status.setText(CommanData.getDateCurrentTimeZone(data.get(position).getTime()));
-//            viewHolder.undoButton.setVisibility(View.GONE);
-//            viewHolder.undoButton.setOnClickListener(null);
         viewHolder.titleView.setTag(position);
 
 
         if (data.get(position).getMatchStatus() == CommanData.MATCH_STARTED_FI) {
-            // if (data.get(position).isHomeTeamBatting()) {
 
             MatchShortSummaryData matchShortSummaryData = CommanData.fromJson(data.get(position).getmatchShortSummary(), MatchShortSummaryData.class);
 
@@ -126,10 +103,6 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                 viewHolder.away_team_scr.setVisibility(View.GONE);
                 viewHolder.status.setText(matchShortSummaryData.getQuotes());
             }
-//                } else {
-//                    viewHolder.away_team_scr.setText("193-4");
-//                    viewHolder.away_team_scr.setVisibility(View.VISIBLE);
-//                }
         } else if (data.get(position).getMatchStatus() == CommanData.MATCH_STARTED_SI || data.get(position).getMatchStatus() == CommanData.MATCH_COMPLETED) {
 
             MatchShortSummaryData matchShortSummaryData = CommanData.fromJson(data.get(position).getmatchShortSummary(), MatchShortSummaryData.class);
@@ -151,16 +124,6 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
             viewHolder.away_team_scr.setVisibility(View.GONE);
         }
 
-//            if (data.get(position).getMatchStatus() == CommanData.MATCH_COMPLETED) {
-//                viewHolder.status.setText(context.getString(R.string.completed));
-//                viewHolder.status.setTextColor(ContextCompat.getColor(context, R.color.red_M));
-//            } else if (data.get(position).getMatchStatus() == CommanData.MATCH_NOT_YET_STARTED) {
-//                viewHolder.status.setText(context.getString(R.string.match_not_started));
-//                viewHolder.status.setTextColor(ContextCompat.getColor(context, R.color.yellow_M));
-//            } else {
-//                viewHolder.status.setText(context.getString(R.string.on_going));
-//                viewHolder.status.setTextColor(ContextCompat.getColor(context, R.color.green_M));
-//            }
         viewHolder.titleView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -211,30 +174,6 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
         return undoOn;
     }
 
-//    public void pendingRemoval(int position) {
-//        final String item = items.get(position);
-//        if (!itemsPendingRemoval.contains(item)) {
-//            itemsPendingRemoval.add(item);
-//            // this will redraw row in "undo" state
-//            notifyItemChanged(position);
-//            // let's create, store and post a runnable to remove the item
-//            Runnable pendingRemovalRunnable = new Runnable() {
-//                @Override
-//                public void run() {
-//                    remove(items.indexOf(item));
-//                }
-//            };
-//            handler.postDelayed(pendingRemovalRunnable, PENDING_REMOVAL_TIMEOUT);
-//            pendingRunnables.put(item, pendingRemovalRunnable);
-//        }
-//    }
-
-
-//    public boolean isPendingRemoval(int position) {
-//        String item = items.get(position);
-//        return itemsPendingRemoval.contains(item);
-//    }
-
 
     /**
      * ViewHolder capable of presenting two states: "normal" and "undo" state.
@@ -272,16 +211,6 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
         }
 
         public void remove(int position) {
-
-            // String item = items.get(position);
-            //     Toast.makeText(context, "dsr"+item, Toast.LENGTH_SHORT).show();
-//        if (itemsPendingRemoval.contains(item)) {
-//            itemsPendingRemoval.remove(item);
-//        }
-//        if (items.contains(item)) {
-//            items.remove(position);
-//            notifyItemRemoved(position);
-//        }
 
             int item = data.get(position).getMatch_id();
 

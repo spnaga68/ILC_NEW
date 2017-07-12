@@ -63,7 +63,17 @@ public class CommanData {
     public static final int BALL_N0_BALL_BYES = 5;
     public static final int BALL_LB = 6;
 
-
+    public static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch(NumberFormatException e) {
+            return false;
+        } catch(NullPointerException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
+    }
     public static String wicketIdToString(int id) {
         switch (id) {
             case W_BOWLED:

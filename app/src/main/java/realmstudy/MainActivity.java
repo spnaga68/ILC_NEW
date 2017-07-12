@@ -19,6 +19,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -488,7 +491,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 initialData();
             return false;
         }
-
+        System.out.println("_________WWs" + lastInningsDataItem.getOver() + "__" + matchDetails.getOvers());
         boolean overCompleted = (lastInningsDataItem.getOver() >= (matchDetails.getOvers()));
         boolean wicketOver = (RealmDB.noOfWicket(getActivity(), realm, matchDetails.getMatch_id(), !matchDetails.isFirstInningsCompleted()) >= (matchDetails.getTotalPlayers() - 1));
         boolean runChased = false;
@@ -884,6 +887,11 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         inningsData.setDetailedScoreBoardData(CommanData.toString(detailedScoreData));
         realm.commitTransaction();
         lastInningsDataItem = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).findAll().last();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(String.valueOf(matchDetails.getMatch_id()));
+
+        myRef.setValue(lastInningsDataItem.getDetailedScoreBoardData());
+
         detailedScoreBoardData = CommanData.fromJson(lastInningsDataItem.getDetailedScoreBoardData(), DetailedScoreData.class);
         checkAndUpdateUI();
 
@@ -1524,13 +1532,16 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                 Wicket wicket = RealmDB.getWicket(getActivity(), realm, data);
                 System.out.println("_____Out" + dialogType + "__" + data + "__" + wicket.getType());
 
-                submitbuttonClicked(wicket);
+
                 // System.out.println("_____Outsdf1" + dialogType + "__" + data + "__" + wicket.getType());
                 if (wicket.getType() != CommanData.W_RUNOUT) {
+                    submitbuttonClicked(wicket);
                     realm.beginTransaction();
                     // System.out.println("_____Outsdf2" + dialogType + "__" + data + "__" + wicket.getType()+"__"+CommanData.toString( realm.copyFromRealm(wicket)));
                     detailedScoreBoardData.getScoreBoardData().setWicket(CommanData.toString(realm.copyFromRealm(wicket)));
                     //System.out.println("_____Outsdf3" + dialogType + "__" + data + "__" + wicket.getType());
+
+
                     lastInningsDataItem.setDetailedScoreBoardData(CommanData.toString(detailedScoreBoardData));
                     RealmDB.getBattingProfile(realm, striker.getpID(), matchDetails.getMatch_id()).setWicket(wicket);
                     RealmDB.getBowlingProfile(realm, current_bowler.getpID(), matchDetails.getMatch_id()).addWickets(wicket);
@@ -1539,7 +1550,16 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
                     striker = null;
 
                 } else if (wicket.getType() == CommanData.W_RUNOUT) {
+
+                    if (message != null && CommanData.isInteger(message))
+                        runs = Integer.parseInt(message);
+                    detailedScoreBoardData.getScoreBoardData().setWicket(CommanData.toString(realm.copyFromRealm(wicket)));
+                    System.out.println("_____Outsdf3" + dialogType + "__" + data + "__" + runs + "__" + message);
+
+                    submitbuttonClicked(wicket);
                     realm.beginTransaction();
+                    lastInningsDataItem.setDetailedScoreBoardData(CommanData.toString(detailedScoreBoardData));
+
                     Player p = RealmDB.getPlayer(realm, wicket.getBatsman());
                     RealmDB.getBattingProfile(realm, p.getpID(), matchDetails.getMatch_id()).setWicket(wicket);
                     realm.commitTransaction();

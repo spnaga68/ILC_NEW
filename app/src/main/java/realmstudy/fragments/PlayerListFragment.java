@@ -44,22 +44,27 @@ public class PlayerListFragment extends Fragment implements DialogInterface {
     PlayerListAdapter adapter;
     @Inject
     Realm realm;
+    int teamID=-1;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.player_list_view, container, false);
         ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
+
+        if(getArguments()!=null){
+            teamID=getArguments().getInt("id");
+        }
         list_view = (RecyclerView) v.findViewById(R.id.list_view);
         add = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.add);
         add_from_contacts = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.add_from_contacts);
-        adapter = new PlayerListAdapter(getActivity(), realm.where(Player.class).findAll());
+        adapter = new PlayerListAdapter(getActivity(), realm.where(Player.class).equalTo("teamID",teamID).findAll());
         list_view.setAdapter(adapter);
         list_view.setLayoutManager(new LinearLayoutManager(getActivity()));
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainFragmentActivity) getActivity()).showNewTeamDialog(1, PlayerListFragment.this);
+                ((MainFragmentActivity) getActivity()).showNewTeamDialog(1, PlayerListFragment.this,teamID);
             }
         });
         add_from_contacts.setOnClickListener(new View.OnClickListener() {
@@ -152,6 +157,7 @@ public class PlayerListFragment extends Fragment implements DialogInterface {
                         Player playerObj = realm.createObject(Player.class, realm.where(Player.class).findAll().size());
                         playerObj.setPh_no(cNumber);
                         playerObj.setName(name);
+                        playerObj.setTeamID(teamID);
                         realm.commitTransaction();
                     }
 

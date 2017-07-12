@@ -3,28 +3,41 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_add_team"
-            android:title="@string/add_team" />
-        <item
-            android:id="@+id/nav_add_player"
-            android:title="@string/add_player" />
-        <item
             android:id="@+id/nav_viewer"
-            android:title="@string/viewer" />
-        <item
-            android:id="@+id/nav_saved_game"
-            android:title="@string/saved_game" />
+            android:title="@string/match_center" />
+
+
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/scorer">
         <menu>
+            <item
+                android:id="@+id/nav_saved_game"
+                android:title="@string/Scoring" />
+            <item
+                android:id="@+id/nav_add_player"
+                android:title="@string/add_player"
+                android:visible="false" />
             <item
                 android:id="@+id/nav_new_game"
                 android:title="@string/new_game" />
             <item
                 android:id="@+id/nav_schedule_game"
                 android:title="@string/schedule_game" />
+
         </menu>
     </item>
+
+    <item android:title="Admin">
+        <menu>
+            <item
+                android:id="@+id/nav_add_team"
+                android:title="@string/add_team" />
+            <item
+                android:id="@+id/nav_add_ground"
+                android:title="@string/add_ground" />
+        </menu>
+    </item>
+
 
 </menu>

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -53,13 +61,18 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     private DetailedScoreData detailedScoreData;
     private Pager adapter;
     private View v;
+    private DatabaseReference myRef;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.match_detail_main, container, false);
         System.out.println("ScoreDataaaaonc");
-        match_id = getArguments().getInt("match_id", 0);
+        try {
+            match_id = getArguments().getInt("match_id", 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tabLayout1);
@@ -81,18 +94,57 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
         viewPager.addOnPageChangeListener(this);
-        boolean forSecInnings=false;
-        MatchDetails md= RealmDB.getMatchById(getActivity(),realm,match_id);
-        InningsData d = realm.where(InningsData.class).equalTo("match_id", match_id).equalTo("firstInnings",!md.isFirstInningsCompleted()).findAllSorted("delivery", Sort.ASCENDING).last();
-        detailedScoreData = CommanData.fromJson(d.getDetailedScoreBoardData(), DetailedScoreData.class);
-        System.out.println("ScoreDataaaa"+d.getDetailedScoreBoardData());
-        // SessionSave.saveSession("checjjj",d.getDetailedScoreBoardData(),getActivity());
+        boolean forSecInnings = false;
 
 
-//        tool_bar = (android.support.v7.widget.Toolbar) v.findViewById(realmstudy.R.id.tool_bar);
-//        tool_bar.setTitle(getString(R.string.score_board));
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("1498913437");
+//        myRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // This method is called once with the initial value and again
+//                // whenever data at this location is updated.
+//                String value = dataSnapshot.getValue(String.class);
+//                Log.d("valueee", "Value is: " + value);
+//                detailedScoreData = CommanData.fromJson(value, DetailedScoreData.class);
+//
+//                if (detailedScoreData != null) {
+//                    Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+//                    if (fragment instanceof ScorecardDetailFragment ) {
+//                        ScorecardDetailFragment scorecardDetailFragment = (ScorecardDetailFragment) fragment;
+//                        ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
+//                        datas.add(detailedScoreData.getScoreCardDetailData());
+//
+//                        if (detailedScoreData.getSecscoreCardDetailData().getTeamName() != null) {
+//                            System.out.println("not_nulll__" + detailedScoreData.getScoreCardDetailData().getTeamName() + "__" + detailedScoreData.getSecscoreCardDetailData().getTeamName());
+//                            datas.add(detailedScoreData.getSecscoreCardDetailData());
+//                        }
+//                        scorecardDetailFragment.setDatas(datas);
+//                    } else if (fragment instanceof OversFragment ) {
+//                        OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+//                        oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
+//                    }
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError error) {
+//                // Failed to read value
+//                Log.w("valueee", "Failed to read value.", error.toException());
+//            }
+//        });
 
-        //Adding onTabSelectedListener to swipe views
+
+        try {
+            MatchDetails md = RealmDB.getMatchById(getActivity(), realm, match_id);
+            InningsData d = realm.where(InningsData.class).equalTo("match_id", match_id).equalTo("firstInnings", !md.isFirstInningsCompleted()).findAllSorted("delivery", Sort.ASCENDING).last();
+            detailedScoreData = CommanData.fromJson(d.getDetailedScoreBoardData(), DetailedScoreData.class);
+
+            System.out.println("ScoreDataaaa" + d.getDetailedScoreBoardData());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         tabLayout.addOnTabSelectedListener(this);
         return v;
     }
@@ -126,20 +178,22 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         //System.out.println("Selected__vvv" + position+"__"+positionOffset+"__"+positionOffsetPixels);
-        Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-        if (fragment instanceof ScorecardDetailFragment && positionOffsetPixels == 0) {
-            ScorecardDetailFragment scorecardDetailFragment = (ScorecardDetailFragment) fragment;
-            ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
-            datas.add(detailedScoreData.getScoreCardDetailData());
+        if (detailedScoreData != null) {
+            Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+            if (fragment instanceof ScorecardDetailFragment && positionOffsetPixels == 0) {
+                ScorecardDetailFragment scorecardDetailFragment = (ScorecardDetailFragment) fragment;
+                ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
+                datas.add(detailedScoreData.getScoreCardDetailData());
 
-            if (detailedScoreData.getSecscoreCardDetailData().getTeamName() != null) {
-                System.out.println("not_nulll__"+detailedScoreData.getScoreCardDetailData().getTeamName()+"__"+detailedScoreData.getSecscoreCardDetailData().getTeamName());
-                datas.add(detailedScoreData.getSecscoreCardDetailData());
+                if (detailedScoreData.getSecscoreCardDetailData().getTeamName() != null) {
+                    System.out.println("not_nulll__" + detailedScoreData.getScoreCardDetailData().getTeamName() + "__" + detailedScoreData.getSecscoreCardDetailData().getTeamName());
+                    datas.add(detailedScoreData.getSecscoreCardDetailData());
+                }
+                scorecardDetailFragment.setDatas(datas);
+            } else if (fragment instanceof OversFragment && positionOffsetPixels == 0) {
+                OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
             }
-            scorecardDetailFragment.setDatas(datas);
-        } else if (fragment instanceof OversFragment && positionOffsetPixels == 0) {
-            OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-            oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
         }
     }
 
@@ -154,59 +208,6 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     public void onPageScrollStateChanged(int state) {
         System.out.println("Selected__ccc");
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.option_menu, menu); //your file name
-//        return super.onCreateOptionsMenu(menu);
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        switch (item.getItemId()) {
-////            case menu_one:
-////                Intent ii=new Intent(MatchDetails.this,second.class);
-////                startActivity(ii);
-//
-//            case R.id.menu_two:
-//
-//                return true;
-//            case R.id.menu_three:
-//
-//                return true;
-//            case R.id.menu_four:
-//
-//                return true;
-//
-//        }
-//        BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(this);
-//        View sheetView = this.getLayoutInflater().inflate(R.layout.activity_main, null);
-//        mBottomSheetDialog.setContentView(sheetView);
-//        mBottomSheetDialog.show();
-////        LinearLayout edit = (LinearLayout) sheetView.v.findViewById(R.id.fragment_history_bottom_sheet_edit);
-////        LinearLayout delete = (LinearLayout) sheetView.v.findViewById(R.id.fragment_history_bottom_sheet_delete);
-////        edit.setOnClickListener(new View.OnClickListener() {
-////            @Override
-////            public void onClick(View v) {
-////
-////                Toast.makeText(MainActivity.this,"hello",Toast.LENGTH_LONG).show();
-////
-////            }
-////        });
-////
-////        delete.setOnClickListener(new View.OnClickListener() {
-////            @Override
-////            public void onClick(View v) {
-////                Toast.makeText(MainActivity.this,"welcome",Toast.LENGTH_LONG).show();
-////            }
-////        });
-//
-//        return super.onOptionsItemSelected(item);
-//
-//    }
 
 
 }

@@ -36,6 +36,7 @@
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.9" />
 
+
             <FrameLayout
                 android:id="@+id/main.framelayout.title"
                 android:layout_width="match_parent"
@@ -75,6 +76,17 @@
 
                 </LinearLayout>
             </FrameLayout>
+            <realmstudy.lib.customViews.CircleImageView
+                android:layout_width="@dimen/image_width"
+                android:layout_height="@dimen/image_width"
+                android:layout_gravity="center"
+                android:src="@drawable/no_image"
+                app:finalHeight="@dimen/image_final_width"
+                app:finalYPosition="2dp"
+                app:startHeight="2dp"
+                android:layout_marginBottom="?attr/actionBarSize"
+                app:startToolbarPosition="2dp"
+                app:startXPosition="2dp" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
@@ -113,17 +125,6 @@
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 
-    <realmstudy.lib.customViews.CircleImageView
-        android:layout_width="@dimen/image_width"
-        android:layout_height="@dimen/image_width"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/no_image"
-        app:finalHeight="@dimen/image_final_width"
-        app:finalYPosition="2dp"
-        app:layout_behavior="realmstudy.extras.AvatarImageBehavior"
-        app:startHeight="2dp"
-        app:startToolbarPosition="2dp"
-        app:startXPosition="2dp" />
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"

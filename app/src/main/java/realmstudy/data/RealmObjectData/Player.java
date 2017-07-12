@@ -36,6 +36,16 @@ public class Player extends RealmObject {
     int battingSytle;
     int bowlingStyle;
     int allRounder;
+
+    public int getTeamID() {
+        return teamID;
+    }
+
+    public void setTeamID(int teamID) {
+        this.teamID = teamID;
+    }
+
+    int teamID;
     String phone_number;
     @PrimaryKey
     int pID;

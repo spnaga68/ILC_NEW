@@ -49,7 +49,7 @@ public class TeamListSelectionFragment extends Fragment implements DialogInterfa
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainFragmentActivity) getActivity()).showNewTeamDialog(0, TeamListSelectionFragment.this);
+                ((MainFragmentActivity) getActivity()).showNewTeamDialog(0, TeamListSelectionFragment.this,-1);
             }
         });
         next.setOnClickListener(new View.OnClickListener() {

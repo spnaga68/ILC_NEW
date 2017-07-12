@@ -36,22 +36,24 @@ public class NewPlayerDialog extends DialogFragment {
     DialogInterface dialogInterface;
 
     Spinner bat_style, bowl_style;
+    private int teamID;
 
-    NewPlayerDialog setDialogInterface(DialogInterface dialogInterface) {
-        this.dialogInterface = dialogInterface;
-        return NewPlayerDialog.newInstance();
-    }
+//    NewPlayerDialog setDialogInterface(DialogInterface dialogInterface) {
+//        this.dialogInterface = dialogInterface;
+//        return NewPlayerDialog.newInstance();
+//    }
 
 
     /**
      * Create a new instance of MyDialogFragment, providing "num"
      * as an argument.
      */
-    public static NewPlayerDialog newInstance() {
+    public static NewPlayerDialog newInstance(int teamID) {
         NewPlayerDialog f = new NewPlayerDialog();
         // Supply num input as an argument.
         Bundle args = new Bundle();
         args.putInt("num", 1);
+        args.putInt("teamID", teamID);
         f.setArguments(args);
         return f;
     }
@@ -59,6 +61,8 @@ public class NewPlayerDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        teamID=getArguments().getInt("teamID");
 //
     }
 
@@ -101,7 +105,7 @@ public class NewPlayerDialog extends DialogFragment {
 //                    realm.executeTransaction(new Realm.Transaction() {
 //                        @Override
 //                        public void execute(Realm realm) {
-                    RealmDB.AddPlayer( realm, nameS, phno, bat_style.getSelectedItemPosition(), bowl_style.getSelectedItemPosition(), 0);
+                    RealmDB.AddPlayer( realm, nameS, phno, bat_style.getSelectedItemPosition(), bowl_style.getSelectedItemPosition(), 0,teamID);
                     if (dialogInterface != null)
                         dialogInterface.onSuccess(name + "____" + phno, true);
 
