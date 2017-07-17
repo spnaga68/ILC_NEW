@@ -62,6 +62,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     private Pager adapter;
     private View v;
     private DatabaseReference myRef;
+    private boolean viewer;
 
     @Nullable
     @Override
@@ -69,7 +70,10 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         v = inflater.inflate(R.layout.match_detail_main, container, false);
         System.out.println("ScoreDataaaaonc");
         try {
-            match_id = getArguments().getInt("match_id", 0);
+            if (getArguments() != null) {
+                match_id = getArguments().getInt("match_id", 0);
+                viewer = getArguments().getBoolean("is_online", false);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,56 +100,57 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         viewPager.addOnPageChangeListener(this);
         boolean forSecInnings = false;
 
+        if (viewer) {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            myRef = database.getReference("InningsDetailData/"+match_id);
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // This method is called once with the initial value and again
+                    // whenever data at this location is updated.
+                    String value = dataSnapshot.getValue(String.class);
+                    Log.d("valueee", "Value is: " + value);
+                    detailedScoreData = CommanData.fromJson(value, DetailedScoreData.class);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("1498913437");
-//        myRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // This method is called once with the initial value and again
-//                // whenever data at this location is updated.
-//                String value = dataSnapshot.getValue(String.class);
-//                Log.d("valueee", "Value is: " + value);
-//                detailedScoreData = CommanData.fromJson(value, DetailedScoreData.class);
-//
-//                if (detailedScoreData != null) {
-//                    Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-//                    if (fragment instanceof ScorecardDetailFragment ) {
-//                        ScorecardDetailFragment scorecardDetailFragment = (ScorecardDetailFragment) fragment;
-//                        ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
-//                        datas.add(detailedScoreData.getScoreCardDetailData());
-//
-//                        if (detailedScoreData.getSecscoreCardDetailData().getTeamName() != null) {
-//                            System.out.println("not_nulll__" + detailedScoreData.getScoreCardDetailData().getTeamName() + "__" + detailedScoreData.getSecscoreCardDetailData().getTeamName());
-//                            datas.add(detailedScoreData.getSecscoreCardDetailData());
-//                        }
-//                        scorecardDetailFragment.setDatas(datas);
-//                    } else if (fragment instanceof OversFragment ) {
-//                        OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-//                        oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
-//                    }
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//                // Failed to read value
-//                Log.w("valueee", "Failed to read value.", error.toException());
-//            }
-//        });
+                    if (detailedScoreData != null) {
+                        Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                        if (fragment instanceof ScorecardDetailFragment) {
+                            ScorecardDetailFragment scorecardDetailFragment = (ScorecardDetailFragment) fragment;
+                            ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
+                            datas.add(detailedScoreData.getScoreCardDetailData());
 
+                            if (detailedScoreData.getSecscoreCardDetailData().getTeamName() != null) {
+                                System.out.println("not_nulll__" + detailedScoreData.getScoreCardDetailData().getTeamName() + "__" + detailedScoreData.getSecscoreCardDetailData().getTeamName());
+                                datas.add(detailedScoreData.getSecscoreCardDetailData());
+                            }
+                            scorecardDetailFragment.setDatas(datas);
+                        } else if (fragment instanceof OversFragment) {
+                            OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                            oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
+                        }
+                    }
 
-        try {
-            MatchDetails md = RealmDB.getMatchById(getActivity(), realm, match_id);
-            InningsData d = realm.where(InningsData.class).equalTo("match_id", match_id).equalTo("firstInnings", !md.isFirstInningsCompleted()).findAllSorted("delivery", Sort.ASCENDING).last();
-            detailedScoreData = CommanData.fromJson(d.getDetailedScoreBoardData(), DetailedScoreData.class);
+                }
 
-            System.out.println("ScoreDataaaa" + d.getDetailedScoreBoardData());
-        } catch (Exception e) {
-            e.printStackTrace();
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                    Log.w("valueee", "Failed to read value.", error.toException());
+                }
+            });
+        } else {
+
+            try {
+                MatchDetails md = RealmDB.getMatchById(getActivity(), realm, match_id);
+                InningsData d = realm.where(InningsData.class).equalTo("match_id", match_id).equalTo("firstInnings", !md.isFirstInningsCompleted()).findAllSorted("delivery", Sort.ASCENDING).last();
+                detailedScoreData = CommanData.fromJson(d.getDetailedScoreBoardData(), DetailedScoreData.class);
+                tabLayout.addOnTabSelectedListener(this);
+                System.out.println("ScoreDataaaa" + d.getDetailedScoreBoardData());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        tabLayout.addOnTabSelectedListener(this);
+
         return v;
     }
 

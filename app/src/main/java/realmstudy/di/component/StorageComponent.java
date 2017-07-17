@@ -6,12 +6,14 @@ import dagger.Component;
 import realmstudy.MainFragmentActivity;
 import realmstudy.MatchDetailActivity;
 import realmstudy.TeamPickerActivity;
+import realmstudy.adapter.GroundListAdapter;
 import realmstudy.adapter.PlayerListAdapter;
 import realmstudy.adapter.SavedGameListAdapter;
 import realmstudy.adapter.TeamListAdapter;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.di.modules.StorageModule;
 import realmstudy.fragments.EditPlayerProfile;
+import realmstudy.fragments.GroundListFragment;
 import realmstudy.fragments.InfoFragment;
 import realmstudy.fragments.MatchInfo;
 import realmstudy.fragments.OversFragment;
@@ -61,5 +63,9 @@ public interface StorageComponent {
     void inject(EditPlayerProfile editPlayerProfile);
     void inject(TeamPickerActivity teamPickerActivity);
     void inject(MatchInfo matchInfo);
+    void inject(GroundListFragment groundListFragment);
+    void inject(GroundListAdapter groundListAdapter);
+
+
 
 }

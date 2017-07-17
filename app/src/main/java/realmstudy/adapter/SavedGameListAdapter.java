@@ -239,6 +239,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                         Bundle b = new Bundle();
                         MatchDetailActivity fragment = new MatchDetailActivity();
                         b.putInt("match_id", data.get(getAdapterPosition()).getMatch_id());
+                        b.putBoolean("is_online",true);
                         fragment.setArguments(b);
                         ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
                     }

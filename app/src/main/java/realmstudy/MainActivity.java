@@ -888,7 +888,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         realm.commitTransaction();
         lastInningsDataItem = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).findAll().last();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(String.valueOf(matchDetails.getMatch_id()));
+        DatabaseReference myRef = database.getReference("InningsDetailData/" + String.valueOf(matchDetails.getMatch_id()));
 
         myRef.setValue(lastInningsDataItem.getDetailedScoreBoardData());
 
@@ -1122,14 +1122,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         if (!normal_delivery && (extraType == CommanData.typeExtraEnum.WIDE || extraType == CommanData.typeExtraEnum.NO_BALL))
             legal = false;
         if (normal_delivery) {
-            //  updateStriker(score_data, strikerProfile);
-            //STRIKER
-//            if (striker != null) {
-////                RealmDB.getBattingProfile( realm, striker.getpID(), matchDetails.getMatch_id()).setRuns(RealmDB.getBattingProfile( realm, striker.getpID(), matchDetails.getMatch_id()).getRuns() + runs);
-//                score_data.striker.setName(striker.getName());
-//                score_data.striker.setRuns(strikerProfile.getRuns());
-//                score_data.striker.setBalls(strikerProfile.getBallFaced());
-//            }
+
 
             //NON_STRIKER
             if (non_striker != null) {
@@ -1176,11 +1169,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
 
 
             score_data.nonStriker.setRuns(non_strikerProfile.getRuns());
-//            score_data.striker.setName(striker.getName());
-//            score_data.striker.setRuns(strikerProfile.getRuns());
-//            score_data.striker.setBalls(strikerProfile.getBallFaced());
-//            score_data.striker.setRuns(strikerProfile.getRuns());
-
+//
             //NON_STRIKER
             score_data.nonStriker.setName(non_striker.getName());
             score_data.nonStriker.setBalls(non_strikerProfile.getBallFaced());

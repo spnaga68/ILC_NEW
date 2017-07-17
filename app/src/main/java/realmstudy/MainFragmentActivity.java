@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -40,14 +39,12 @@ import realmstudy.fragments.DialogFragment.OutDialogFragment;
 import realmstudy.fragments.DialogFragment.SelectMultiPlayerDialog;
 import realmstudy.fragments.DialogFragment.SelectPlayerDialog;
 import realmstudy.fragments.DialogFragment.SelectTeamDialog;
+import realmstudy.fragments.GroundListFragment;
 import realmstudy.fragments.MatchInfo;
 import realmstudy.fragments.MenuActivity;
 import realmstudy.fragments.PlayerListFragment;
-import realmstudy.fragments.SavedListFragment;
 import realmstudy.fragments.ScheduleNewGame;
 import realmstudy.fragments.TeamListFragment;
-import realmstudy.fragments.TeamListSelectionFragment;
-import realmstudy.fragments.ViewMatch;
 import realmstudy.interfaces.DialogInterface;
 import realmstudy.interfaces.ItemClickInterface;
 import realmstudy.interfaces.MsgFromDialog;
@@ -448,33 +445,11 @@ public class MainFragmentActivity extends AppCompatActivity implements
             getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new TeamListFragment()).commit();
         } else if (id == R.id.nav_new_game) {
             getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new MatchInfo()).commit();
+        } else if (id == R.id.nav_add_ground) {
+
+            getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new GroundListFragment()).commit();
         }
 
-//
-//        case R.id.new_game_menu_lay:
-//        
-//        break;
-//        case R.id.saved_game_menu_lay:
-//
-//        
-//        break;
-//        case R.id.profile_menu_lay:
-//        ViewMatch f=new ViewMatch();
-////                Bundle b=new Bundle();
-////                b.putInt("match_id",1492432485);
-////                f.setArguments(b);
-//       
-//        break;
-//        case R.id.schedule_game_menu_lay:
-//        
-//
-//        break;
-//        case R.id.add_player_lay:
-//        
-//        break;
-//        case R.id.add_team_menu_lay:
-//        
-//        break;
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -18,6 +18,7 @@ import realmstudy.data.MatchShortSummaryData;
 import realmstudy.data.OverAdapterData;
 import realmstudy.data.RealmObjectData.BatingProfile;
 import realmstudy.data.RealmObjectData.BowlingProfile;
+import realmstudy.data.RealmObjectData.Ground;
 import realmstudy.data.RealmObjectData.InningsData;
 import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.data.RealmObjectData.Player;
@@ -158,7 +159,7 @@ public class RealmDB {
         if (mid != -1)
             md = getMatchById(c, realm, mid);
         if (md == null)
-            md = RealmDB.createNewMatch(c,realm,home_team,away_team,chosse_to,wonToss,overs,location,totalPlayers,time);
+            md = RealmDB.createNewMatch(c, realm, home_team, away_team, chosse_to, wonToss, overs, location, totalPlayers, time);
         id = (int) tsLong;
         realm.beginTransaction();
 
@@ -172,16 +173,16 @@ public class RealmDB {
             md.setToss(realm.where(Team.class).equalTo("team_id", wonToss.team_id).findFirst());
         md.setTime(tsLong);
         md.setMatchStatus(CommanData.MATCH_NOT_YET_STARTED);
-        if(!location.equals(""))
-        md.setLocation(location);
-        if(overs!=-1)
-        md.setOvers(overs);
+        if (!location.equals(""))
+            md.setLocation(location);
+        if (overs != -1)
+            md.setOvers(overs);
         if (home_team != null && wonToss != null) {
             boolean homeTeamWonToss = wonToss.team_id == home_team.team_id ? true : false;
             md.setHomeTeamBatting((homeTeamWonToss && chosse_to.equals("bat")) || (!homeTeamWonToss && chosse_to.equals("bowl")));
         }
-        if(totalPlayers!=-1)
-        md.setTotalPlayers(totalPlayers);
+        if (totalPlayers != -1)
+            md.setTotalPlayers(totalPlayers);
         realm.commitTransaction();
         // System.out.println("_____________vvv" + realm.where(MatchDetails.class).equalTo("match_id", id).findFirst().getHomeTeam().team_id);
         return realm.where(MatchDetails.class).equalTo("match_id", md.getMatch_id()).findFirst();
@@ -221,10 +222,10 @@ public class RealmDB {
         }
         md.setTotalPlayers(totalPlayers);
 
-        MatchShortSummaryData matchShortSummaryData=null;
-        if(md.getmatchShortSummary().equals("")) {
+        MatchShortSummaryData matchShortSummaryData = null;
+        if (md.getmatchShortSummary().equals("")) {
             matchShortSummaryData = new MatchShortSummaryData();
-        matchShortSummaryData.setBattingTeamName(home_team.nick_name);
+            matchShortSummaryData.setBattingTeamName(home_team.nick_name);
             matchShortSummaryData.setBowlingTeamName(away_team.nick_name);
             matchShortSummaryData.setQuotes(CommanData.getTime(time));
             matchShortSummaryData.setTime(time);
@@ -264,11 +265,11 @@ public class RealmDB {
 
     public static Player AddPlayer(Context c, Realm realm, String name, String Phno) {
 
-        return AddPlayer(realm, name, Phno, 0,0,0,0);
+        return AddPlayer(realm, name, Phno, 0, 0, 0, 0);
 //
     }
 
-    public static Player AddPlayer(Realm realm, String name, String Phno, int batting_style, int bowling_style, int role,int teamID) {
+    public static Player AddPlayer(Realm realm, String name, String Phno, int batting_style, int bowling_style, int role, int teamID) {
 
         int id = 0;
         if (true) {
@@ -287,12 +288,12 @@ public class RealmDB {
             return realm.where(Player.class).equalTo("pID", id).findFirst();
 
         } else {
-           // Toast.makeText(c, c.getString(R.string.phno_exist), Toast.LENGTH_SHORT).show();
+            // Toast.makeText(c, c.getString(R.string.phno_exist), Toast.LENGTH_SHORT).show();
             return realm.where(Player.class).equalTo("pID", id).findFirst();
         }
     }
 
-    public static Player editPlayer(Realm realm, String name,String dob,String email, String Phno, int batting_style, int bowling_style, int role,int id) {
+    public static Player editPlayer(Realm realm, String name, String dob, String email, String Phno, int batting_style, int bowling_style, int role, int id) {
 
         if (true) {
             realm.beginTransaction();
@@ -314,6 +315,7 @@ public class RealmDB {
             return realm.where(Player.class).equalTo("pID", id).findFirst();
         }
     }
+
     private static String Wicket(Context c, Realm realm, int batsmans, int bowlers, int type, int caughtBys, int runOutBys, String over, int match_id) {
 
         if (getWicket(c, realm, batsmans + "_" + match_id) == null) {
@@ -381,9 +383,9 @@ public class RealmDB {
 
     }
 
-    public static int addNewPlayerToMatch(Context c, Realm realm,String name, String ph_no, int batting_style, int bowling_style, int role, MatchDetails matchDetails, boolean ishomeTeam,int teamID) {
+    public static int addNewPlayerToMatch(Context c, Realm realm, String name, String ph_no, int batting_style, int bowling_style, int role, MatchDetails matchDetails, boolean ishomeTeam, int teamID) {
 
-        int id = AddPlayer( realm, name, ph_no,batting_style,bowling_style,role,teamID).getpID();
+        int id = AddPlayer(realm, name, ph_no, batting_style, bowling_style, role, teamID).getpID();
         return addPlayerToMatch(id, c, realm, matchDetails, ishomeTeam);
 
     }
@@ -631,13 +633,13 @@ public class RealmDB {
                 .findAll();
 
         RealmResults<Wicket> WicketInDB = realm.where(Wicket.class).equalTo("match_id", matchDetails.getMatch_id()).findAll();
-        System.out.println("delete______"+wicketInInnings.size()+"___"+WicketInDB.size());
+        System.out.println("delete______" + wicketInInnings.size() + "___" + WicketInDB.size());
         for (Wicket wicket : WicketInDB) {
 
 
             boolean available = false;
             for (int i = 0; i < wicketInInnings.size(); i++) {
-                if (wicket.getWicket_id().equals(wicketInInnings.get(i).getWicket().getWicket_id( ) )) {
+                if (wicket.getWicket_id().equals(wicketInInnings.get(i).getWicket().getWicket_id())) {
                     available = true;
                 }
             }
@@ -743,9 +745,9 @@ public class RealmDB {
             if (data.getBallType() != CommanData.BALL_LB && data.getBallType() != CommanData.BALL_LEGAL_BYES) {
                 runs += data.getRun();
                 if (data.getWicket() != null) {
-                    System.out.println("WWWWWWWWWW"+data.getWicket().getType());
+                    System.out.println("WWWWWWWWWW" + data.getWicket().getType());
                     if (data.getWicket().getType() != CommanData.W_RUNOUT) {
-                        System.out.println("WWWWWWWWWWe"+data.getWicket().getType());
+                        System.out.println("WWWWWWWWWWe" + data.getWicket().getType());
                         wickets.add(data.getWicket());
                     }
                 }
@@ -757,10 +759,10 @@ public class RealmDB {
 
         if (bf != null) {
             realm.beginTransaction();
-            System.out.println("updating bowl"+(bf.getPlayerID()+"")+"__ "+matchDetails.isFirstInningsCompleted());
-            Log.d("updating bowl",(bf.getPlayerID()+""));
+            System.out.println("updating bowl" + (bf.getPlayerID() + "") + "__ " + matchDetails.isFirstInningsCompleted());
+            Log.d("updating bowl", (bf.getPlayerID() + ""));
             bf.setBallsBowled(balls);
-            bf.setRunsGranted(runs + (extraRun * wide) -+ (extraRun * no_balls));
+            bf.setRunsGranted(runs + (extraRun * wide) - +(extraRun * no_balls));
             bf.setByes(byes);
             bf.setNoBall(no_balls);
             bf.setWide(wide);
@@ -842,6 +844,18 @@ public class RealmDB {
             return true;
         } else
             return false;
+
+    }
+
+    public static void removeGround(Realm realm, int id) {
+        Ground results = realm.where(Ground.class).equalTo("id", id).findFirst();
+//        RealmResults<Player> battingProfile=realm.where(Player.class).contains("battingProfileID",id+"_").findAll();
+//        RealmResults<Player> bowlingProfile=realm.where(Player.class).contains("battingProfileID",id+"_").findAll();
+        //
+
+        realm.beginTransaction();
+        results.deleteFromRealm();
+        realm.commitTransaction();
 
     }
 
