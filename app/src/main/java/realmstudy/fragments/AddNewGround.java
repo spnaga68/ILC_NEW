@@ -1,6 +1,7 @@
 package realmstudy.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -39,6 +40,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import javax.inject.Inject;
+
+import io.realm.Realm;
+import realmstudy.MyApplication;
 import realmstudy.R;
 import realmstudy.data.RealmObjectData.Ground;
 
@@ -62,6 +67,10 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
     private EditText ground_name, region;
     private AppCompatButton save;
     private LatLng groundLatLng;
+    private String countryEdit = "";
+    @Inject
+    Realm realm;
+    private int groundId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,17 +80,23 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        ((MyApplication) (getActivity()).getApplication()).getComponent().inject(this);
         View view = inflater.inflate(R.layout.activity_maps, container, false);
         latlong = (EditText) view.findViewById(R.id.latlng);
         country = (Spinner) view.findViewById(R.id.country);
         ground_name = (EditText) view.findViewById(R.id.ground_name);
         region = (EditText) view.findViewById(R.id.region);
         save = (AppCompatButton) view.findViewById(R.id.save);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkLocationPermission();
+        if (getArguments() != null) {
+            groundId = getArguments().getInt("id");
+            Ground g = realm.where(Ground.class).equalTo("id", groundId).findFirst();
+            if (g != null) {
+                ground_name.setText(g.getGroundName());
+                region.setText(g.getRegionName());
+                groundLatLng = new LatLng(g.getLat(), g.getLng());
+                countryEdit = g.getCountryName();
+            }
         }
-
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
@@ -92,10 +107,23 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
                 if (groundLatLng != null) {
                     if (ground_name.getText().toString().length() > 5) {
                         if (region.getText().toString().length() > 3) {
-                            Ground ground =new Ground();
+                            long tsLong;
+                            tsLong = System.currentTimeMillis() / 1000;
+
+                            realm.beginTransaction();
+                            Ground ground;
+                            if (groundId == 0)
+                                ground = realm.createObject(Ground.class, (int) tsLong);
+                            else
+                                ground = realm.where(Ground.class).equalTo("id", groundId).findFirst();
                             ground.setCountryName(country.getSelectedItem().toString());
                             ground.setGroundName(ground_name.getText().toString());
                             ground.setRegionName(region.getText().toString());
+                            ground.setLat(groundLatLng.latitude);
+                            ground.setLng(groundLatLng.longitude);
+                            realm.commitTransaction();
+                            getActivity().onBackPressed();
+
                         } else
                             Toast.makeText(getActivity(), getString(R.string.region_valid), Toast.LENGTH_SHORT).show();
                     } else
@@ -111,8 +139,12 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
-
+        System.out.println("ONMAPrr");
+        if (groundLatLng != null) {
+            long_marker = googleMap.addMarker(new MarkerOptions()
+                    .position(groundLatLng));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(groundLatLng, 16f));
+        }
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -126,6 +158,7 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
         }, intervalTime);
 
         if (apiclient == null) {
+            System.out.println("ONMAP");
             apiclient = new GoogleApiClient.Builder(getActivity())
                     .addApi(LocationServices.API).addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this).build();
@@ -274,7 +307,8 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f));
+        if (groundLatLng == null)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f));
 
         stopLocationUpdate();
 
@@ -283,13 +317,18 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onResume() {
         super.onResume();
-        locale = getResources().getConfiguration().locale.getDisplayCountry();
+        if (countryEdit.trim().equals(""))
+            countryEdit = getResources().getConfiguration().locale.getDisplayCountry();
         for (int i = 0; i < country.getAdapter().getCount(); i++) {
             String countrystring = (String) country.getAdapter().getItem(i);
-            if (countrystring.trim().equalsIgnoreCase(locale.trim())) {
+            if (countrystring.trim().equalsIgnoreCase(countryEdit.trim())) {
                 country.setSelection(i);
                 break;
             }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkLocationPermission();
+
         }
 
         System.out.println("locale" + locale);
@@ -349,7 +388,8 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
 
                         if (apiclient == null) {
                             buildGoogleApiClient();
-                        }
+                        } else
+                            startLocUpdate();
                     }
 
 

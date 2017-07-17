@@ -55,7 +55,7 @@ public class GroundListFragment extends Fragment implements DialogInterface {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.player_list_view, container, false);
         ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
-
+        v.findViewById(R.id.progress_bar).setVisibility(View.GONE);
         list_view = (RecyclerView) v.findViewById(R.id.list_view);
         add = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.add);
         add_from_contacts = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.add_from_contacts);
@@ -66,7 +66,7 @@ public class GroundListFragment extends Fragment implements DialogInterface {
             @Override
             public void onClick(View view) {
                 Bundle b = new Bundle();
-                GroundListFragment f = new GroundListFragment();
+                AddNewGround f = new AddNewGround();
                 f.setArguments(b);
                 (getActivity()).getSupportFragmentManager().beginTransaction().add(R.id.mainFrag, f).addToBackStack(null).commit();
             }

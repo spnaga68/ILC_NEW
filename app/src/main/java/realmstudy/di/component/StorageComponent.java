@@ -12,6 +12,7 @@ import realmstudy.adapter.SavedGameListAdapter;
 import realmstudy.adapter.TeamListAdapter;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.di.modules.StorageModule;
+import realmstudy.fragments.AddNewGround;
 import realmstudy.fragments.EditPlayerProfile;
 import realmstudy.fragments.GroundListFragment;
 import realmstudy.fragments.InfoFragment;
@@ -65,6 +66,7 @@ public interface StorageComponent {
     void inject(MatchInfo matchInfo);
     void inject(GroundListFragment groundListFragment);
     void inject(GroundListAdapter groundListAdapter);
+    void inject(AddNewGround addNewGround);
 
 
 
