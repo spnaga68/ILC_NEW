@@ -29,7 +29,6 @@
                 android:visibility="visible">
 
 
-
                 <CheckBox
                     android:id="@+id/manual_toss"
                     android:layout_width="wrap_content"
@@ -267,13 +266,14 @@
                     android:id="@+id/choose_to_lay"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-
+                        android:layout_gravity="top"
                         android:layout_weight=".7"
                         android:text="@string/choose_to"
                         android:textColor="@color/dialog_text_color"
@@ -285,7 +285,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1.3"
 
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
                         <RadioButton
                             android:id="@+id/choose_to_bat"

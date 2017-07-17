@@ -29,39 +29,46 @@ import realmstudy.interfaces.MsgToFragment;
 /**
  * Created by developer on 21/2/17.
  */
-public class TeamListFragment extends Fragment implements DialogInterface,MsgToFragment,ItemClickInterface {
+public class TeamListFragment extends Fragment implements DialogInterface, MsgToFragment, ItemClickInterface {
     private RecyclerView
             list_view;
     private android.support.design.widget.FloatingActionButton add;
     private android.support.design.widget.FloatingActionButton next;
     TeamListAdapter adapter;
     @Inject
-     Realm realm;
+    Realm realm;
     TextView selected_teams;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.team_list_view, container, false);
-        ((MyApplication)getActivity().getApplication()).getComponent().inject(this);
+        ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
         list_view = (RecyclerView) v.findViewById(R.id.list_view);
         add = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.add);
         next = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.next);
         selected_teams = (TextView) v.findViewById(R.id.selected_teams);
         selected_teams.setSelected(true);
-        adapter = new TeamListAdapter(getActivity(), realm.where(Team.class).findAll(),true);
+        adapter = new TeamListAdapter(getActivity(), realm.where(Team.class).findAll(), true);
         list_view.setAdapter(adapter);
         list_view.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainFragmentActivity) getActivity()).showNewTeamDialog(0, TeamListFragment.this,-1);
+                ((MainFragmentActivity) getActivity()).showNewTeamDialog(0, TeamListFragment.this, -1);
             }
         });
 
 
         return v;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(getString(R.string.team));
     }
 
     @Override
@@ -76,10 +83,10 @@ public class TeamListFragment extends Fragment implements DialogInterface,MsgToF
 
     @Override
     public void itemPicked(int id, String message) {
-        Fragment f=new PlayerListFragment();
-        Bundle b=new Bundle();
-        b.putInt("id",id);
+        Fragment f = new PlayerListFragment();
+        Bundle b = new Bundle();
+        b.putInt("id", id);
         f.setArguments(b);
-        getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag,f ).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, f).commit();
     }
 }

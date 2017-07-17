@@ -11,9 +11,12 @@ import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ import realmstudy.MyApplication;
 import realmstudy.R;
 import realmstudy.adapter.PlayerListAdapter;
 import realmstudy.data.RealmObjectData.Player;
+import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.interfaces.DialogInterface;
 
 import io.realm.Realm;
@@ -45,6 +49,18 @@ public class PlayerListFragment extends Fragment implements DialogInterface {
     @Inject
     Realm realm;
     int teamID=-1;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+    }
 
     @Nullable
     @Override
@@ -94,7 +110,17 @@ public class PlayerListFragment extends Fragment implements DialogInterface {
         startActivityForResult(intent, PICK_CONTACT);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getActivity()!=null)
+        getActivity().setTitle((teamID!=-1? RealmDB.getTeam(realm,teamID).nick_name:"" )+" "+getString(R.string.players));
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        }
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

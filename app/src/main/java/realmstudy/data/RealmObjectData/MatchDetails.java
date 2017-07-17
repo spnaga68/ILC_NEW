@@ -1,17 +1,36 @@
 package realmstudy.data.RealmObjectData;
 
-import android.content.Context;
-
-import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
+import realmstudy.data.CommanData;
+import realmstudy.data.MatchShortSummaryData;
 
 /**
  * Created by developer on 2/1/17.
  */
 public class MatchDetails extends RealmObject {
+
+    public boolean isOnlineMatch() {
+        return onlineMatch;
+    }
+
+    public void setOnlineMatch(boolean onlineMatch) {
+        this.onlineMatch = onlineMatch;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    String description;
+
+    boolean onlineMatch;
+
     public int getMatch_id() {
         return match_id;
     }
@@ -408,6 +427,7 @@ public class MatchDetails extends RealmObject {
     private RealmList<Player> notAssignedPlayers = new RealmList<>();
 
     public String getmatchShortSummary() {
+
         return matchShortSummary;
     }
 
@@ -422,6 +442,13 @@ public class MatchDetails extends RealmObject {
     }
 
     public void setMatchStatus(int matchStatus) {
+        if (!matchShortSummary.equals("")) {
+            System.out.println("SSSSSSHH"+matchShortSummary);
+            MatchShortSummaryData shortSummaryData = CommanData.fromJson(matchShortSummary, MatchShortSummaryData.class);
+
+            shortSummaryData.setStatus(matchStatus);
+            this.matchShortSummary = CommanData.toString(shortSummaryData);
+        }
         this.matchStatus = matchStatus;
     }
 

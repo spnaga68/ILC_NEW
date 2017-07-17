@@ -12,6 +12,24 @@ public class MatchShortSummaryData {
     InningsSummary firstInningsSummary;
     InningsSummary secondInningsSummary;
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    int status;
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    long time;
     public String getQuotes() {
         return quotes;
     }

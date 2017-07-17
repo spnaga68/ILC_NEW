@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/play_img"
             android:padding="@dimen/padding_googleplay_text"
-            android:text="@string/app_name" />
+            android:text="@string/ilc_abb" />
     </RelativeLayout>
 
 </RelativeLayout>

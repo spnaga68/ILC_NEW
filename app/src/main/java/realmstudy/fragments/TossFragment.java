@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 
@@ -172,7 +173,7 @@ public class TossFragment extends Fragment {
                                 public void run() {
                                     Bundle b = new Bundle();
                                     b.putInt("match_id", md.getMatch_id());
-                                    TeamDetialsSlide mf = new TeamDetialsSlide();
+                                    MainActivity mf = new MainActivity();
                                     mf.setArguments(b);
                                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, mf).commit();
                                 }
@@ -222,7 +223,7 @@ public class TossFragment extends Fragment {
     @Override
     public void onResume() {
         Log.d(TAG, "onResume()");
-
+        (getActivity()).setTitle(getString(R.string.toss));
         resetCoin();
         resetInstructions();
         loadResources();

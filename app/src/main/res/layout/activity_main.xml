@@ -62,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
      android:layout_above="@+id/submit_lay"
-        android:weightSum="7">
+        android:weightSum="6">
 
         <realmstudy.lib.customViews.NormalTextView
             android:id="@+id/dot_txt"
@@ -107,6 +107,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:onClick="onClick"
+            android:visibility="gone"
             android:text="4" />
 
         <realmstudy.lib.customViews.NormalTextView
@@ -135,7 +136,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/run_lay_L"
         android:layout_marginTop="10dp"
-        android:weightSum="6">
+        android:weightSum="5">
 
         <realmstudy.lib.customViews.NormalTextView
             android:id="@+id/legal_ball_txt"
@@ -187,6 +188,7 @@
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
+            android:visibility="gone"
             android:gravity="center"
             android:onClick="onClick"
             android:text="Gr" />

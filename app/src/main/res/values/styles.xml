@@ -25,6 +25,7 @@
         <item name="colorControlActivated">@color/colorPrimaryDark</item>
         <item name="colorSwitchThumbNormal">@color/colorPrimaryDark</item>
         <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="android:headerBackground">@color/colorPrimary</item>
     </style>
 
     <style name="OverFlow" parent="Widget.AppCompat.ActionButton.Overflow">

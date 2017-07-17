@@ -14,6 +14,7 @@ import io.realm.Sort;
 import realmstudy.R;
 import realmstudy.data.CommanData;
 import realmstudy.data.DetailedScoreData;
+import realmstudy.data.MatchShortSummaryData;
 import realmstudy.data.OverAdapterData;
 import realmstudy.data.RealmObjectData.BatingProfile;
 import realmstudy.data.RealmObjectData.BowlingProfile;
@@ -153,13 +154,14 @@ public class RealmDB {
         //String ts = tsLong.toString();
         int id = 0;
         //if (realm.where(MatchDetails.class).findAll().size() > 0)
-        id = (int) tsLong;
-        realm.beginTransaction();
         MatchDetails md = null;
         if (mid != -1)
             md = getMatchById(c, realm, mid);
         if (md == null)
-            md = realm.createObject(MatchDetails.class, id);
+            md = RealmDB.createNewMatch(c,realm,home_team,away_team,chosse_to,wonToss,overs,location,totalPlayers,time);
+        id = (int) tsLong;
+        realm.beginTransaction();
+
 //        md.setMatch_id(id);
         if (home_team != null)
             md.setHomeTeam(realm.where(Team.class).equalTo("team_id", home_team.team_id).findFirst());
@@ -201,7 +203,7 @@ public class RealmDB {
 //            id = realm.where(MatchDetails.class).findAllSorted("match_id").last().getMatch_id() + 1;
         realm.beginTransaction();
         MatchDetails md = realm.createObject(MatchDetails.class, id);
-        // md.setMatch_id(id);
+        // md.setMatch_id(id);/
         if (home_team != null)
             md.setHomeTeam(realm.where(Team.class).equalTo("team_id", home_team.team_id).findFirst());
         if (away_team != null)
@@ -218,6 +220,16 @@ public class RealmDB {
             md.setHomeTeamBatting((homeTeamWonToss && chosse_to.equals("bat")) || (!homeTeamWonToss && chosse_to.equals("bowl")));
         }
         md.setTotalPlayers(totalPlayers);
+
+        MatchShortSummaryData matchShortSummaryData=null;
+        if(md.getmatchShortSummary().equals("")) {
+            matchShortSummaryData = new MatchShortSummaryData();
+        matchShortSummaryData.setBattingTeamName(home_team.nick_name);
+            matchShortSummaryData.setBowlingTeamName(away_team.nick_name);
+            matchShortSummaryData.setQuotes(CommanData.getTime(time));
+            matchShortSummaryData.setTime(time);
+        }
+        md.setmatchShortSummary(CommanData.toString(matchShortSummaryData));
         realm.commitTransaction();
         // System.out.println("_____________vvv" + realm.where(MatchDetails.class).equalTo("match_id", id).findFirst().getHomeTeam().team_id);
         return realm.where(MatchDetails.class).equalTo("match_id", id).findFirst();

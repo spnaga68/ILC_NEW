@@ -51,6 +51,7 @@ import realmstudy.MainActivity;
 import realmstudy.MainFragmentActivity;
 import realmstudy.MyApplication;
 import realmstudy.R;
+import realmstudy.TeamPickerActivity;
 import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.data.RealmObjectData.Player;
@@ -62,7 +63,7 @@ import realmstudy.interfaces.MsgFromDialog;
 /**
  * Created by developer on 6/3/17.
  */
-public class ScheduleNewGame extends Fragment implements MsgFromDialog {
+public class ScheduleNewGame extends Fragment {
 
     private static final int WHATSAPP = 1;
     private static final int FACEBOOK = 2;
@@ -127,15 +128,20 @@ public class ScheduleNewGame extends Fragment implements MsgFromDialog {
         away_team.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                askByHome = false;
-                ((MainFragmentActivity) getActivity()).showMultiTeamSelect(-1, false, -1);
+                Intent i = new Intent(getActivity(), TeamPickerActivity.class);
+                Bundle b = new Bundle();
+                i.putExtra("for", "away");
+                getActivity().startActivityForResult(i, 20);
             }
         });
         home_team.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                askByHome = true;
-                ((MainFragmentActivity) getActivity()).showMultiTeamSelect(-1, false, -1);
+
+                Intent i = new Intent(getActivity(), TeamPickerActivity.class);
+                Bundle b = new Bundle();
+                i.putExtra("for", "home");
+                getActivity().startActivityForResult(i, 20);
             }
         });
 
@@ -148,62 +154,61 @@ public class ScheduleNewGame extends Fragment implements MsgFromDialog {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (homeTeam != null) {
-                    MatchDetails md = RealmDB.createNewMatch(getActivity(), realm, homeTeam, awayTeam, "", null, 0, venue.getText().toString(), 0, match_time);
-                    OUTPUT_PATH += md.getMatch_id() + ".png";
-                    RealmDB.addPlayerToMatch(players_array, getActivity(), realm, md);
-                    share_lay.setVisibility(View.VISIBLE);
-                    save.setVisibility(View.GONE);
-                    logo_lay.setVisibility(View.VISIBLE);
-                    desc_head.setText(desc.getText());
-                    desc_head.setVisibility(View.GONE);
-                    desc.setVisibility(View.GONE);
-                    venue.clearFocus();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        venue.setBackgroundColor(getActivity().getColor(R.color.transperant));
-                    } else
-                        venue.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.transperant));
-                    venue.setCursorVisible(false);
+                if (homeTeam != null && awayTeam != null) {
+                    if (match_time != 0) {
+                        if(venue.getText().toString().trim().equals("")){
+                        MatchDetails md = RealmDB.createNewMatch(getActivity(), realm, homeTeam, awayTeam, "", null, 0, venue.getText().toString(), 0, match_time);
+                        OUTPUT_PATH += md.getMatch_id() + ".png";
+                        RealmDB.addPlayerToMatch(players_array, getActivity(), realm, md);
+                        share_lay.setVisibility(View.VISIBLE);
+                        save.setVisibility(View.GONE);
+                        logo_lay.setVisibility(View.VISIBLE);
+                        desc_head.setText(desc.getText());
+                        desc_head.setVisibility(View.GONE);
+                        desc.setVisibility(View.GONE);
+                        venue.clearFocus();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            venue.setBackgroundColor(getActivity().getColor(R.color.transperant));
+                        } else
+                            venue.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.transperant));
+                        venue.setCursorVisible(false);
+                        realm.beginTransaction();
+                        md.setDescription(desc.getText().toString());
+                        realm.commitTransaction();
+                        AppCompatImageButton buttons[] = {whatsapp_share, gmail_share, fb_share, other_share};
+
+                        int i = 1;
+
+                        for (AppCompatImageButton viewId : buttons) {
+                            // Button imageButton = (Button) findViewById(viewId);
+                            Animation fadeAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.button_anim);
+                            fadeAnimation.setStartOffset(i * 200);
+                            AppCompatImageButton butt = buttons[i - 1];
+                            butt.startAnimation(fadeAnimation);
+
+                            i++;
+                        }
 
 
-                    AppCompatImageButton buttons[] = {whatsapp_share, gmail_share, fb_share, other_share};
-
-                    int i = 1;
-
-                    for (AppCompatImageButton viewId : buttons) {
-                        // Button imageButton = (Button) findViewById(viewId);
-                        Animation fadeAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.button_anim);
-                        fadeAnimation.setStartOffset(i * 200);
-                        AppCompatImageButton butt = buttons[i - 1];
-                        butt.startAnimation(fadeAnimation);
-
-                        i++;
                     }
-
-
+                        else
+                            Toast.makeText(getActivity(), getString(R.string.select_venue), Toast.LENGTH_SHORT).show();}
+                    else
+                        Toast.makeText(getActivity(), getString(R.string.select_match_time), Toast.LENGTH_SHORT).show();
                 } else
-                    Toast.makeText(getActivity(), "sfksklf", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.select_valid_home_away_team), Toast.LENGTH_SHORT).show();
             }
         });
         fb_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shareBitmap(FACEBOOK);
+                shareBitmap(OTHER);
             }
         });
         whatsapp_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View mView) {
                 shareBitmap(WHATSAPP);
-//                if (detail_lay != null) {
-//                    detail_lay.setDrawingCacheEnabled(true);
-//                    System.out.println("___" + detail_lay.getDrawingCache());
-//                    Bitmap b = Bitmap.createBitmap(detail_lay.getDrawingCache());
-//                    detail_lay.setDrawingCacheEnabled(false);
-//                    detail_lay.buildDrawingCache(true);
-//                } else {
-//                    Toast.makeText(getActivity(), "nulll", Toast.LENGTH_SHORT).show();
-//                }
             }
         });
 
@@ -211,11 +216,6 @@ public class ScheduleNewGame extends Fragment implements MsgFromDialog {
         gmail_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View mView) {
-//                Intent intent;
-//                intent = new Intent(Intent.ACTION_SEND);
-//                intent.setType("text/html");
-//                intent.putExtra(Intent.EXTRA_STREAM, b);
-//                intent.putExtra(Intent.EXTRA_SUBJECT, "subject_text");
                 shareBitmap(GMAIL);
 
 
@@ -227,17 +227,6 @@ public class ScheduleNewGame extends Fragment implements MsgFromDialog {
             @Override
             public void onClick(View mView) {
                 shareBitmap(OTHER);
-//                if (mView != null) {
-//                    mView.setDrawingCacheEnabled(true);
-//                    System.out.println("___" + mView.getDrawingCache());
-//                    Bitmap b = Bitmap.createBitmap(mView.getDrawingCache());
-//                    mView.setDrawingCacheEnabled(false);
-//                    mView.buildDrawingCache(true);
-//
-//
-//                } else {
-//                    Toast.makeText(getActivity(), "nulll", Toast.LENGTH_SHORT).show();
-//                }
 
             }
         });
@@ -245,33 +234,19 @@ public class ScheduleNewGame extends Fragment implements MsgFromDialog {
     }
 
     public Bitmap viewToBitmap(View view) {
-//        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
-//        Canvas canvas = new Canvas(bitmap);
-//
-//
-//        // Get current theme to know which background to use
-//        final Resources.Theme theme = getActivity().getTheme();
-//        final TypedArray ta = theme
-//                .obtainStyledAttributes(new int[] { android.R.attr.windowBackground });
-//        final int res = ta.getResourceId(0, 0);
-//        final Drawable background =  getActivity().getResources().getDrawable(res);
-//
-//// Draw background
-//        background.draw(canvas);
-//
-//        view.draw(canvas);
-//        return bitmap;
-
-
         final boolean cachePreviousState = view.isDrawingCacheEnabled();
         final int backgroundPreviousColor = view.getDrawingCacheBackgroundColor();
         view.setDrawingCacheEnabled(true);
         view.setDrawingCacheBackgroundColor(0xfffafafa);
         final Bitmap bitmap = view.getDrawingCache();
         view.setDrawingCacheBackgroundColor(backgroundPreviousColor);
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-//        view.setDrawingCacheEnabled(cachePreviousState);
         return bitmap;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(getString(R.string.schedule_game));
     }
 
     void shareBitmap(int type) {
@@ -306,38 +281,9 @@ public class ScheduleNewGame extends Fragment implements MsgFromDialog {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//            if (detail_lay != null) {
-//                View drawingView = detail_lay;
-//                drawingView.buildDrawingCache(true);
-//                bitmap = drawingView.getDrawingCache(true).copy(Bitmap.Config.RGB_565, false);
-//                drawingView.destroyDrawingCache();
-//
-//                //  detail_lay.buildDrawingCache(true);
-//
-//
-//            } else {
-//                Toast.makeText(getActivity(), "nulll", Toast.LENGTH_SHORT).show();
-//            }
             if (bitmap != null) {
                 //   ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
-
-//                File root = new File(Environment.getExternalStorageDirectory() + File.separator + getString(R.string.app_name) + File.separator);
-//                Uri outputFileUri = null;
-//                try {
-//                    root.mkdirs();
-//                    File imageFile = new File(root, "myPicName.png");
-//                    if(imageFile.exists())
-//                        imageFile.delete();
-//                    outputFileUri = Uri.fromFile(imageFile);
-//                    FileOutputStream fout = new FileOutputStream(imageFile);
-//                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fout);
-//                    fout.flush();
-//                    fout.close();
-//                    //return outputFileUri;
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
                 File output = new File(OUTPUT_PATH);
                 Uri outputUri = Uri.fromFile(output);
                 System.out.println("_______PPP" + outputUri);
@@ -409,52 +355,85 @@ public class ScheduleNewGame extends Fragment implements MsgFromDialog {
         alertDialog.show();
     }
 
-    @Override
-    public void messageFromDialog(int dialogType, boolean success, String data, String message) {
-        System.out.println("______vv" + data + "___" + dialogType);
-        if (dialogType == CommanData.DIALOG_SELECT_TEAM) {
-            System.out.println("______vv" + data);
-            int id = Integer.parseInt(data);
-            if (askByHome) {
-
-                if (away_team != null && id == away_team.getId()) {
-                    awayTeam = null;
-                    away_team.setText("");
-                }
-                homeTeam = RealmDB.getTeam(realm, id);
-                home_team.setText(homeTeam.nick_name);
-
-
-            } else {
-                if (homeTeam != null && id == home_team.getId()) {
-                    homeTeam = null;
-                    home_team.setText("");
-                }
-                awayTeam = RealmDB.getTeam(realm, id);
-                away_team.setText(awayTeam.nick_name);
-            }
-        }
-    }
 
     @Override
-    public void messageFromDialog(int dialogType, boolean success, ArrayList<Integer> data, String message) {
-        //System.out.println("_________sss" + data);
-        if (dialogType == CommanData.DIALOG_SELECT_MULTI_PLAYER) {
-            String ss = "";
-            players_array.clear();
-            for (int i = 0; i < data.size(); i++) {
-                Player p = RealmDB.getPlayer(realm, data.get(i));
-                ss = ss + p.getName() + (i == (data.size() - 1) ? "" : ",");
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            final int teamID = data.getIntExtra("id", 0);
+            home_team.post(new Runnable() {
+                @Override
+                public void run() {
 
-                players_array.add(p);
-                players.setText(ss);
-            }
+
+                    if (data.getStringExtra("for").equals("home")) {
+                        if (awayTeam != null && teamID == awayTeam.team_id) {
+                            awayTeam = null;
+                            away_team.setText("");
+                        }
+                        homeTeam = RealmDB.getTeam(realm, teamID);
+                        home_team.setText(homeTeam.nick_name);
+                    } else {
+                        if (homeTeam != null && teamID == homeTeam.team_id) {
+                            homeTeam = null;
+                            home_team.setText("");
+                        }
+                        awayTeam = RealmDB.getTeam(realm, teamID);
+                        away_team.setText(awayTeam.nick_name);
+                    }
+                }
+            });
 
         }
     }
 
-    @Override
-    public void messageFromDialog(int dialogType, boolean success, String data, String message, int assignTo) {
 
-    }
+//    @Override
+//    public void messageFromDialog(int dialogType, boolean success, String data, String message) {
+//        System.out.println("______vv" + data + "___" + dialogType);
+//        if (dialogType == CommanData.DIALOG_SELECT_TEAM) {
+//            System.out.println("______vv" + data);
+//            int id = Integer.parseInt(data);
+//            if (askByHome) {
+//
+//                if (away_team != null && id == away_team.getId()) {
+//                    awayTeam = null;
+//                    away_team.setText("");
+//                }
+//                homeTeam = RealmDB.getTeam(realm, id);
+//                home_team.setText(homeTeam.nick_name);
+//
+//
+//            } else {
+//                if (homeTeam != null && id == home_team.getId()) {
+//                    homeTeam = null;
+//                    home_team.setText("");
+//                }
+//                awayTeam = RealmDB.getTeam(realm, id);
+//                away_team.setText(awayTeam.nick_name);
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void messageFromDialog(int dialogType, boolean success, ArrayList<Integer> data, String message) {
+//        //System.out.println("_________sss" + data);
+//        if (dialogType == CommanData.DIALOG_SELECT_MULTI_PLAYER) {
+//            String ss = "";
+//            players_array.clear();
+//            for (int i = 0; i < data.size(); i++) {
+//                Player p = RealmDB.getPlayer(realm, data.get(i));
+//                ss = ss + p.getName() + (i == (data.size() - 1) ? "" : ",");
+//
+//                players_array.add(p);
+//                players.setText(ss);
+//            }
+//
+//        }
+//    }
+//
+//    @Override
+//    public void messageFromDialog(int dialogType, boolean success, String data, String message, int assignTo) {
+//
+    //}
 }

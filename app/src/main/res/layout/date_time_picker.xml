@@ -8,13 +8,13 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:padding="8dp"
-
         android:layout_height="match_parent">
         <DatePicker
             android:id="@+id/date_picker"
             android:layout_width="match_parent"
             android:calendarViewShown="true"
             android:spinnersShown="false"
+            android:theme="@style/MyDatePickerDialogTheme"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/date_time_set1"
@@ -28,6 +28,7 @@
             android:layout_height="wrap_content" />
         <TimePicker
             android:id="@+id/time_picker"
+            android:theme="@style/MyDatePickerDialogTheme"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -38,7 +39,6 @@
             android:layout_width="wrap_content"
             android:text="Set"
             android:textColor="@color/white"
-
             android:visibility="gone"
             android:background="@color/button_color"
             android:layout_gravity="right"

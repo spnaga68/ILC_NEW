@@ -115,13 +115,19 @@ public class MatchInfo extends Fragment {
                         b.putInt("match_id",matchDetails.getMatch_id());
                         TossFragment mf = new TossFragment();
                         mf.setArguments(b);
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, mf).commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, mf).commit();
                     }
                 }, 100);
             } else
                 Toast.makeText(getActivity(), getString(R.string.select_valid_home_away_team), Toast.LENGTH_SHORT).show();
         } else
             Toast.makeText(getActivity(), getString(R.string.select_valid_home_away_team), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(getString(R.string.match_info));
     }
 
     @Override
@@ -133,9 +139,17 @@ public class MatchInfo extends Fragment {
                 @Override
                 public void run() {
                     if (data.getStringExtra("for").equals("home")) {
+                        if (awayTeam != null && teamID == awayTeam.team_id) {
+                            awayTeam = null;
+                            away_team_select.setText("");
+                        }
                         homeTeam = RealmDB.getTeam(realm, teamID);
                         home_team_select.setText(homeTeam.nick_name);
                     } else {
+                        if (homeTeam != null && teamID == homeTeam.team_id) {
+                            homeTeam = null;
+                            home_team_select.setText("");
+                        }
                         awayTeam = RealmDB.getTeam(realm, teamID);
                         away_team_select.setText(awayTeam.nick_name);
                     }

@@ -23,13 +23,15 @@ public class MatchListMainFragment extends Fragment implements TabLayout.OnTabSe
     ViewPager viewPager;
     Toolbar tool_bar;
     private int match_id;
+    private boolean isOnline;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.match_detail_main, container, false);
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tabLayout1);
-
+        if (getArguments() != null)
+            isOnline = getArguments().getBoolean("is_online", false);
         // match_id =  getArguments().getInt("match_id", 0);
 //        View bottomSheet = v.findViewById(R.id.bot);
 //        behavior = BottomSheetBehavior.from(bottomSheet);
@@ -39,9 +41,9 @@ public class MatchListMainFragment extends Fragment implements TabLayout.OnTabSe
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.recent)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         viewPager = (ViewPager) v.findViewById(R.id.pager);
-        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        // viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
-        MatchListPager adapter = new MatchListPager(getActivity().getSupportFragmentManager(), tabLayout.getTabCount());
+        MatchListPager adapter = new MatchListPager(getChildFragmentManager(), tabLayout.getTabCount(),isOnline);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         //Adding adapter to pager
@@ -86,5 +88,14 @@ public class MatchListMainFragment extends Fragment implements TabLayout.OnTabSe
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(isOnline)
+            getActivity().setTitle(getString(R.string.match_center));
+        else
+            getActivity().setTitle(getString(R.string.scorer));
     }
 }

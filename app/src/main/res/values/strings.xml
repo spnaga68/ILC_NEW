@@ -46,7 +46,7 @@
     <string name="saved_game_desc">Continue or view your last game</string>
     <string name="profile">Profile</string>
     <string name="profile_desc">View your personal info and achivements</string>
-    <string name="schedule_game">Schedule a game</string>
+    <string name="schedule_game">Schedule Game</string>
     <string name="schedule_game_desc">Schedule a new game and remind</string>
     <string name="add_player_desc">Add a new player</string>
     <string name="add_player">Add player</string>
@@ -158,6 +158,11 @@
     <string name="match_center">Match Center</string>
     <string name="add_ground">Add Ground</string>
     <string name="Scoring">Scoring</string>
+    <string name="team">Team</string>
+    <string name="match_info">Match Details</string>
+    <string name="select_match_time">Enter match time</string>
+    <string name="select_venue">Select venue</string>
+    <string name="ilc_abb">I Love Cricket</string>
 
 
     <string-array name="run_scored_before_runout">

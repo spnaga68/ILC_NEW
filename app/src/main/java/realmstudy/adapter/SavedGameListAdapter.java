@@ -19,6 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +52,7 @@ import realmstudy.interfaces.SlideRecyclerView;
 
 
 public class SavedGameListAdapter extends RecyclerView.Adapter {
+    private FirebaseDatabase database;
     private Context context;
     private static final int PENDING_REMOVAL_TIMEOUT = 1500; // 3sec
 
@@ -63,11 +67,21 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
     @Inject
     Realm realm;
 
+    boolean viewer;
+
     public SavedGameListAdapter(Context context, RealmResults<MatchDetails> data) {
         ((MyApplication) ((Activity) context).getApplication()).getComponent().inject(this);
 
         this.data = realm.copyFromRealm(data);
         this.context = context;
+    }
+
+    public SavedGameListAdapter(Context context, ArrayList<MatchDetails> data) {
+        ((MyApplication) ((Activity) context).getApplication()).getComponent().inject(this);
+
+        this.data = data;
+        this.context = context;
+        this.viewer = true;
     }
 
     @Override
@@ -77,21 +91,30 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+
+        System.out.println("sujjj" + data.get(position).getmatchShortSummary());
+        MatchShortSummaryData matchShortSummaryData = CommanData.fromJson(data.get(position).getmatchShortSummary(), MatchShortSummaryData.class);
         TestViewHolder viewHolder = (TestViewHolder) holder;
         // we need to show the "normal" state
         viewHolder.itemView.setBackgroundColor(Color.WHITE);
         viewHolder.titleView.setVisibility(View.VISIBLE);
         // viewHolder.titleView.setText(item);
         viewHolder.venue.setText(data.get(position).getLocation());
-        viewHolder.home_team_name.setText(data.get(position).getHomeTeam().nick_name);
-        viewHolder.away_team_name.setText(data.get(position).getAwayTeam().nick_name);
-        viewHolder.status.setText(CommanData.getDateCurrentTimeZone(data.get(position).getTime()));
+        viewHolder.home_team_name.setText(matchShortSummaryData.getBattingTeamName());
+        viewHolder.away_team_name.setText(matchShortSummaryData.getBowlingTeamName());
+        viewHolder.status.setText(CommanData.getDateCurrentTimeZone(matchShortSummaryData.getTime()));
         viewHolder.titleView.setTag(position);
+        if (viewer) {
+            viewHolder.online.setVisibility(View.GONE);
+            viewHolder.delete_item.setVisibility(View.INVISIBLE);
+            viewHolder.delete_item.setEnabled(false);
+        } else if (data.get(position).isOnlineMatch())
+            viewHolder.online.setImageResource(R.drawable.wifi_on);
+        else
+            viewHolder.online.setImageResource(R.drawable.wifi_off);
 
+        if (matchShortSummaryData.getStatus() == CommanData.MATCH_STARTED_FI) {
 
-        if (data.get(position).getMatchStatus() == CommanData.MATCH_STARTED_FI) {
-
-            MatchShortSummaryData matchShortSummaryData = CommanData.fromJson(data.get(position).getmatchShortSummary(), MatchShortSummaryData.class);
 
             if (matchShortSummaryData != null) {
                 viewHolder.home_team_name.setText(matchShortSummaryData.getBattingTeamName());
@@ -103,9 +126,8 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                 viewHolder.away_team_scr.setVisibility(View.GONE);
                 viewHolder.status.setText(matchShortSummaryData.getQuotes());
             }
-        } else if (data.get(position).getMatchStatus() == CommanData.MATCH_STARTED_SI || data.get(position).getMatchStatus() == CommanData.MATCH_COMPLETED) {
+        } else if (matchShortSummaryData.getStatus() == CommanData.MATCH_STARTED_SI || matchShortSummaryData.getStatus() == CommanData.MATCH_COMPLETED) {
 
-            MatchShortSummaryData matchShortSummaryData = CommanData.fromJson(data.get(position).getmatchShortSummary(), MatchShortSummaryData.class);
 
             if (matchShortSummaryData != null) {
                 viewHolder.home_team_name.setText(matchShortSummaryData.getBowlingTeamName());
@@ -124,39 +146,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
             viewHolder.away_team_scr.setVisibility(View.GONE);
         }
 
-        viewHolder.titleView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                System.out.println("__matachi_"+data.get(position).getMatch_id());
-                MatchDetails md = RealmDB.getMatchById(context, realm, data.get(position).getMatch_id());
-                if (md.getToss() == null) {
-                    Bundle b = new Bundle();
-                    MatchInfo fragment = new MatchInfo();
-                    b.putInt("match_id", md.getMatch_id());
-                    b.putString("venue", md.getLocation());
-                    b.putString("teamIDs", String.valueOf(md.getHomeTeam().team_id) + "__" + String.valueOf(md.getAwayTeam().team_id));
-                    fragment.setArguments(b);
-                    ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
-
-                } else if (md.getMatchStatus() != CommanData.MATCH_COMPLETED) {
-                    Bundle b = new Bundle();
-                    MainActivity fragment = new MainActivity();
-                    b.putInt("match_id", md.getMatch_id());
-                    // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
-                    fragment.setArguments(b);
-                    ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
-                } else {
-                    //Toast.makeText(context, context.getString(R.string.game_over), Toast.LENGTH_SHORT).show();
-                    Bundle b = new Bundle();
-                    MatchDetailActivity fragment = new MatchDetailActivity();
-                    b.putInt("match_id", md.getMatch_id());
-                    // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
-                    fragment.setArguments(b);
-                    ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
-                }
-            }
-        });
 //        }
     }
 
@@ -188,7 +178,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
         TextView home_team_scr, away_team_scr;
         CardView titleView;
         AppCompatImageView delete_item;
-
+        ImageView online;
 
         public TestViewHolder(ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext()).inflate(R.layout.saved_list_item, parent, false));
@@ -202,10 +192,87 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
             home_team_scr = (TextView) itemView.findViewById(R.id.home_team_scr);
             away_team_scr = (TextView) itemView.findViewById(R.id.away_team_scr);
             away_team_image = (ImageView) itemView.findViewById(R.id.away_team_image);
+            online = (ImageView) itemView.findViewById(R.id.online);
             delete_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     remove(getAdapterPosition());
+                }
+            });
+            database = FirebaseDatabase.getInstance();
+
+            titleView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    System.out.println("__matachi_" + data.get(getAdapterPosition()).getMatch_id());
+
+                    if (!viewer) {
+                        MatchDetails md = RealmDB.getMatchById(context, realm, data.get(getAdapterPosition()).getMatch_id());
+                        if (md.getToss() == null) {
+                            Bundle b = new Bundle();
+                            MatchInfo fragment = new MatchInfo();
+                            b.putInt("match_id", md.getMatch_id());
+                            b.putString("venue", md.getLocation());
+                            b.putString("teamIDs", String.valueOf(md.getHomeTeam().team_id) + "__" + String.valueOf(md.getAwayTeam().team_id));
+                            fragment.setArguments(b);
+                            ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
+
+                        } else if (md.getMatchStatus() != CommanData.MATCH_COMPLETED) {
+                            Bundle b = new Bundle();
+                            MainActivity fragment = new MainActivity();
+                            b.putInt("match_id", md.getMatch_id());
+                            // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
+                            fragment.setArguments(b);
+                            ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
+                        } else {
+                            //Toast.makeText(context, context.getString(R.string.game_over), Toast.LENGTH_SHORT).show();
+                            Bundle b = new Bundle();
+                            MatchDetailActivity fragment = new MatchDetailActivity();
+                            b.putInt("match_id", md.getMatch_id());
+                            // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
+                            fragment.setArguments(b);
+                            ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
+                        }
+                    } else {
+                      //  MatchDetails matchDetails=data.get(getAdapterPosition());
+                        Bundle b = new Bundle();
+                        MatchDetailActivity fragment = new MatchDetailActivity();
+                        b.putInt("match_id", data.get(getAdapterPosition()).getMatch_id());
+                        fragment.setArguments(b);
+                        ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
+                    }
+                }
+            });
+            online.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MatchDetails md = RealmDB.getMatchById(context, realm, data.get(getAdapterPosition()).getMatch_id());
+                    String type = "";
+                    if (md.getToss() == null)
+                        type = "upcoming";
+                    else if (md.getMatchStatus() != CommanData.MATCH_COMPLETED)
+                        type = "ongoing";
+                    else
+                        type = "recent";
+                    DatabaseReference myRef = database.getReference("matchList/" + type + "/" + md.getMatch_id());
+
+
+                    if (md.isOnlineMatch()) {
+                        realm.beginTransaction();
+                        md.setOnlineMatch(false);
+                        realm.commitTransaction();
+                        myRef.removeValue();
+                        online.setImageResource(R.drawable.wifi_off);
+                    } else {
+
+                        realm.beginTransaction();
+                        md.setOnlineMatch(true);
+                        realm.commitTransaction();
+
+                        myRef.setValue(md.getmatchShortSummary());
+                        online.setImageResource(R.drawable.wifi_on);
+                    }
                 }
             });
         }

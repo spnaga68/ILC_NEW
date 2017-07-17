@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,6 +25,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -41,6 +43,7 @@ import realmstudy.fragments.DialogFragment.SelectTeamDialog;
 import realmstudy.fragments.MatchInfo;
 import realmstudy.fragments.MenuActivity;
 import realmstudy.fragments.PlayerListFragment;
+import realmstudy.fragments.SavedListFragment;
 import realmstudy.fragments.ScheduleNewGame;
 import realmstudy.fragments.TeamListFragment;
 import realmstudy.fragments.TeamListSelectionFragment;
@@ -55,7 +58,9 @@ import realmstudy.matchList.MatchListMainFragment;
  * Created by developer on 26/12/16.
  */
 public class MainFragmentActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener, MsgToFragment, MsgFromDialog, Toolbar.OnMenuItemClickListener,ItemClickInterface {
+        NavigationView.OnNavigationItemSelectedListener, MsgToFragment, MsgFromDialog,
+
+        Toolbar.OnMenuItemClickListener, ItemClickInterface {
 
     private FrameLayout content_frame, shadow;
     private android.support.v4.widget.DrawerLayout drawer_layout;
@@ -113,8 +118,6 @@ public class MainFragmentActivity extends AppCompatActivity implements
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
         // toolbar_title = (TextView) findViewById(realmstudy.R.id.toolbar_title);
         // toolbar_titletm = (LinearLayout) findViewById(realmstudy.R.id.toolbar_titletm);
         //  imageee = (ImageView) findViewById(realmstudy.R.id.imageee);
@@ -128,6 +131,16 @@ public class MainFragmentActivity extends AppCompatActivity implements
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        System.out.println("happening:" + menuItem.getItemId() + "__" + android.R.id.home);
+        switch (menuItem.getItemId()) {
+            case android.R.id.home:
+                Toast.makeText(MainFragmentActivity.this, "clicked", Toast.LENGTH_SHORT).show();
+        }
+        return (super.onOptionsItemSelected(menuItem));
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
@@ -135,6 +148,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
         return true;
         //  return super.onCreateOptionsMenu(menu);
     }
+
 
     public void setLocale() {
         Locale locale = new Locale("en");
@@ -168,6 +182,27 @@ public class MainFragmentActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    public void onBackPressed() {
+
+        Fragment fromFragment = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
+        if (fromFragment != null)
+            if (fromFragment instanceof MatchListMainFragment
+                    || fromFragment instanceof MatchInfo
+                    || fromFragment instanceof ScheduleNewGame
+
+                    || fromFragment instanceof TeamListFragment
+                    || fromFragment instanceof MatchDetailActivity) {
+                finish();
+            } else if (fromFragment instanceof MainActivity) {
+                getSupportFragmentManager().beginTransaction()
+                        .addToBackStack(null).add(R.id.mainFrag, new MatchListMainFragment()).commit();
+            } else {
+                super.onBackPressed();
+
+            }
+
+    }
 
     public void onClick(View v) {
         System.out.println("________dottt1");
@@ -190,7 +225,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
      * @param type 0-->TeamDialog
      *             1-->PlayerDialog
      */
-    public void showNewTeamDialog(int type, DialogInterface dialogInterface,int teamID) {
+    public void showNewTeamDialog(int type, DialogInterface dialogInterface, int teamID) {
 
         // DialogFragment.show() will take care of adding the fragment
         // in a transaction.  We also want to remove any currently showing
@@ -398,12 +433,12 @@ public class MainFragmentActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.nav_saved_game) {
-            getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new MatchListMainFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, new MatchListMainFragment()).commit();
         } else if (id == R.id.nav_viewer) {
-            MatchDetailActivity f = new MatchDetailActivity();
-//                Bundle b=new Bundle();
-//                b.putInt("match_id",1492432485);
-//                f.setArguments(b);
+            MatchListMainFragment f = new MatchListMainFragment();
+            Bundle b = new Bundle();
+            b.putBoolean("is_online", true);
+            f.setArguments(b);
             getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, f).commit();
         } else if (id == R.id.nav_schedule_game) {
             getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new ScheduleNewGame()).commit();
@@ -449,9 +484,10 @@ public class MainFragmentActivity extends AppCompatActivity implements
 
     @Override
     public void itemPicked(int id, String message) {
-       Fragment f= getSupportFragmentManager().findFragmentById(R.id.mainFrag);
-        if(f!=null)
-            if(f instanceof ItemClickInterface)
-                ((ItemClickInterface) f).itemPicked(id,message);
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
+        if (f != null)
+            if (f instanceof ItemClickInterface)
+                ((ItemClickInterface) f).itemPicked(id, message);
     }
+
 }

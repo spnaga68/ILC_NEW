@@ -122,6 +122,11 @@ public class EditPlayerProfile extends Fragment implements AppBarLayout.OnOffset
     @Override
     public void onResume() {
         super.onResume();
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        }
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
     }
 

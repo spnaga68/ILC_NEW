@@ -85,9 +85,9 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.score)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         viewPager = (ViewPager) v.findViewById(R.id.pager);
-        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        //viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
-        adapter = new Pager(getActivity().getSupportFragmentManager(), tabLayout.getTabCount(), match_id);
+        adapter = new Pager(getChildFragmentManager(), tabLayout.getTabCount(), match_id);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         //Adding adapter to pager
@@ -147,6 +147,11 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         }
         tabLayout.addOnTabSelectedListener(this);
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
