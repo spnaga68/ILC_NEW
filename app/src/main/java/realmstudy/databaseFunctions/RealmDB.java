@@ -908,5 +908,9 @@ public class RealmDB {
         }
         realm.commitTransaction();
     }
+
+    public static Ground getGround(Realm realm, int groundId) {
+        return realm.where(Ground.class).equalTo("id",groundId).findAll().first();
+    }
 }
 

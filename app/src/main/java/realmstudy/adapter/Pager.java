@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import realmstudy.fragments.ChartFrag;
 import realmstudy.fragments.InfoFragment;
 import realmstudy.fragments.OversFragment;
 import realmstudy.fragments.ScoreBoardFragment;
@@ -54,6 +55,13 @@ public class Pager extends FragmentStatePagerAdapter {
                 Sfrag.setArguments(bd);
 
                 return Sfrag;
+            case 3:
+                ChartFrag Sfrags = new ChartFrag();
+                Bundle bds = new Bundle();
+                bds.putInt("match_id", match_id);
+                Sfrags.setArguments(bds);
+
+                return Sfrags;
             default:
                 return null;
         }

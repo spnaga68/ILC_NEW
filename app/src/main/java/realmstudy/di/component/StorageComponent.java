@@ -3,6 +3,7 @@ package realmstudy.di.component;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import realmstudy.GroundPickerActivity;
 import realmstudy.MainFragmentActivity;
 import realmstudy.MatchDetailActivity;
 import realmstudy.TeamPickerActivity;
@@ -67,6 +68,7 @@ public interface StorageComponent {
     void inject(GroundListFragment groundListFragment);
     void inject(GroundListAdapter groundListAdapter);
     void inject(AddNewGround addNewGround);
+    void inject(GroundPickerActivity groundPickerActivity);
 
 
 

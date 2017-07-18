@@ -47,12 +47,14 @@ import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import realmstudy.GroundPickerActivity;
 import realmstudy.MainActivity;
 import realmstudy.MainFragmentActivity;
 import realmstudy.MyApplication;
 import realmstudy.R;
 import realmstudy.TeamPickerActivity;
 import realmstudy.data.CommanData;
+import realmstudy.data.RealmObjectData.Ground;
 import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.data.RealmObjectData.Player;
 import realmstudy.data.RealmObjectData.Team;
@@ -117,7 +119,13 @@ public class ScheduleNewGame extends Fragment {
         whatsapp_share = (AppCompatImageButton) v.findViewById(R.id.whatsapp_share);
         gmail_share = (AppCompatImageButton) v.findViewById(R.id.gmail_share);
         other_share = (AppCompatImageButton) v.findViewById(R.id.other_share);
-
+        venue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), GroundPickerActivity.class);
+                getActivity().startActivityForResult(i, 30);
+            }
+        });
         players.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,44 +164,43 @@ public class ScheduleNewGame extends Fragment {
             public void onClick(View view) {
                 if (homeTeam != null && awayTeam != null) {
                     if (match_time != 0) {
-                        if(venue.getText().toString().trim().equals("")){
-                        MatchDetails md = RealmDB.createNewMatch(getActivity(), realm, homeTeam, awayTeam, "", null, 0, venue.getText().toString(), 0, match_time);
-                        OUTPUT_PATH += md.getMatch_id() + ".png";
-                        RealmDB.addPlayerToMatch(players_array, getActivity(), realm, md);
-                        share_lay.setVisibility(View.VISIBLE);
-                        save.setVisibility(View.GONE);
-                        logo_lay.setVisibility(View.VISIBLE);
-                        desc_head.setText(desc.getText());
-                        desc_head.setVisibility(View.GONE);
-                        desc.setVisibility(View.GONE);
-                        venue.clearFocus();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            venue.setBackgroundColor(getActivity().getColor(R.color.transperant));
+                        if (!venue.getText().toString().trim().equals("")) {
+                            MatchDetails md = RealmDB.createNewMatch(getActivity(), realm, homeTeam, awayTeam, "", null, 0, venue.getText().toString(), 0, match_time);
+                            OUTPUT_PATH += md.getMatch_id() + ".png";
+                            RealmDB.addPlayerToMatch(players_array, getActivity(), realm, md);
+                            share_lay.setVisibility(View.VISIBLE);
+                            save.setVisibility(View.GONE);
+                            logo_lay.setVisibility(View.VISIBLE);
+                            desc_head.setText(desc.getText());
+                            desc_head.setVisibility(View.GONE);
+                            desc.setVisibility(View.GONE);
+                            venue.clearFocus();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                venue.setBackgroundColor(getActivity().getColor(R.color.transperant));
+                            } else
+                                venue.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.transperant));
+                            venue.setCursorVisible(false);
+                            realm.beginTransaction();
+                            md.setDescription(desc.getText().toString());
+                            realm.commitTransaction();
+                            AppCompatImageButton buttons[] = {whatsapp_share, gmail_share, fb_share, other_share};
+
+                            int i = 1;
+
+                            for (AppCompatImageButton viewId : buttons) {
+                                // Button imageButton = (Button) findViewById(viewId);
+                                Animation fadeAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.button_anim);
+                                fadeAnimation.setStartOffset(i * 200);
+                                AppCompatImageButton butt = buttons[i - 1];
+                                butt.startAnimation(fadeAnimation);
+
+                                i++;
+                            }
+
+
                         } else
-                            venue.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.transperant));
-                        venue.setCursorVisible(false);
-                        realm.beginTransaction();
-                        md.setDescription(desc.getText().toString());
-                        realm.commitTransaction();
-                        AppCompatImageButton buttons[] = {whatsapp_share, gmail_share, fb_share, other_share};
-
-                        int i = 1;
-
-                        for (AppCompatImageButton viewId : buttons) {
-                            // Button imageButton = (Button) findViewById(viewId);
-                            Animation fadeAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.button_anim);
-                            fadeAnimation.setStartOffset(i * 200);
-                            AppCompatImageButton butt = buttons[i - 1];
-                            butt.startAnimation(fadeAnimation);
-
-                            i++;
-                        }
-
-
-                    }
-                        else
-                            Toast.makeText(getActivity(), getString(R.string.select_venue), Toast.LENGTH_SHORT).show();}
-                    else
+                            Toast.makeText(getActivity(), getString(R.string.select_venue), Toast.LENGTH_SHORT).show();
+                    } else
                         Toast.makeText(getActivity(), getString(R.string.select_match_time), Toast.LENGTH_SHORT).show();
                 } else
                     Toast.makeText(getActivity(), getString(R.string.select_valid_home_away_team), Toast.LENGTH_SHORT).show();
@@ -360,30 +367,37 @@ public class ScheduleNewGame extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
-            final int teamID = data.getIntExtra("id", 0);
-            home_team.post(new Runnable() {
-                @Override
-                public void run() {
+            if (requestCode == 20) {
+                final int teamID = data.getIntExtra("id", 0);
+                home_team.post(new Runnable() {
+                    @Override
+                    public void run() {
 
 
-                    if (data.getStringExtra("for").equals("home")) {
-                        if (awayTeam != null && teamID == awayTeam.team_id) {
-                            awayTeam = null;
-                            away_team.setText("");
+                        if (data.getStringExtra("for").equals("home")) {
+                            if (awayTeam != null && teamID == awayTeam.team_id) {
+                                awayTeam = null;
+                                away_team.setText("");
+                            }
+                            homeTeam = RealmDB.getTeam(realm, teamID);
+                            home_team.setText(homeTeam.nick_name);
+                        } else {
+                            if (homeTeam != null && teamID == homeTeam.team_id) {
+                                homeTeam = null;
+                                home_team.setText("");
+                            }
+                            awayTeam = RealmDB.getTeam(realm, teamID);
+                            away_team.setText(awayTeam.nick_name);
                         }
-                        homeTeam = RealmDB.getTeam(realm, teamID);
-                        home_team.setText(homeTeam.nick_name);
-                    } else {
-                        if (homeTeam != null && teamID == homeTeam.team_id) {
-                            homeTeam = null;
-                            home_team.setText("");
-                        }
-                        awayTeam = RealmDB.getTeam(realm, teamID);
-                        away_team.setText(awayTeam.nick_name);
                     }
-                }
-            });
+                });
 
+            } else {
+                final int groundId = data.getIntExtra("id", 0);
+                Ground ground = RealmDB.getGround(realm, groundId);
+                if(ground!=null)
+                venue.setText(ground.getGroundName());
+            }
         }
     }
 

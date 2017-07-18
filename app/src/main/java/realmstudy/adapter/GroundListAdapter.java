@@ -28,6 +28,7 @@ import realmstudy.data.RealmObjectData.Ground;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.fragments.AddNewGround;
 import realmstudy.fragments.GroundListFragment;
+import realmstudy.interfaces.ItemClickInterface;
 
 
 public class GroundListAdapter extends RealmRecyclerViewAdapter<Ground, GroundListAdapter.MyViewHolder> {
@@ -36,10 +37,20 @@ public class GroundListAdapter extends RealmRecyclerViewAdapter<Ground, GroundLi
     @Inject
     Realm realm;
     String[] batStyleArray, bowlStyleArray;
+    ItemClickInterface itemClickInterface;
 
     public GroundListAdapter(Context activity, OrderedRealmCollection<Ground> data) {
         super(activity, data, true);
         this.context = activity;
+        batStyleArray = (context.getResources().getStringArray(R.array.bat_style));
+        bowlStyleArray = (context.getResources().getStringArray(R.array.bowl_style));
+        ((MyApplication) ((Activity) context).getApplication()).getComponent().inject(this);
+    }
+
+    public GroundListAdapter(Context activity, ItemClickInterface itemClickInterface, OrderedRealmCollection<Ground> data) {
+        super(activity, data, true);
+        this.context = activity;
+        this.itemClickInterface = itemClickInterface;
         batStyleArray = (context.getResources().getStringArray(R.array.bat_style));
         bowlStyleArray = (context.getResources().getStringArray(R.array.bowl_style));
         ((MyApplication) ((Activity) context).getApplication()).getComponent().inject(this);
@@ -85,12 +96,16 @@ public class GroundListAdapter extends RealmRecyclerViewAdapter<Ground, GroundLi
             list_item_lay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    Bundle b = new Bundle();
-                    b.putInt("id", getData().get(getAdapterPosition()).getId());
-                    AddNewGround f = new AddNewGround();
-                    f.setArguments(b);
-                    ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction().add(R.id.mainFrag, f).addToBackStack(null).commit();
+                    int id = getData().get(getAdapterPosition()).getId();
+                    if (itemClickInterface != null)
+                        ((ItemClickInterface) context).itemPicked(id, "");
+                    else {
+                        Bundle b = new Bundle();
+                        b.putInt("id", id);
+                        AddNewGround f = new AddNewGround();
+                        f.setArguments(b);
+                        ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction().add(R.id.mainFrag, f).addToBackStack(null).commit();
+                    }
                 }
             });
             view.setOnLongClickListener(this);

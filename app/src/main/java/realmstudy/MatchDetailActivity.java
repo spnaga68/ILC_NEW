@@ -43,6 +43,7 @@ import realmstudy.data.SessionSave;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.extras.AnimatedExpandableListView;
 import realmstudy.extras.ZoomOutPageTransformer;
+import realmstudy.fragments.ChartFrag;
 import realmstudy.fragments.OversFragment;
 import realmstudy.fragments.ScorecardDetailFragment;
 
@@ -87,6 +88,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.info)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.overs)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.score)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.chart)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         viewPager = (ViewPager) v.findViewById(R.id.pager);
         //viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
@@ -203,6 +205,11 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
             } else if (fragment instanceof OversFragment && positionOffsetPixels == 0) {
                 OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
                 oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
+            }
+
+            else if(fragment instanceof ChartFrag &&  positionOffsetPixels == 0){
+                ChartFrag chartFrag = (ChartFrag) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                chartFrag.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
             }
         }
     }

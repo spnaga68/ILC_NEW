@@ -1,3 +1,4 @@
+
 package realmstudy;
 
 import android.content.Intent;
@@ -15,8 +16,8 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import io.realm.Realm;
-import realmstudy.adapter.TeamListAdapter;
-import realmstudy.data.RealmObjectData.Team;
+import realmstudy.adapter.GroundListAdapter;
+import realmstudy.data.RealmObjectData.Ground;
 import realmstudy.fragments.DialogFragment.NewPlayerDialog;
 import realmstudy.fragments.DialogFragment.NewTeamDialog;
 import realmstudy.interfaces.DialogInterface;
@@ -26,12 +27,12 @@ import realmstudy.interfaces.ItemClickInterface;
  * Created by developer on 1/7/17.
  */
 
-public class TeamPickerActivity extends AppCompatActivity implements ItemClickInterface,DialogInterface {
+public class GroundPickerActivity extends AppCompatActivity implements ItemClickInterface, DialogInterface {
 
     private RecyclerView
             list_view;
     private android.support.design.widget.FloatingActionButton add;
-    TeamListAdapter adapter;
+    GroundListAdapter adapter;
     @Inject
     Realm realm;
     TextView selected_teams;
@@ -42,30 +43,32 @@ public class TeamPickerActivity extends AppCompatActivity implements ItemClickIn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.team_list_view);
 
-        if (getIntent() != null && getIntent().getStringExtra("for") != null)
-            pickerFor = getIntent().getStringExtra("for");
+//        if (getIntent() != null && getIntent().getStringExtra("for") != null)
+//            pickerFor = getIntent().getStringExtra("for");
         ((MyApplication) getApplication()).getComponent().inject(this);
         list_view = (RecyclerView) findViewById(R.id.list_view);
         add = (android.support.design.widget.FloatingActionButton) findViewById(R.id.add);
 
         selected_teams = (TextView) findViewById(R.id.selected_teams);
         selected_teams.setSelected(true);
-        adapter = new TeamListAdapter(this, realm.where(Team.class).findAll(), false);
+        adapter = new GroundListAdapter(this,this, realm.where(Ground.class).findAll());
         list_view.setAdapter(adapter);
         list_view.setLayoutManager(new LinearLayoutManager(this));
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               showNewTeamDialog(0, TeamPickerActivity.this, -1);
-            }
-        });
+        add.setVisibility(View.GONE);
+
+//        add.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showNewTeamDialog(0, GroundPickerActivity.this, -1);
+//            }
+//        });
     }
 
     @Override
     public void itemPicked(int id, String message) {
         Bundle conData = new Bundle();
         conData.putInt("id", id);
-        conData.putString("for", pickerFor);
+        //conData.putString("for", pickerFor);
         Intent intent = new Intent();
         intent.putExtras(conData);
         setResult(RESULT_OK, intent);
@@ -99,7 +102,7 @@ public class TeamPickerActivity extends AppCompatActivity implements ItemClickIn
 
     @Override
     public void onSuccess(String result, boolean success) {
-        adapter = new TeamListAdapter(this, realm.where(Team.class).findAll(), false);
+        adapter = new GroundListAdapter(this,this, realm.where(Ground.class).findAll());
         list_view.setAdapter(adapter);
     }
 }
