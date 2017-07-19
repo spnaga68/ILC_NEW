@@ -115,10 +115,11 @@ public class MatchListPage extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     progress_bar.setVisibility(View.GONE);
+                    datas.clear();
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot md : dataSnapshot.getChildren()) {
                             System.out.println("md.getValue()" + md.getValue());
-                            datas.clear();
+
                             if (md.getValue() != null && !md.getValue().equals("")) {
                                 MatchDetails matchDetails = new MatchDetails();
                                 matchDetails.setMatch_id(Integer.parseInt(md.getKey()));
