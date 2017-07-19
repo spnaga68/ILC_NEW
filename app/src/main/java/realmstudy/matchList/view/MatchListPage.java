@@ -108,7 +108,6 @@ public class MatchListPage extends Fragment {
                 typeString = "recent";
             }
             myRef = database.getReference("matchList/" + typeString);
-            System.out.println("tuye" + typeString);
 
 
             valueEventListener = new ValueEventListener() {
