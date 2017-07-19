@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -69,6 +70,10 @@ public class TeamListFragment extends Fragment implements DialogInterface, MsgTo
     public void onResume() {
         super.onResume();
         getActivity().setTitle(getString(R.string.team));
+            if(getActivity() instanceof  MainFragmentActivity)
+            ((MainFragmentActivity)getActivity()).setNaviHome();
+//            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//            ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeButtonEnabled(false);
     }
 
     @Override

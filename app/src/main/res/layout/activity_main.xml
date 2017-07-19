@@ -180,7 +180,7 @@
             android:layout_height="60dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:onClick="onClick"
+            
             android:text="LB" />
 
         <realmstudy.lib.customViews.NormalTextView

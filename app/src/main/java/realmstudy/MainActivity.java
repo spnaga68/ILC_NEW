@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -63,12 +64,13 @@ import retrofit2.Callback;
 
 import static realmstudy.data.CommanData.wicketIdToString;
 
-public class MainActivity extends Fragment implements DialogInterface, MsgToFragment, MsgFromDialog, ScoreBoardViewClickListner {
+public class MainActivity extends Fragment implements DialogInterface,
+        MsgToFragment, MsgFromDialog, ScoreBoardViewClickListner, View.OnClickListener {
 
     private static final int COLOR_SELECT = Color.RED;
     private static final int COLOR_UNSELECT = Color.BLACK;
 
-    private static final int SUBMIT_DELAY = 0;
+    private static final int SUBMIT_DELAY = 500;
     private Realm realm;
     private DetailedScoreData detailedScoreBoardData;
     private Player striker, non_striker;
@@ -147,13 +149,6 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     //initialize views
     public void init(View v) {
         dot_txt = (TextView) v.findViewById(realmstudy.R.id.dot_txt);
-        //  dot_txt.setOnClickListener(MainActivity.this);
-//        dot_txt.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                System.out.println("_______newc");
-//            }
-//        });
         one_run_txt = (TextView) v.findViewById(realmstudy.R.id.one_run_txt);
         two_run_txt = (TextView) v.findViewById(realmstudy.R.id.two_run_txt);
         three_run_txt = (TextView) v.findViewById(realmstudy.R.id.three_run_txt);
@@ -169,6 +164,10 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
         legal_ball_txt = (TextView) v.findViewById(realmstudy.R.id.legal_ball_txt);
         submit = (AppCompatButton) v.findViewById(realmstudy.R.id.submit);
         out = (AppCompatButton) v.findViewById(realmstudy.R.id.out);
+
+
+        setInputListner(true);
+
         // groundFragment = (CanvasStudy) getChildFragmentManager().findFragmentById(R.id.ground_frag);
 
         submit.setOnClickListener(new View.OnClickListener() {
@@ -191,6 +190,38 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
             }
         });
 //
+    }
+
+    private void setInputListner(boolean set) {
+        if (set) {
+            dot_txt.setOnClickListener(this);
+            one_run_txt.setOnClickListener(this);
+            two_run_txt.setOnClickListener(this);
+            three_run_txt.setOnClickListener(this);
+            four_run_txt.setOnClickListener(this);
+            bfour_txt.setOnClickListener(this);
+            bSix_txt.setOnClickListener(this);
+            legal_ball_txt.setOnClickListener(this);
+            wide_txt.setOnClickListener(this);
+            no_ball_txt.setOnClickListener(this);
+            byes_txt.setOnClickListener(this);
+            leg_byes_txt.setOnClickListener(this);
+            granted_txt.setOnClickListener(this);
+        } else {
+            dot_txt.setOnClickListener(null);
+            one_run_txt.setOnClickListener(null);
+            two_run_txt.setOnClickListener(null);
+            three_run_txt.setOnClickListener(null);
+            four_run_txt.setOnClickListener(null);
+            bfour_txt.setOnClickListener(null);
+            bSix_txt.setOnClickListener(null);
+            legal_ball_txt.setOnClickListener(null);
+            wide_txt.setOnClickListener(null);
+            no_ball_txt.setOnClickListener(null);
+            byes_txt.setOnClickListener(null);
+            leg_byes_txt.setOnClickListener(null);
+            granted_txt.setOnClickListener(null);
+        }
     }
 
     @Override
@@ -311,14 +342,15 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     }
 
     private void submitbuttonClicked(int delay) {
+        if (checkInningsGoingOn()) {
+            submitbuttonClicked(null);
+            setInputListner(false);
+        }
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (checkInningsGoingOn())
-                    submitbuttonClicked(null);
-                else {
-                    Log.d("adding Score", "not ongoing");
-                }
+
+                setInputListner(true);
             }
         }, delay);
     }
@@ -688,6 +720,7 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
      *
      * @param v --> view that get clicked
      */
+    @Override
     public void onClick(View v) {
 
 
@@ -1509,6 +1542,11 @@ public class MainActivity extends Fragment implements DialogInterface, MsgToFrag
     public void onResume() {
         super.onResume();
         getActivity().setTitle(getString(R.string.scorer));
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(false);
+
+        }
     }
 
     @Override

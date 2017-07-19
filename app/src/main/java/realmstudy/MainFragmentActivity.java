@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +25,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -63,18 +63,14 @@ public class MainFragmentActivity extends AppCompatActivity implements
     private android.support.v4.widget.DrawerLayout drawer_layout;
     private android.support.v7.widget.Toolbar tool_bar;
     private ImageView toolbar_logo;
-    //    private TextView toolbar_title;
-//    private LinearLayout toolbar_titletm;
-    //  private ImageView imageee;
-    // private ImageButton left_icon;
     private ImageButton right_icon;
     private TextView cancel_b;
     private android.support.v7.widget.SwitchCompat switch_right_icon;
     private FrameLayout mainFrag;
-    // private LinearLayout left_drawer;
     public Realm realm;
     private int dialogType;
     public static DialogInterface dialogInterface;
+    private DrawerLayout drawer;
 
 
     @Override
@@ -107,12 +103,27 @@ public class MainFragmentActivity extends AppCompatActivity implements
         setSupportActionBar(tool_bar);
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, tool_bar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+
+        setNaviHome();
+        tool_bar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fromFragment = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
+                System.out.println("helloo" + (fromFragment instanceof PlayerListFragment));
+                if (fromFragment != null)
+                    if (fromFragment instanceof PlayerListFragment || fromFragment instanceof GroundListFragment
+                            || fromFragment instanceof MainActivity
+                            ) {
+                        onBackPressed();
+                    } else {
+
+                        drawer.openDrawer(Gravity.LEFT);
+
+                    }
+            }
+        });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         // toolbar_title = (TextView) findViewById(realmstudy.R.id.toolbar_title);
@@ -127,15 +138,15 @@ public class MainFragmentActivity extends AppCompatActivity implements
         //  left_drawer = (LinearLayout) findViewById(realmstudy.R.id.left_drawer);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        System.out.println("happening:" + menuItem.getItemId() + "__" + android.R.id.home);
-        switch (menuItem.getItemId()) {
-            case android.R.id.home:
-                Toast.makeText(MainFragmentActivity.this, "clicked", Toast.LENGTH_SHORT).show();
-        }
-        return (super.onOptionsItemSelected(menuItem));
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem menuItem) {
+//        System.out.println("happening:" + menuItem.getItemId() + "__" + android.R.id.home);
+//        switch (menuItem.getItemId()) {
+//            case android.R.id.home:
+//                Toast.makeText(MainFragmentActivity.this, "clicked", Toast.LENGTH_SHORT).show();
+//        }
+//        return (super.onOptionsItemSelected(menuItem));
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -168,13 +179,9 @@ public class MainFragmentActivity extends AppCompatActivity implements
 
 
     public void homePage_title(String title) {
-//        toolbar_title.setVisibility(View.VISIBLE);
-//        toolbar_title.setText(title);
         setSupportActionBar(tool_bar);
         tool_bar.setTitle("ILC");
         tool_bar.hideOverflowMenu();
-//        toolbar_titletm.setVisibility(View.VISIBLE);
-//        toolbar_logo.setVisibility(View.GONE);
 
 
     }
@@ -184,16 +191,15 @@ public class MainFragmentActivity extends AppCompatActivity implements
 
         Fragment fromFragment = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
         if (fromFragment != null)
-            if (fromFragment instanceof MatchListMainFragment
-                    || fromFragment instanceof MatchInfo
+            if (fromFragment instanceof MatchListMainFragment) {
+                finish();
+            } else if (fromFragment instanceof MainActivity || fromFragment instanceof MatchInfo
                     || fromFragment instanceof ScheduleNewGame
-
                     || fromFragment instanceof TeamListFragment
                     || fromFragment instanceof MatchDetailActivity) {
-                finish();
-            } else if (fromFragment instanceof MainActivity) {
                 getSupportFragmentManager().beginTransaction()
-                        .addToBackStack(null).add(R.id.mainFrag, new MatchListMainFragment()).commit();
+                        .addToBackStack(null)
+                        .add(R.id.mainFrag, new MatchListMainFragment()).commit();
             } else {
                 super.onBackPressed();
 
@@ -210,6 +216,13 @@ public class MainFragmentActivity extends AppCompatActivity implements
         } else if (f instanceof MenuActivity)
             ((MenuActivity) f).onClick(v);
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        System.out.println("happening");
+        onBackPressed();
+        return true;
     }
 
     public Realm getRealm() {
@@ -422,13 +435,13 @@ public class MainFragmentActivity extends AppCompatActivity implements
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
+
         return false;
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.nav_saved_game) {
             getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, new MatchListMainFragment()).commit();
         } else if (id == R.id.nav_viewer) {
@@ -465,4 +478,15 @@ public class MainFragmentActivity extends AppCompatActivity implements
                 ((ItemClickInterface) f).itemPicked(id, message);
     }
 
+    public void setNaviHome() {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, tool_bar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    public void removeNaviHome() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
 }

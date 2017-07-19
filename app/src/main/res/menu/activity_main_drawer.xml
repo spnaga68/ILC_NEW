@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
 
     <group android:checkableBehavior="single">
         <item
@@ -9,33 +11,37 @@
 
     </group>
 
-    <item android:title="@string/scorer">
+    <item android:title="@string/scorer"
+        >
         <menu>
-            <item
-                android:id="@+id/nav_saved_game"
-                android:title="@string/Scoring" />
-            <item
-                android:id="@+id/nav_add_player"
-                android:title="@string/add_player"
-                android:visible="false" />
-            <item
-                android:id="@+id/nav_new_game"
-                android:title="@string/new_game" />
-            <item
-                android:id="@+id/nav_schedule_game"
-                android:title="@string/schedule_game" />
-
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_saved_game"
+                    android:title="@string/Scoring" />
+                <item
+                    android:id="@+id/nav_add_player"
+                    android:title="@string/add_player"
+                    android:visible="false" />
+                <item
+                    android:id="@+id/nav_new_game"
+                    android:title="@string/new_game" />
+                <item
+                    android:id="@+id/nav_schedule_game"
+                    android:title="@string/schedule_game" />
+            </group>
         </menu>
     </item>
 
     <item android:title="Admin">
         <menu>
-            <item
-                android:id="@+id/nav_add_team"
-                android:title="@string/add_team" />
-            <item
-                android:id="@+id/nav_add_ground"
-                android:title="@string/add_ground" />
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_add_team"
+                    android:title="@string/add_team" />
+                <item
+                    android:id="@+id/nav_add_ground"
+                    android:title="@string/add_ground" />
+            </group>
         </menu>
     </item>
 

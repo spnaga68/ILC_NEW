@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import javax.inject.Inject;
 
 import io.realm.Realm;
+import realmstudy.MainFragmentActivity;
 import realmstudy.MyApplication;
 import realmstudy.R;
 import realmstudy.adapter.GroundListAdapter;
@@ -61,6 +63,7 @@ public class GroundListFragment extends Fragment implements DialogInterface {
         add_from_contacts = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.add_from_contacts);
         adapter = new GroundListAdapter(getActivity(), realm.where(Ground.class).findAll());
         list_view.setAdapter(adapter);
+        v.findViewById(R.id.progress_bar).setVisibility(View.GONE);
         list_view.setLayoutManager(new LinearLayoutManager(getActivity()));
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,11 +89,9 @@ public class GroundListFragment extends Fragment implements DialogInterface {
         super.onResume();
         if (getActivity() != null)
             getActivity().setTitle(getString(R.string.ground));
-//        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-//            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-//
-//        }
+
+        if (getActivity() instanceof MainFragmentActivity)
+            ((MainFragmentActivity) getActivity()).setNaviHome();
     }
 
     @Override

@@ -104,7 +104,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
 
         if (viewer) {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            myRef = database.getReference("InningsDetailData/"+match_id);
+            myRef = database.getReference("InningsDetailData/" + match_id);
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -158,6 +158,12 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
 
     @Override
     public void onResume() {
+
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        }
         super.onResume();
     }
 
@@ -205,9 +211,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
             } else if (fragment instanceof OversFragment && positionOffsetPixels == 0) {
                 OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
                 oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
-            }
-
-            else if(fragment instanceof ChartFrag &&  positionOffsetPixels == 0){
+            } else if (fragment instanceof ChartFrag && positionOffsetPixels == 0) {
                 ChartFrag chartFrag = (ChartFrag) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
                 chartFrag.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
             }

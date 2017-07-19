@@ -71,11 +71,13 @@ public class PlayerListFragment extends Fragment implements DialogInterface {
         if(getArguments()!=null){
             teamID=getArguments().getInt("id");
         }
+
         list_view = (RecyclerView) v.findViewById(R.id.list_view);
         add = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.add);
         add_from_contacts = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.add_from_contacts);
         adapter = new PlayerListAdapter(getActivity(), realm.where(Player.class).equalTo("teamID",teamID).findAll());
         list_view.setAdapter(adapter);
+        v.findViewById(R.id.progress_bar).setVisibility(View.GONE);
         list_view.setLayoutManager(new LinearLayoutManager(getActivity()));
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,8 +118,8 @@ public class PlayerListFragment extends Fragment implements DialogInterface {
         if(getActivity()!=null)
         getActivity().setTitle((teamID!=-1? RealmDB.getTeam(realm,teamID).nick_name:"" )+" "+getString(R.string.players));
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((MainFragmentActivity)getActivity()).removeNaviHome();
+
 
         }
     }

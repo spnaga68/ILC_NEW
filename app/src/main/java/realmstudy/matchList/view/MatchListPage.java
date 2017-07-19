@@ -27,11 +27,8 @@ import realmstudy.R;
 import realmstudy.adapter.SavedGameListAdapter;
 import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.MatchDetails;
-import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.fragments.MatchInfo;
 import realmstudy.fragments.ScheduleNewGame;
-
-import static android.R.attr.type;
 
 /**
  * Created by developer on 29/5/17.
@@ -115,10 +112,11 @@ public class MatchListPage extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     progress_bar.setVisibility(View.GONE);
+                    datas.clear();
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot md : dataSnapshot.getChildren()) {
                             System.out.println("md.getValue()" + md.getValue());
-                            datas.clear();
+
                             if (md.getValue() != null && !md.getValue().equals("")) {
                                 MatchDetails matchDetails = new MatchDetails();
                                 matchDetails.setMatch_id(Integer.parseInt(md.getKey()));
