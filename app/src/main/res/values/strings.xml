@@ -176,6 +176,7 @@
     <string name="ground">Ground</string>
     <string name="select_valid_ground">Select Ground</string>
     <string name="chart">Chart</string>
+    <string name="select_from_list">Select from list</string>
 
     <string-array name="run_scored_before_runout">
         <item>0</item>

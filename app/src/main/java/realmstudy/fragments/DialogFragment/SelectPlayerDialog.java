@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -54,6 +55,11 @@ public class SelectPlayerDialog extends DialogFragment {
     Spinner bat_style, bowl_style;
     static SelectPlayerDialog f;
     int teamID;
+    private LinearLayout list_player_dialog_title_lay;
+    private LinearLayout new_player_dialog_lay;
+    private ImageView new_player_arrow;
+    private LinearLayout new_player_dialog_title_lay;
+    private ImageView list_arrow;
 
     public static SelectPlayerDialog newInstance(int match_id, boolean ishomeTeam, int current_bowler_id, String title, int assignTo) {
         if (f != null)
@@ -141,7 +147,7 @@ public class SelectPlayerDialog extends DialogFragment {
     private void selectPlayerDialog(View selectPlayerDialog, final Realm realm, final String title_txt) {
         TextView
                 title, submit_new_player, submit_from_db;
-        LinearLayout database_lay;
+        final LinearLayout database_lay;
         final Spinner player_db_spinner;
         final EditText name;
         final EditText ph_no;
@@ -163,10 +169,11 @@ public class SelectPlayerDialog extends DialogFragment {
 
         if (ishomeTeam) {
             //  players = realm.where(MatchDetails.class).equalTo("match_id", matchDetails.getMatch_id()).findFirst().getHomeTeamPlayers();
-
-            otherPlayers = RealmDB.getPlayerNotInHomeTeam(getActivity(), realm, matchDetails);
+            otherPlayers = new ArrayList<>(realm.where(Player.class).equalTo("teamID", matchDetails.getHomeTeam().team_id).findAll());
+            //otherPlayers = RealmDB.getPlayerNotInHomeTeam(getActivity(), realm, matchDetails);
         } else {
-            otherPlayers = RealmDB.getPlayerNotInAwayTeam(getActivity(), realm, matchDetails);
+            otherPlayers = new ArrayList<>(realm.where(Player.class).equalTo("teamID", matchDetails.getAwayTeam().team_id).findAll());
+            // otherPlayers = RealmDB.getPlayerNotInAwayTeam(getActivity(), realm, matchDetails);
             //   players = realm.where(MatchDetails.class).equalTo("match_id", matchDetails.getMatch_id()).findFirst().getAwayTeamPlayers();
         }
         //   System.out.println("______________" + home_team_players.size() + "__" + away_team_players.size() + "___" + otherPlayer.size() + "___" + otherPlayers.size());
@@ -187,6 +194,44 @@ public class SelectPlayerDialog extends DialogFragment {
         submit_new_player = (AppCompatButton) selectPlayerDialog.findViewById(R.id.submit_new_player);
         submit_from_db = (AppCompatButton) selectPlayerDialog.findViewById(R.id.submit_from_db);
         TextView from_contacts = (TextView) selectPlayerDialog.findViewById(R.id.from_contacts);
+
+        list_player_dialog_title_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.list_player_dialog_title_lay);
+        new_player_dialog_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.new_player_dialog_lay);
+        new_player_arrow = (ImageView) selectPlayerDialog.findViewById(R.id.new_player_arrow);
+        new_player_dialog_title_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.new_player_dialog_title_lay);
+        list_arrow = (ImageView) selectPlayerDialog.findViewById(R.id.list_arrow);
+        list_player_dialog_title_lay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!database_lay.isShown()) {
+                    database_lay.setVisibility(View.VISIBLE);
+                    list_arrow.setImageResource(R.drawable.down_arrow);
+                    new_player_arrow.setImageResource(R.drawable.up_arrow);
+                    new_player_dialog_lay.setVisibility(View.GONE);
+                } else {
+                    database_lay.setVisibility(View.GONE);
+                    list_arrow.setImageResource(R.drawable.up_arrow);
+                    new_player_arrow.setImageResource(R.drawable.down_arrow);
+                    new_player_dialog_lay.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        new_player_dialog_title_lay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (new_player_dialog_lay.isShown()) {
+                    database_lay.setVisibility(View.VISIBLE);
+                    list_arrow.setImageResource(R.drawable.down_arrow);
+                    new_player_arrow.setImageResource(R.drawable.up_arrow);
+                    new_player_dialog_lay.setVisibility(View.GONE);
+                } else {
+                    database_lay.setVisibility(View.GONE);
+                    list_arrow.setImageResource(R.drawable.up_arrow);
+                    new_player_arrow.setImageResource(R.drawable.down_arrow);
+                    new_player_dialog_lay.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         //set value
         title.setText(title_txt);
         player_db_spinner.setAdapter(adapter);
@@ -215,7 +260,7 @@ public class SelectPlayerDialog extends DialogFragment {
                 if (!name.getText().toString().isEmpty()) {
                     // addPlayerToMatch(name.getText().toString(), ph_no.getText().toString());
 
-                    int pID = RealmDB.addNewPlayerToMatch(getActivity(), realm,name.getText().toString(), "", bat_style.getSelectedItemPosition(), bowl_style.getSelectedItemPosition(), 0,matchDetails,ishomeTeam,ishomeTeam?matchDetails.getHomeTeam().team_id:matchDetails.getAwayTeam().team_id);
+                    int pID = RealmDB.addNewPlayerToMatch(getActivity(), realm, name.getText().toString(), "", bat_style.getSelectedItemPosition(), bowl_style.getSelectedItemPosition(), 0, matchDetails, ishomeTeam, ishomeTeam ? matchDetails.getHomeTeam().team_id : matchDetails.getAwayTeam().team_id);
                     if (pID != -1 && getDialog() != null) {
                         dismiss();
                         ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, true, String.valueOf(pID), "success", assignTo);
@@ -392,7 +437,7 @@ public class SelectPlayerDialog extends DialogFragment {
 
                         if (!name.isEmpty()) {
 
-                            int pID = RealmDB.addNewPlayerToMatch(getActivity(), realm, name, cNumber, bat_style.getSelectedItemPosition(), bowl_style.getSelectedItemPosition(),0, matchDetails, ishomeTeam,ishomeTeam?matchDetails.getHomeTeam().team_id:matchDetails.getAwayTeam().team_id);
+                            int pID = RealmDB.addNewPlayerToMatch(getActivity(), realm, name, cNumber, bat_style.getSelectedItemPosition(), bowl_style.getSelectedItemPosition(), 0, matchDetails, ishomeTeam, ishomeTeam ? matchDetails.getHomeTeam().team_id : matchDetails.getAwayTeam().team_id);
                             if (getDialog() != null && pID != -1 ? true : false)
                                 dismiss();
 

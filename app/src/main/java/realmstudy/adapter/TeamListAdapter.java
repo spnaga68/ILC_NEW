@@ -88,12 +88,22 @@ public class TeamListAdapter extends RealmRecyclerViewAdapter<Team, TeamListAdap
                     ((ItemClickInterface)context).itemPicked(id,"");
                 }
             });
+//            list_item_lay.setOnLongClickListener(new View.OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(View v) {
+//                    v.setSelected(true);
+//                    System.out.println("LongClick");
+//                    return true;
+//                }
+//            });
             view.setOnLongClickListener(this);
         }
 
         @Override
         public boolean onLongClick(View v) {
             // context.deleteItem(data);
+            v.setSelected(true);
+            System.out.println("LongClick");
             return true;
         }
     }

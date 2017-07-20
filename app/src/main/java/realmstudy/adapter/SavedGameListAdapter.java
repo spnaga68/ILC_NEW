@@ -63,7 +63,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
 
     private Handler handler = new Handler(); // hanlder for running delayed runnables
     HashMap<String, Runnable> pendingRunnables = new HashMap<>(); // map of items to pending runnables, so we can cancel a removal if need be
-    List<MatchDetails> data;
+    List<MatchDetails> data = new ArrayList<>();
     @Inject
     Realm realm;
 
@@ -164,6 +164,11 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
         return undoOn;
     }
 
+    public void addData(ArrayList<MatchDetails> datas) {
+        data.addAll(datas);
+        notifyDataSetChanged();
+    }
+
 
     /**
      * ViewHolder capable of presenting two states: "normal" and "undo" state.
@@ -235,11 +240,11 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                             ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
                         }
                     } else {
-                      //  MatchDetails matchDetails=data.get(getAdapterPosition());
+                        //  MatchDetails matchDetails=data.get(getAdapterPosition());
                         Bundle b = new Bundle();
                         MatchDetailActivity fragment = new MatchDetailActivity();
                         b.putInt("match_id", data.get(getAdapterPosition()).getMatch_id());
-                        b.putBoolean("is_online",true);
+                        b.putBoolean("is_online", true);
                         fragment.setArguments(b);
                         ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
                     }
