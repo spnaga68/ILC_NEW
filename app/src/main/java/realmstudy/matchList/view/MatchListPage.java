@@ -146,6 +146,8 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
                             page += 1;
                             if (datas == null || datas.size() == 0)
                                 no_data_lay.setVisibility(View.VISIBLE);
+                            else
+                                no_data_lay.setVisibility(View.GONE);
                         }
                         (savedGameListAdapter).addData(datas);
                     } else {
@@ -159,6 +161,8 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
                     progress_bar.setVisibility(View.GONE);
                     if (datas == null || datas.size() == 0)
                         no_data_lay.setVisibility(View.VISIBLE);
+                    else
+                        no_data_lay.setVisibility(View.GONE);
                 }
             };
             queryRef.addListenerForSingleValueEvent(valueEventListener);
@@ -176,6 +180,8 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
             mRecyclerView.setHasFixedSize(true);
             if (data == null || data.size() == 0)
                 no_data_lay.setVisibility(View.VISIBLE);
+            else
+                no_data_lay.setVisibility(View.GONE);
 
             progress_bar.setVisibility(View.GONE);
         }

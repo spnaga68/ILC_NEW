@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -579,7 +580,13 @@ public class MainActivity extends Fragment implements DialogInterface,
                     }
                 });
 
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new android.content.DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(android.content.DialogInterface dialogs) {
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+            }
+        });
         // display dialog
         dialog.show();
     }
@@ -619,7 +626,13 @@ public class MainActivity extends Fragment implements DialogInterface,
                     }
                 });
 
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new android.content.DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(android.content.DialogInterface dialogs) {
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+            }
+        });
         // display dialog
         dialog.show();
     }
@@ -1543,8 +1556,7 @@ public class MainActivity extends Fragment implements DialogInterface,
         super.onResume();
         getActivity().setTitle(getString(R.string.scorer));
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(false);
+            ((MainFragmentActivity) getActivity()).removeNaviHome();
 
         }
     }

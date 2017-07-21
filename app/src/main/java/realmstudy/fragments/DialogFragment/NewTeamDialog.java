@@ -72,28 +72,30 @@ public class NewTeamDialog extends DialogFragment {
             public void onClick(View view) {
                 final String name = home_team_name.getText().toString();
                 final String location = nick_name_txt.getText().toString();
-                if (!name.trim().isEmpty() ) {
-                    if(!location.trim().isEmpty()){
-                    Realm.init(getActivity());
-                    RealmConfiguration config = new RealmConfiguration.Builder()
-                            .build();
-                    Realm realm = Realm.getInstance(config);
+                if (!name.trim().isEmpty()) {
+                    if (!location.trim().isEmpty()) {
+                        Realm.init(getActivity());
+                        RealmConfiguration config = new RealmConfiguration.Builder()
+                                .build();
+                        Realm realm = Realm.getInstance(config);
 
-                    realm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            Team teamObj = realm.createObject(Team.class);
-                            teamObj.team_id = realm.where(Team.class).findAll().size();
-                            teamObj.name = name;
-                            teamObj.nick_name = location;
-                        }
-                    });
-                    nick_name_txt.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                    dismiss();
-                }else{
-                        Toast.makeText(getActivity(), getString(R.string.enter_team_name), Toast.LENGTH_SHORT).show();
-                }}else{
-                    Toast.makeText(getActivity(), getString(R.string.enter_team_nick_name), Toast.LENGTH_SHORT).show();
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                Team teamObj = realm.createObject(Team.class);
+                                teamObj.team_id = realm.where(Team.class).findAll().size();
+                                teamObj.name = name;
+                                teamObj.nick_name = location;
+                            }
+                        });
+                        nick_name_txt.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                        dismiss();
+                    } else {
+                        Toast.makeText(getActivity(), getString(R.string.enter_team_nick_name), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+
+                    Toast.makeText(getActivity(), getString(R.string.enter_team_name), Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -126,10 +126,6 @@ public class MainFragmentActivity extends AppCompatActivity implements
         });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        // toolbar_title = (TextView) findViewById(realmstudy.R.id.toolbar_title);
-        // toolbar_titletm = (LinearLayout) findViewById(realmstudy.R.id.toolbar_titletm);
-        //  imageee = (ImageView) findViewById(realmstudy.R.id.imageee);
-        // left_icon = (ImageButton) findViewById(realmstudy.R.id.left_icon);
         right_icon = (ImageButton) findViewById(realmstudy.R.id.right_icon);
         cancel_b = (TextView) findViewById(realmstudy.R.id.cancel_b);
         switch_right_icon = (android.support.v7.widget.SwitchCompat) findViewById(realmstudy.R.id.switch_right_icon);
@@ -479,14 +475,14 @@ public class MainFragmentActivity extends AppCompatActivity implements
     }
 
     public void setNaviHome() {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, tool_bar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, tool_bar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.addDrawerListener(toggle);
+//        toggle.syncState();
     }
 
     public void removeNaviHome() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 }

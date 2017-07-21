@@ -1,6 +1,5 @@
 package realmstudy.fragments;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -22,18 +20,13 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import realmstudy.R;
 import realmstudy.adapter.OverRvAdapter;
 import realmstudy.data.OverAdapterData;
-import realmstudy.data.ScoreBoardData;
 
 /**
  * Created by developer on 12/7/17.
@@ -51,6 +44,9 @@ public class ChartFrag extends Fragment {
     private LineDataSet line1, line2;
     private ArrayList<Entry> LineValue1;
     private ArrayList<Entry> LineValue2;
+    private String firstBattedTeam, secBattedTeam;
+    private List<OverAdapterData> firstInningsOverAdapterData;
+    private List<OverAdapterData> secInningsOverAdapterData;
 
     @Nullable
     @Override
@@ -62,10 +58,22 @@ public class ChartFrag extends Fragment {
         return v;
     }
 
-    public void setData(List<OverAdapterData> datas, ScoreBoardData current_score_data ) {
-        overAdapterData=datas;
+    public void setData(List<OverAdapterData> datas, String firstBatTeam, String secBatTeam) {
+        overAdapterData = datas;
+        for (int i = 0; i < overAdapterData.size(); i++) {
+            if (overAdapterData.get(i).getOver() == 1)
+                if (i != overAdapterData.size() - 1) {
+                    secInningsOverAdapterData = overAdapterData.subList(0, i);
+                    firstInningsOverAdapterData = overAdapterData.subList(i + 1, overAdapterData.size() - 1);
+                } else {
+                    if (secInningsOverAdapterData == null)
+                        firstInningsOverAdapterData = overAdapterData.subList(0, overAdapterData.size() - 1);
+                }
+        }
         System.out.println("________sss" + datas.size());
         OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
+        firstBattedTeam = firstBatTeam;
+        secBattedTeam = secBatTeam;
         setBarData();
         setBarStyle();
 
@@ -82,10 +90,10 @@ public class ChartFrag extends Fragment {
         xAxis.setAxisMinValue(0);
 //
 
-        line1 = new LineDataSet(LineValue1, "IND");
+        line1 = new LineDataSet(LineValue1, firstBattedTeam);
         line1.setColor(Color.RED);
 
-        line2 = new LineDataSet(LineValue2, "PAK");
+        line2 = new LineDataSet(LineValue2, secBattedTeam);
         line2.setColor(Color.GREEN);
 
         ArrayList<ILineDataSet> dataSets1 = new ArrayList<ILineDataSet>();
@@ -107,17 +115,17 @@ public class ChartFrag extends Fragment {
         XAxis line_xAxis = l_chart.getXAxis();
         line_xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         LineValue1 = new ArrayList<Entry>();
-        for (int i = 0; i < overAdapterData.size(); i++) {
-            System.out.println("toototo" + i + "__" + overAdapterData.get(i).getTotal_run());
-            LineValue1.add(new Entry(i,overAdapterData.get(i).getTotal_run()));
-        }
+        if (firstInningsOverAdapterData != null)
+            for (int i = firstInningsOverAdapterData.size() - 1; i >= 0; i--) {
+                System.out.println("toototo" + i + "__" + firstInningsOverAdapterData.get(i).getTotal_run());
+                LineValue1.add(new Entry(i, firstInningsOverAdapterData.get(i).getTotal_run()));
+            }
         LineValue2 = new ArrayList<Entry>();
-        for (int i = 0; i < overAdapterData.size(); i++) {
-            System.out.println("toototo" + i + "__" + overAdapterData.get(i).getTotal_run());
-            LineValue2.add(new Entry(i,overAdapterData.get(i).getTotal_run()+3));
-        }
-
-
+        if (secInningsOverAdapterData != null)
+            for (int i = 0; i < overAdapterData.size(); i++) {
+                System.out.println("toototo" + i + "__" + secInningsOverAdapterData.get(i).getTotal_run());
+                LineValue2.add(new Entry(i, secInningsOverAdapterData.get(i).getTotal_run() + 3));
+            }
 
 
     }
@@ -129,11 +137,11 @@ public class ChartFrag extends Fragment {
 
         YAxis right = b_chart.getAxisRight();
         right.setEnabled(false);
-        BarDataSet set1 = new BarDataSet(barValueSet1, "IND");
+        BarDataSet set1 = new BarDataSet(barValueSet1, firstBattedTeam);
         set1.setColor(Color.RED);
 
         set1.setBarBorderWidth(0.5f);
-        BarDataSet set2 = new BarDataSet(barValueSet2, "PAK");
+        BarDataSet set2 = new BarDataSet(barValueSet2, secBattedTeam);
         set2.setColor(Color.GREEN);
         set2.setBarBorderWidth(0.5f);
         set2.setBarBorderColor(Color.WHITE);
@@ -144,7 +152,7 @@ public class ChartFrag extends Fragment {
         BarData data = new BarData(dataSets);
 
         b_chart.setTouchEnabled(true);
-           b_chart.setFitBars(true);
+        b_chart.setFitBars(true);
         b_chart.setData(data);
 
         b_chart.setPinchZoom(false);
@@ -155,7 +163,7 @@ public class ChartFrag extends Fragment {
         b_chart.getAxisLeft().setDrawAxisLine(false);
         b_chart.getXAxis().setDrawAxisLine(false);
         b_chart.setDrawValueAboveBar(true);
-     //   b_chart.setPinchZoom(true);
+        //   b_chart.setPinchZoom(true);
         b_chart.groupBars(0, groupSpace, barSpace);
         b_chart.invalidate();
     }
@@ -165,27 +173,26 @@ public class ChartFrag extends Fragment {
 
         barValueSet1 = new ArrayList<>();
         barValueSet2 = new ArrayList<>();
-
-        for (int i = 0; i < overAdapterData.size(); i++) {
-            System.out.println("toototo" + i + "__" + overAdapterData.get(i).getTotal_run());
-            BarEntry v1e1 = new BarEntry(i, overAdapterData.get(i).getTotal_run());
-            barValueSet1.add(v1e1);
-        }
+        if (firstInningsOverAdapterData != null)
+            for (int i = firstInningsOverAdapterData.size() - 1; i >= 0; i--) {
+                System.out.println("toototo" + i + "__" + firstInningsOverAdapterData.get(i).getTotal_run());
+                BarEntry v1e1 = new BarEntry(i, firstInningsOverAdapterData.get(i).getTotal_run());
+                barValueSet1.add(v1e1);
+            }
 
 //        BarEntry v1e1x = new BarEntry(overAdapterData.length, 0);
 //        BarEntry v1e1xs = new BarEntry(overAdapterData.length+1, 0);
 //        barValueSet1.add(v1e1x);
 //        barValueSet1.add(v1e1xs);
-        for (int i = 0; i < overAdapterData.size(); i++) {
+        if (secInningsOverAdapterData != null)
+            for (int i = 0; i < secInningsOverAdapterData.size(); i++) {
 
-            BarEntry v1e1 = new BarEntry(i, overAdapterData.get(i).getTotal_run() - 3);
-            barValueSet2.add(v1e1);
-        }
+                BarEntry v1e1 = new BarEntry(i, secInningsOverAdapterData.get(i).getTotal_run() - 3);
+                barValueSet2.add(v1e1);
+            }
 //        barValueSet2.add(v1e1x);
 //        barValueSet2.add(v1e1xs);
     }
-
-
 
 
 }

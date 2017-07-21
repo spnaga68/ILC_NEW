@@ -26,6 +26,7 @@ import java.util.GregorianCalendar;
 import javax.inject.Inject;
 
 import io.realm.Realm;
+import realmstudy.MainFragmentActivity;
 import realmstudy.MyApplication;
 import realmstudy.R;
 import realmstudy.data.RealmObjectData.Player;
@@ -123,9 +124,7 @@ public class EditPlayerProfile extends Fragment implements AppBarLayout.OnOffset
     public void onResume() {
         super.onResume();
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+            ((MainFragmentActivity)getActivity()).removeNaviHome();
         }
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
     }

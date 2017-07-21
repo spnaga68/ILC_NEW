@@ -325,7 +325,14 @@ public class ScheduleNewGame extends Fragment {
 
         set = (Button) dialogView.findViewById(R.id.date_time_set);
         set1 = (Button) dialogView.findViewById(R.id.date_time_set1);
+        System.out.println("Millisec___" + System.currentTimeMillis());
         datePicker.setMinDate(System.currentTimeMillis() - 1000);
+//        Date
+        Calendar calendar = Calendar.getInstance();
+        Calendar cc = new GregorianCalendar(calendar.get(Calendar.YEAR) + 1, 12, 31);
+        datePicker.setMinDate(System.currentTimeMillis() - 1000);
+        datePicker.setMaxDate(cc.getTimeInMillis());
+        datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         dialogView.findViewById(R.id.date_time_set1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -346,7 +353,7 @@ public class ScheduleNewGame extends Fragment {
                     // only for gingerbread and newer versions
                     calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getHour(), timePicker.getMinute());
                 } else {
-                    calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
+                    calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
                 }
                 // Calendar calendar = Calendar.getInstance();
                 match_time = calendar.getTimeInMillis() / 1000;
@@ -395,8 +402,8 @@ public class ScheduleNewGame extends Fragment {
             } else {
                 final int groundId = data.getIntExtra("id", 0);
                 Ground ground = RealmDB.getGround(realm, groundId);
-                if(ground!=null)
-                venue.setText(ground.getGroundName());
+                if (ground != null)
+                    venue.setText(ground.getGroundName());
             }
         }
     }

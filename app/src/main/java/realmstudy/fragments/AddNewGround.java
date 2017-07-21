@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import javax.inject.Inject;
 
 import io.realm.Realm;
+import realmstudy.MainFragmentActivity;
 import realmstudy.MyApplication;
 import realmstudy.R;
 import realmstudy.data.RealmObjectData.Ground;
@@ -332,8 +333,7 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
 
         }
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((MainFragmentActivity)getActivity()).removeNaviHome();
 
         }
 

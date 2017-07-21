@@ -162,8 +162,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     public void onResume() {
 
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((MainFragmentActivity)getActivity()).removeNaviHome();
 
         }
         super.onResume();
@@ -215,7 +214,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
                 oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
             } else if (fragment instanceof ChartFrag && positionOffsetPixels == 0) {
                 ChartFrag chartFrag = (ChartFrag) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-                chartFrag.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
+                chartFrag.setData(detailedScoreData.getOverAdapterData(),detailedScoreData.getScoreCardDetailData().getTeamName(),detailedScoreData.getSecscoreCardDetailData().getTeamName());
             }
         }
     }
