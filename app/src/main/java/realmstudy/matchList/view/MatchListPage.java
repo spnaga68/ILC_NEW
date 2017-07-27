@@ -29,6 +29,7 @@ import realmstudy.R;
 import realmstudy.adapter.SavedGameListAdapter;
 import realmstudy.adapter.recycler.Paginate;
 import realmstudy.data.CommanData;
+import realmstudy.data.MatchShortSummaryData;
 import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.fragments.MatchInfo;
 import realmstudy.fragments.ScheduleNewGame;
@@ -111,7 +112,7 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
                 mRecyclerView.setAdapter(savedGameListAdapter);
 
                 mRecyclerView.setHasFixedSize(true);
-                setupPagination(mRecyclerView);
+
             }
             if (type == 0) {
                 typeString = "upcoming";
@@ -121,15 +122,16 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
                 typeString = "recent";
             }
             myRef = database.getReference("matchList/" + typeString);
+            Query queryRef;
 
-            Query queryRef = myRef
-                    .orderByChild("time").limitToFirst(5);
+             queryRef = myRef
+                    .limitToFirst(30);
 
             valueEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     progress_bar.setVisibility(View.GONE);
-                    datas.clear();
+                    //datas.clear();
                     if (dataSnapshot.exists()) {
                         System.out.println("md.getValue()" + dataSnapshot.getChildrenCount());
                         for (DataSnapshot md : dataSnapshot.getChildren()) {
@@ -143,15 +145,20 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
 
                             }
 
-                            page += 1;
+
                             if (datas == null || datas.size() == 0)
                                 no_data_lay.setVisibility(View.VISIBLE);
                             else
                                 no_data_lay.setVisibility(View.GONE);
                         }
+                        page += 1;
+//                        if(datas.size()/10!=0)
+                            allItemLoaded=true;
                         (savedGameListAdapter).addData(datas);
+                        setupPagination(mRecyclerView);
                     } else {
-                        no_data_lay.setVisibility(View.VISIBLE);
+//                        System.out.println("databaseerrorss" );
+//                        no_data_lay.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -196,7 +203,7 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
 
         paginate = Paginate.with(recyclerView, this)
                 .setNotifyScrollThreshold(3)
-                .setLoadingTriggerThreshold(5)
+                .setLoadingTriggerThreshold(8)
                 .addLoadingListItem(true)
                 .setLoadingListItemCreator(null)
                 .build();
@@ -206,13 +213,11 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
     public void onLoadMore() {
 
         if (page > 0) {
-            System.out.println("___lord" + page + "__" + datas.get(datas.size() - 1).getTime());
             loading = true;
-            if (datas.get(datas.size() - 1).getTime() != null) {
-//                Query queryRef = myRef
-//                        .orderByChild("time").startAt(datas.size() - 1).limitToFirst(datas.size() + 10);
-//                queryRef.addListenerForSingleValueEvent(valueEventListener);
-            }
+            System.out.println("Nandu__"+datas.size());
+                Query queryRef = myRef
+                        .startAt(datas.size() - 1).endAt(datas.size() + 5);
+                queryRef.addListenerForSingleValueEvent(valueEventListener);
         }
     }
 

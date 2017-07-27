@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import realmstudy.R;
+import realmstudy.data.CommanData;
 import realmstudy.data.ScoreCardDetailData;
 import realmstudy.extras.AnimatedExpandableListView;
 
@@ -198,7 +199,17 @@ public class ScorecardDetailAdapter extends AnimatedExpandableListView.AnimatedE
         holder.extras_run.setText("" + datas.get(groupPosition).getTotal_extras());
         holder.extras_detail.setText("" + datas.get(groupPosition).getExtras_detail());
         holder.total_run.setText("" + datas.get(groupPosition).getTeamRun_over());
-        holder.current_run_rate_detail.setText("" + datas.get(groupPosition).getCurrent_run_rate());
+        try{
+String s[]=datas.get(groupPosition).getTeamRun_over().split("-");
+            float run=0;
+        String balls="0";
+        if(s!=null){
+            run= Integer.parseInt(s[0]);
+            balls= (s[1].replace("(","-").split("-")[1].replace(")",""));
+        }
+        holder.current_run_rate_detail.setText("" + CommanData.currentRunRate(run, balls));}catch (Exception e){
+            e.printStackTrace();
+        }
         return convertView;
     }
 

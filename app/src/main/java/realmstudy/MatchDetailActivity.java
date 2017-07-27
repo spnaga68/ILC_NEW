@@ -89,7 +89,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.info)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.overs)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.score)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.chart)));
+       // tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.chart)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         viewPager = (ViewPager) v.findViewById(R.id.pager);
         //viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
@@ -106,7 +106,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         if (viewer) {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             myRef = database.getReference("InningsDetailData/" + match_id);
-
+            tabLayout.addOnTabSelectedListener(this);
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -212,10 +212,12 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
             } else if (fragment instanceof OversFragment && positionOffsetPixels == 0) {
                 OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
                 oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
-            } else if (fragment instanceof ChartFrag && positionOffsetPixels == 0) {
-                ChartFrag chartFrag = (ChartFrag) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-                chartFrag.setData(detailedScoreData.getOverAdapterData(),detailedScoreData.getScoreCardDetailData().getTeamName(),detailedScoreData.getSecscoreCardDetailData().getTeamName());
             }
+
+//            else if (fragment instanceof ChartFrag && positionOffsetPixels == 0) {
+//                ChartFrag chartFrag = (ChartFrag) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+//                chartFrag.setData(detailedScoreData.getOverAdapterData(),detailedScoreData.getScoreCardDetailData().getTeamName(),detailedScoreData.getSecscoreCardDetailData().getTeamName());
+//            }
         }
     }
 

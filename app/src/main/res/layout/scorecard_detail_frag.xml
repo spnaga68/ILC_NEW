@@ -141,6 +141,7 @@
             android:layout_height="0.5dp"
             android:layout_below="@+id/current_run_rate_detail"
             android:layout_marginTop="5dp"
+            android:visibility="gone"
             android:background="@color/light_grey" />
     </RelativeLayout>
 

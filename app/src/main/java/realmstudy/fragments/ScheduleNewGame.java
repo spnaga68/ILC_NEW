@@ -298,7 +298,7 @@ public class ScheduleNewGame extends Fragment {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(Intent.EXTRA_STREAM, outputUri);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.putExtra(Intent.EXTRA_TEXT, desc.getText() + "\n" + "www.Android.com/search?q=android");
+                intent.putExtra(Intent.EXTRA_TEXT, desc.getText() );
 
                 if (type == WHATSAPP) {
                     intent.setPackage("com.whatsapp");

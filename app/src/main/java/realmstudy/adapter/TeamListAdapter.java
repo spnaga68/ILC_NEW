@@ -54,12 +54,13 @@ public class TeamListAdapter extends RealmRecyclerViewAdapter<Team, TeamListAdap
         holder.data = obj;
         holder.title.setText(obj.name);
         holder.ph_no.setText(obj.nick_name);
+        holder.view2.setVisibility(View.GONE);
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         public TextView title, ph_no;
         public Team data;
-        public ImageView delete_item;
+        public ImageView delete_item,view2;
         RelativeLayout list_item_lay;
 
         public MyViewHolder(View view) {
@@ -68,6 +69,7 @@ public class TeamListAdapter extends RealmRecyclerViewAdapter<Team, TeamListAdap
             ph_no = (TextView) view.findViewById(R.id.time);
             list_item_lay=(RelativeLayout)view.findViewById(R.id.list_item_lay);
             delete_item = (ImageView) view.findViewById(R.id.delete_item);
+            view2= (ImageView) view.findViewById(R.id.view2);
             if (!isEditable)
                 delete_item.setVisibility(View.GONE);
             delete_item.setOnClickListener(new View.OnClickListener() {
