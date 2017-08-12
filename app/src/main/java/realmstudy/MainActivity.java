@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -108,6 +109,8 @@ public class MainActivity extends Fragment implements DialogInterface,
     private int firstInningsWicket;
     private String firstInningsOver;
 
+    LinearLayout extras_lay_L, submit_lay,run_lay_L;
+    TextView blockEntry;
 
     @Override
     public void msg(String s) {
@@ -147,6 +150,21 @@ public class MainActivity extends Fragment implements DialogInterface,
         return v;
     }
 
+    public void showEntry() {
+        extras_lay_L.setVisibility(View.VISIBLE);
+        submit_lay.setVisibility(View.VISIBLE);
+        run_lay_L.setVisibility(View.VISIBLE);
+        blockEntry.setVisibility(View.GONE);
+    }
+
+    public void hideEntry(String s) {
+        extras_lay_L.setVisibility(View.GONE);
+        submit_lay.setVisibility(View.GONE);
+        run_lay_L.setVisibility(View.GONE);
+        blockEntry.setVisibility(View.VISIBLE);
+        blockEntry.setText(s);
+    }
+
     //initialize views
     public void init(View v) {
         dot_txt = (TextView) v.findViewById(realmstudy.R.id.dot_txt);
@@ -165,11 +183,22 @@ public class MainActivity extends Fragment implements DialogInterface,
         legal_ball_txt = (TextView) v.findViewById(realmstudy.R.id.legal_ball_txt);
         submit = (AppCompatButton) v.findViewById(realmstudy.R.id.submit);
         out = (AppCompatButton) v.findViewById(realmstudy.R.id.out);
-
-
+        extras_lay_L= (LinearLayout) v.findViewById(realmstudy.R.id.extras_lay_L);
+        submit_lay= (LinearLayout) v.findViewById(realmstudy.R.id.submit_lay);
+        blockEntry= (TextView) v.findViewById(realmstudy.R.id.blockEntry);
+        run_lay_L= (LinearLayout) v.findViewById(realmstudy.R.id.run_lay_L);
         setInputListner(true);
 
         // groundFragment = (CanvasStudy) getChildFragmentManager().findFragmentById(R.id.ground_frag);
+
+
+        blockEntry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkPlayerNotNull();
+            }
+        });
+
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,9 +313,12 @@ public class MainActivity extends Fragment implements DialogInterface,
 
 
     private void checkAndUpdateUI() {
+
+        if(detailedScoreBoardData!=null)
+            scoreBoardFragment.updateUI(detailedScoreBoardData.getScoreBoardData());
         if (checkPlayerNotNull()) {
             checkUnOrRedo();
-            scoreBoardFragment.updateUI(detailedScoreBoardData.getScoreBoardData());
+
 
 
             normal_delivery = true;
@@ -647,6 +679,7 @@ public class MainActivity extends Fragment implements DialogInterface,
                     ishome = true;
                 // selectPlayerDialog(getString(realmstudy.R.string.striker));
                 System.out.println("______DDcallinit1" + ishome);
+                hideEntry(getString(R.string.select_striker));
                 ((MainFragmentActivity) getActivity()).showSelectplayer(matchDetails.getMatch_id(), ishome, current_bowler, getString(realmstudy.R.string.striker), assignToPlayer);
                 return false;
             } else if (non_striker == null) {
@@ -654,11 +687,14 @@ public class MainActivity extends Fragment implements DialogInterface,
                 if (matchDetails.isHomeTeamBatting())
                     ishome = true;
                 System.out.println("______DDcallinit2" + ishome);
+                hideEntry(getString(R.string.select_non_striker));
                 ((MainFragmentActivity) getActivity()).showSelectplayer(matchDetails.getMatch_id(), ishome, current_bowler, getString(R.string.non_striker), assignToPlayer);
                 // selectPlayerDialog(getString(realmstudy.R.string.non_striker));
                 return false;
             } else if (current_bowler == null) {
                 assignToPlayer = 2;
+
+                hideEntry(getString(R.string.select_current_bowler));
                 if (!matchDetails.isHomeTeamBatting())
                     ishome = true;
                 System.out.println("______DDcallinit3" + ishome);
@@ -685,8 +721,10 @@ public class MainActivity extends Fragment implements DialogInterface,
 //            detailedScoreBoardData.setTotalBalls(0);
                 initialData();
                 return false;
-            } else
+            } else {
+                showEntry();
                 return true;
+            }
         } else
             return false;
         //  return true;
@@ -1316,6 +1354,8 @@ public class MainActivity extends Fragment implements DialogInterface,
                         boolean ishome = false;
                         if (!matchDetails.isHomeTeamBatting())
                             ishome = true;
+
+                        hideEntry(getString(R.string.select_current_bowler));
                         ((MainFragmentActivity) getActivity()).showSelectplayer(matchDetails.getMatch_id(), ishome, current_bowler, getString(R.string.next_bowler), assignToPlayer);
                         score_data.setAskNextBowler(true);
 

@@ -56,7 +56,6 @@ import realmstudy.matchList.MatchListMainFragment;
  */
 public class MainFragmentActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, MsgToFragment, MsgFromDialog,
-
         Toolbar.OnMenuItemClickListener, ItemClickInterface {
 
     private FrameLayout content_frame, shadow;
@@ -71,6 +70,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
     private int dialogType;
     public static DialogInterface dialogInterface;
     private DrawerLayout drawer;
+    private ActionBarDrawerToggle mDrawerToggle;
 
 
     @Override
@@ -106,24 +106,24 @@ public class MainFragmentActivity extends AppCompatActivity implements
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 
-        setNaviHome();
-        tool_bar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment fromFragment = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
-                System.out.println("helloo" + (fromFragment instanceof PlayerListFragment));
-                if (fromFragment != null)
-                    if (fromFragment instanceof PlayerListFragment || fromFragment instanceof GroundListFragment
-                            || fromFragment instanceof MainActivity
-                            ) {
-                        onBackPressed();
-                    } else {
 
-                        drawer.openDrawer(Gravity.LEFT);
-
-                    }
-            }
-        });
+//        tool_bar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Fragment fromFragment = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
+//                System.out.println("helloo" + (fromFragment instanceof PlayerListFragment));
+//                if (fromFragment != null)
+//                    if (fromFragment instanceof PlayerListFragment || fromFragment instanceof GroundListFragment
+//                            || fromFragment instanceof MainActivity
+//                            ) {
+//                        onBackPressed();
+//                    } else {
+//
+//                        drawer.openDrawer(Gravity.LEFT);
+//
+//                    }
+//            }
+//        });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         right_icon = (ImageButton) findViewById(realmstudy.R.id.right_icon);
@@ -131,6 +131,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
         switch_right_icon = (android.support.v7.widget.SwitchCompat) findViewById(realmstudy.R.id.switch_right_icon);
         mainFrag = (FrameLayout) findViewById(realmstudy.R.id.mainFrag);
         shadow = (FrameLayout) findViewById(realmstudy.R.id.shadow);
+        setNaviHome();
         //  left_drawer = (LinearLayout) findViewById(realmstudy.R.id.left_drawer);
     }
 
@@ -479,6 +480,29 @@ public class MainFragmentActivity extends AppCompatActivity implements
 //                this, drawer, tool_bar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 //        drawer.addDrawerListener(toggle);
 //        toggle.syncState();
+
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                drawer,         /* DrawerLayout object */
+                R.string.navigation_drawer_open,  /* "open drawer" description */
+                R.string.navigation_drawer_close  /* "close drawer" description */
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        drawer.addDrawerListener(mDrawerToggle);
+
     }
 
     public void removeNaviHome() {

@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/back_ground_dark"
     android:orientation="vertical">
 
-    <LinearLayout
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="50dp"
         android:background="@color/back_ground_dark"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="#00ffffff"
@@ -23,90 +25,122 @@
             android:textColor="@color/dialog_text_color"
             android:textSize="18sp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/background_shadow" />
+        <ImageView
+            android:id="@+id/choose_from_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/open_new_player"
+            android:background="#00ffffff"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:src="@drawable/from_list"
+            android:text="Title"
+            android:textColor="@color/dialog_text_color"
+            android:textSize="18sp" />
 
-        <LinearLayout
-            android:id="@+id/list_player_dialog_title_lay"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:gravity="center_vertical"
-            android:background="@color/light_grey"
-            android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/open_new_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="10dp"
+            android:background="#00ffffff"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:src="@drawable/add_player"
+            android:text="Title"
+            android:textColor="@color/dialog_text_color"
+            android:textSize="18sp" />
+    </RelativeLayout>
 
-            <TextView
 
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/background_shadow" />
 
-                android:padding="10dp"
-                android:layout_weight="0.7"
-                android:text="@string/select_from_list"
-                android:textColor="@color/dialog_text_color"
-                android:textSize="14sp" />
-            <ImageView
-                android:id="@+id/list_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/up_arrow"/>
-        </LinearLayout>
+    <LinearLayout
 
-        <LinearLayout
-            android:id="@+id/database_lay"
+        android:id="@+id/database_lay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/back_ground_dark"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:background="@color/light_grey"
+            android:padding="10dp"
+            android:text="@string/select_from_list"
+            android:textColor="@color/dialog_text_color"
+            android:textSize="14sp" />
+        <!--  <ImageView
+              android:id="@+id/list_arrow"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="0.3"
+              android:visibility="gone"
+              android:layout_marginRight="10dp"
+              android:src="@drawable/up_arrow"/>
+      </LinearLayout>-->
+
+        <!--  <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/back_ground_dark"
+              android:orientation="vertical"
+              android:visibility="visible">-->
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/search_rect"
-                android:padding="5dp">
+        <!--   <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="10dp"
+               android:layout_marginRight="10dp"
+               android:layout_marginTop="5dp"
+               android:background="@drawable/search_rect"
+               android:padding="5dp">-->
 
-                <Spinner
-                    android:id="@+id/player_db_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:spinnerMode="dropdown"
-                    android:textColor="@color/edit_text_color" />
-            </LinearLayout>
+        <ListView
+            android:id="@+id/player_db_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            android:textColor="@color/edit_text_color" />
+        <!--     </LinearLayout>-->
 
-            <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:elevation="10dp"
+            android:visibility="gone"
+            card_view:cardPreventCornerOverlap="false">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/submit_from_db"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                android:elevation="10dp"
-                card_view:cardPreventCornerOverlap="false">
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/submit_from_db"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@color/button_color"
-                    android:text="@string/submit"
-
-                    android:textColor="@color/button_text_color" />
-            </android.support.v7.widget.CardView>
-
-
-        </LinearLayout>
-
-        <include layout="@layout/create_new_player" />
+                android:background="@color/button_color"
+                android:text="@string/submit"
+                android:textColor="@color/button_text_color" />
+        </android.support.v7.widget.CardView>
 
 
     </LinearLayout>
-</ScrollView>
+
+    <include layout="@layout/create_new_player" />
+
+
+</LinearLayout>

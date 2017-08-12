@@ -177,6 +177,10 @@
     <string name="select_valid_ground">Select Ground</string>
     <string name="chart">Chart</string>
     <string name="select_from_list">Select from list</string>
+    <string name="no_player">Players not available in team to select</string>
+    <string name="select_striker">Select Striker</string>
+    <string name="select_non_striker">Select non striker</string>
+    <string name="select_current_bowler">Select Bowler</string>
 
     <string-array name="run_scored_before_runout">
         <item>0</item>

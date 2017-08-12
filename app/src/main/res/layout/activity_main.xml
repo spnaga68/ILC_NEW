@@ -62,6 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
      android:layout_above="@+id/submit_lay"
+        android:visibility="gone"
         android:weightSum="6">
 
         <realmstudy.lib.customViews.NormalTextView
@@ -129,13 +130,22 @@
             android:text="6" />
     </LinearLayout>
 
-
+<realmstudy.lib.customViews.SemiLargeTextView
+    android:id="@+id/blockEntry"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:padding="20dp"
+    android:background="@color/extra_c"
+    android:gravity="center"
+    android:text="@string/activity_image_trans"></realmstudy.lib.customViews.SemiLargeTextView>
     <LinearLayout
         android:id="@+id/extras_lay_L"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/run_lay_L"
         android:layout_marginTop="10dp"
+        android:visibility="gone"
         android:weightSum="5">
 
         <realmstudy.lib.customViews.NormalTextView
@@ -197,6 +207,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/submit_lay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

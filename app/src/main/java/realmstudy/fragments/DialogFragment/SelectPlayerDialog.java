@@ -15,10 +15,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,9 +60,10 @@ public class SelectPlayerDialog extends DialogFragment {
     int teamID;
     private LinearLayout list_player_dialog_title_lay;
     private LinearLayout new_player_dialog_lay;
-    private ImageView new_player_arrow;
-    private LinearLayout new_player_dialog_title_lay;
-    private ImageView list_arrow;
+    private ImageView new_player_arrow, open_new_player;
+    //private LinearLayout new_player_dialog_title_lay;
+    private ImageView choose_from_list;
+    private ArrayList<Player> otherPlayers;
 
     public static SelectPlayerDialog newInstance(int match_id, boolean ishomeTeam, int current_bowler_id, String title, int assignTo) {
         if (f != null)
@@ -101,9 +105,11 @@ public class SelectPlayerDialog extends DialogFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.select_player, container, false);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        System.out.println("_________SHH2");
+        getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT);
+        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         selectPlayerDialog(v, realm, title_txt);
-        setCancelable(false);
+        setCancelable(true);
         return v;
     }
 
@@ -148,7 +154,7 @@ public class SelectPlayerDialog extends DialogFragment {
         TextView
                 title, submit_new_player, submit_from_db;
         final LinearLayout database_lay;
-        final Spinner player_db_spinner;
+        final ListView player_db_spinner;
         final EditText name;
         final EditText ph_no;
         RealmList<Player> home_team_players = null;
@@ -157,7 +163,7 @@ public class SelectPlayerDialog extends DialogFragment {
         if ((matchDetails.isHomeTeamBatting() && ishomeTeam) || (!matchDetails.isHomeTeamBatting() && !ishomeTeam)) {
             toAddForBattingTeam = true;
         }
-        ArrayList<Player> otherPlayers = null;
+        otherPlayers = null;
 //        ArrayList<Player> otherPlayer = null;
 //        if (otherPlayers != null)
 //            otherPlayer = new ArrayList<>(otherPlayers.subList(0, otherPlayers.size()));
@@ -177,7 +183,7 @@ public class SelectPlayerDialog extends DialogFragment {
             //   players = realm.where(MatchDetails.class).equalTo("match_id", matchDetails.getMatch_id()).findFirst().getAwayTeamPlayers();
         }
         //   System.out.println("______________" + home_team_players.size() + "__" + away_team_players.size() + "___" + otherPlayer.size() + "___" + otherPlayers.size());
-        ArrayAdapter<Player> adapter;
+        final ArrayAdapter<Player> adapter;
         adapter = new ArrayAdapter<>(
                 getActivity(), R.layout.player_spinner_item, otherPlayers);
 
@@ -186,7 +192,7 @@ public class SelectPlayerDialog extends DialogFragment {
 
         title = (TextView) selectPlayerDialog.findViewById(R.id.title);
         database_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.database_lay);
-        player_db_spinner = (Spinner) selectPlayerDialog.findViewById(R.id.player_db_spinner);
+        player_db_spinner = (ListView) selectPlayerDialog.findViewById(R.id.player_db_spinner);
         name = (EditText) selectPlayerDialog.findViewById(R.id.name);
         ph_no = (EditText) selectPlayerDialog.findViewById(R.id.time);
         bat_style = (Spinner) selectPlayerDialog.findViewById(R.id.bat_style);
@@ -195,46 +201,86 @@ public class SelectPlayerDialog extends DialogFragment {
         submit_from_db = (AppCompatButton) selectPlayerDialog.findViewById(R.id.submit_from_db);
         TextView from_contacts = (TextView) selectPlayerDialog.findViewById(R.id.from_contacts);
 
-        list_player_dialog_title_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.list_player_dialog_title_lay);
-        new_player_dialog_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.new_player_dialog_lay);
+        // list_player_dialog_title_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.list_player_dialog_title_lay);
+        new_player_dialog_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.create_new_player);
         new_player_arrow = (ImageView) selectPlayerDialog.findViewById(R.id.new_player_arrow);
-        new_player_dialog_title_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.new_player_dialog_title_lay);
-        list_arrow = (ImageView) selectPlayerDialog.findViewById(R.id.list_arrow);
-        list_player_dialog_title_lay.setOnClickListener(new View.OnClickListener() {
+        open_new_player = (ImageView) selectPlayerDialog.findViewById(R.id.open_new_player);
+        choose_from_list = (ImageView) selectPlayerDialog.findViewById(R.id.choose_from_list);
+
+        player_db_spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                submitFromList(otherPlayers.get(position).getpID());
+            }
+        });
+
+        choose_from_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!database_lay.isShown()) {
-                    database_lay.setVisibility(View.VISIBLE);
-                    list_arrow.setImageResource(R.drawable.down_arrow);
-                    new_player_arrow.setImageResource(R.drawable.up_arrow);
+
+                if (adapter.getCount() != 0) {
                     new_player_dialog_lay.setVisibility(View.GONE);
+                    database_lay.setVisibility(View.VISIBLE);
+                    v.setVisibility(View.GONE);
+                    open_new_player.setVisibility(View.VISIBLE);
                 } else {
-                    database_lay.setVisibility(View.GONE);
-                    list_arrow.setImageResource(R.drawable.up_arrow);
-                    new_player_arrow.setImageResource(R.drawable.down_arrow);
-                    new_player_dialog_lay.setVisibility(View.VISIBLE);
+                    Toast.makeText(getActivity(), getString(R.string.no_player), Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        new_player_dialog_title_lay.setOnClickListener(new View.OnClickListener() {
+        open_new_player.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (new_player_dialog_lay.isShown()) {
-                    database_lay.setVisibility(View.VISIBLE);
-                    list_arrow.setImageResource(R.drawable.down_arrow);
-                    new_player_arrow.setImageResource(R.drawable.up_arrow);
-                    new_player_dialog_lay.setVisibility(View.GONE);
-                } else {
-                    database_lay.setVisibility(View.GONE);
-                    list_arrow.setImageResource(R.drawable.up_arrow);
-                    new_player_arrow.setImageResource(R.drawable.down_arrow);
-                    new_player_dialog_lay.setVisibility(View.VISIBLE);
-                }
+                database_lay.setVisibility(View.GONE);
+                v.setVisibility(View.GONE);
+                choose_from_list.setVisibility(View.VISIBLE);
+                new_player_dialog_lay.setVisibility(View.VISIBLE);
             }
         });
+
+
+        // new_player_dialog_title_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.new_player_dialog_title_lay);
+//        list_player_dialog_title_lay.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (!database_lay.isShown()) {
+//                    database_lay.setVisibility(View.VISIBLE);
+//                    list_arrow.setImageResource(R.drawable.down_arrow);
+//                    new_player_arrow.setImageResource(R.drawable.up_arrow);
+//                    new_player_dialog_lay.setVisibility(View.GONE);
+//                } else {
+//                    database_lay.setVisibility(View.GONE);
+//                    list_arrow.setImageResource(R.drawable.up_arrow);
+//                    new_player_arrow.setImageResource(R.drawable.down_arrow);
+//                    new_player_dialog_lay.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
+//        new_player_dialog_title_lay.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (new_player_dialog_lay.isShown()) {
+//                    database_lay.setVisibility(View.VISIBLE);
+//                    list_arrow.setImageResource(R.drawable.down_arrow);
+//                    new_player_arrow.setImageResource(R.drawable.up_arrow);
+//                    new_player_dialog_lay.setVisibility(View.GONE);
+//                } else {
+//                    database_lay.setVisibility(View.GONE);
+//                    list_arrow.setImageResource(R.drawable.up_arrow);
+//                    new_player_arrow.setImageResource(R.drawable.down_arrow);
+//                    new_player_dialog_lay.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
         //set value
         title.setText(title_txt);
         player_db_spinner.setAdapter(adapter);
+        if (adapter.getCount() > 0) {
+            choose_from_list.performClick();
+        } else {
+            open_new_player.performClick();
+        }
+
         if (otherPlayers.size() <= 0)
             database_lay.setVisibility(View.GONE);
         from_contacts.setOnClickListener(new View.OnClickListener() {
@@ -274,43 +320,47 @@ public class SelectPlayerDialog extends DialogFragment {
 
                 Player bb;
                 bb = (Player) player_db_spinner.getSelectedItem();
-                Player dummy;
-                boolean ss = isEligible(bb.getpID(), ishomeTeam);
-                System.out.println("_________________dd5" + matchDetails.getBattingTeamPlayer());
-                System.out.println("checkkkk" + ss);
-
-                if (ss) {
-                    Player p;
-                    dummy = RealmDB.getPlayer(realm, bb.getpID());
-                    BatingProfile bf = RealmDB.getBattingProfile(realm, dummy.getpID(), matchDetails.getMatch_id());
-                    if (bf == null)
-                        bf = RealmDB.createBattingProfile(realm, dummy.getpID(), matchDetails.getMatch_id());
-                    BowlingProfile bwf = RealmDB.getBowlingProfile(realm, dummy.getpID(), matchDetails.getMatch_id());
-                    if (bwf == null)
-                        bwf = RealmDB.createBowlingProfile(realm, dummy.getpID(), matchDetails.getMatch_id());
-                    realm.beginTransaction();
-//                    dummy.setRecentBatingProfile(bf);
-//                    dummy.setRecentBowlingProfile(bwf);
-                    if (ishomeTeam)
-                        p = matchDetails.addHomePlayer(dummy);
-                    else
-                        p = matchDetails.addAwayPlayer(dummy);
-                    realm.commitTransaction();
-                    System.out.println("_________________dd5.1" + p);
-                    if (p == null)
-                        ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, false, String.valueOf(dummy.getpID()), "Success", assignTo);
-                    else
-                        ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, true, String.valueOf(dummy.getpID()), "Player invalid", assignTo);
-                    // dialogInterface.onSuccess("hii", true);
-                    dismiss();
-
-                }
+                submitFromList(bb.getpID());
 
 
             }
         });
 
 
+    }
+
+    void submitFromList(int id) {
+        Player dummy;
+        boolean ss = isEligible(id, ishomeTeam);
+        System.out.println("_________________dd5" + matchDetails.getBattingTeamPlayer());
+        System.out.println("checkkkk" + ss);
+
+        if (ss) {
+            Player p;
+            dummy = RealmDB.getPlayer(realm, id);
+            BatingProfile bf = RealmDB.getBattingProfile(realm, dummy.getpID(), matchDetails.getMatch_id());
+            if (bf == null)
+                bf = RealmDB.createBattingProfile(realm, dummy.getpID(), matchDetails.getMatch_id());
+            BowlingProfile bwf = RealmDB.getBowlingProfile(realm, dummy.getpID(), matchDetails.getMatch_id());
+            if (bwf == null)
+                bwf = RealmDB.createBowlingProfile(realm, dummy.getpID(), matchDetails.getMatch_id());
+            realm.beginTransaction();
+//                    dummy.setRecentBatingProfile(bf);
+//                    dummy.setRecentBowlingProfile(bwf);
+            if (ishomeTeam)
+                p = matchDetails.addHomePlayer(dummy);
+            else
+                p = matchDetails.addAwayPlayer(dummy);
+            realm.commitTransaction();
+            System.out.println("_________________dd5.1" + p);
+            if (p == null)
+                ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, false, String.valueOf(dummy.getpID()), "Success", assignTo);
+            else
+                ((MainFragmentActivity) getActivity()).messageFromDialog(CommanData.DIALOG_SELECT_PLAYER, true, String.valueOf(dummy.getpID()), "Player invalid", assignTo);
+            // dialogInterface.onSuccess("hii", true);
+            dismiss();
+
+        }
     }
 
     boolean isEligible(int id, boolean assignToPlayer) {
