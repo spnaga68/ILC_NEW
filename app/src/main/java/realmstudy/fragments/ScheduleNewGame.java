@@ -483,7 +483,7 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
            long delay= Math.abs(startDate.getTime()-System.currentTimeMillis());
             //System.out.println("SelectedTime---" + match_time+"__"+startDate.getTime()+"__"+System.currentTimeMillis()+"___"+delay);
             time.setText(CommanData.getDateCurrentTimeZone(match_time));
-            scheduleNotification(getNotification("30 second delay"), delay);
+            scheduleNotification(getNotification(""), delay);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -516,9 +516,10 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
 
     private Notification getNotification(String content) {
         Notification.Builder builder = new Notification.Builder(getActivity());
-        builder.setContentTitle("Scheduled Notification");
+        builder.setContentTitle("You have scheduled game nearby");
         builder.setContentText(content);
         builder.setSmallIcon(R.mipmap.logo);
+        builder.setDefaults(Notification.DEFAULT_SOUND);
         return builder.build();
     }
 
