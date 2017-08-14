@@ -61,6 +61,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:10.2.1'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     apt 'com.google.dagger:dagger-compiler:2.7'
+
+    compile 'com.wdullaer:materialdatetimepicker:3.2.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

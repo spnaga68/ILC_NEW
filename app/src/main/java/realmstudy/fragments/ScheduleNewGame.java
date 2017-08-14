@@ -2,6 +2,11 @@ package realmstudy.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -13,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -32,11 +38,16 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,13 +70,14 @@ import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.data.RealmObjectData.Player;
 import realmstudy.data.RealmObjectData.Team;
 import realmstudy.databaseFunctions.RealmDB;
+import realmstudy.extras.NotificationPublisher;
 import realmstudy.interfaces.MsgFromDialog;
 
 
 /**
  * Created by developer on 6/3/17.
  */
-public class ScheduleNewGame extends Fragment {
+public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private static final int WHATSAPP = 1;
     private static final int FACEBOOK = 2;
@@ -94,6 +106,9 @@ public class ScheduleNewGame extends Fragment {
     private long match_time;
     LinearLayout logo_lay;
     private TextView desc_head;
+    private int monthOfYear;
+    private int dayOfMonth;
+    private int year;
 
     @Nullable
     @Override
@@ -156,7 +171,22 @@ public class ScheduleNewGame extends Fragment {
         time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                calDatePicker();
+//                calDatePicker();
+
+
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        ScheduleNewGame.this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH)
+                );
+                dpd.setAccentColor(ContextCompat.getColor(getActivity(), R.color.black));
+                dpd.setCancelColor(ContextCompat.getColor(getActivity(), R.color.black));
+                dpd.setOkColor(ContextCompat.getColor(getActivity(), R.color.black));
+                dpd.setMinDate(now);
+                // dpd.setc(ContextCompat.getColor(getActivity(),R.color.black));
+                dpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
             }
         });
         save.setOnClickListener(new View.OnClickListener() {
@@ -298,7 +328,7 @@ public class ScheduleNewGame extends Fragment {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(Intent.EXTRA_STREAM, outputUri);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.putExtra(Intent.EXTRA_TEXT, desc.getText() );
+                intent.putExtra(Intent.EXTRA_TEXT, desc.getText());
 
                 if (type == WHATSAPP) {
                     intent.setPackage("com.whatsapp");
@@ -407,6 +437,91 @@ public class ScheduleNewGame extends Fragment {
             }
         }
     }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        GregorianCalendar calendar;
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+//            // only for gingerbread and newer versions
+//            calendar = new GregorianCalendar(year, monthOfYear, dayOfMonth, timePicker.getHour(), timePicker.getMinute());
+//        } else {
+//            calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
+//        }
+        this.year = year;
+        this.dayOfMonth = dayOfMonth;
+        this.monthOfYear = monthOfYear;
+        Calendar now = Calendar.getInstance();
+        TimePickerDialog dpd = TimePickerDialog.newInstance(
+                ScheduleNewGame.this,
+                now.get(Calendar.HOUR),
+                now.get(Calendar.MINUTE), false
+
+        );
+
+        dpd.setAccentColor(ContextCompat.getColor(getActivity(), R.color.black));
+        dpd.setCancelColor(ContextCompat.getColor(getActivity(), R.color.black));
+        dpd.setOkColor(ContextCompat.getColor(getActivity(), R.color.black));
+        System.out.println(this.year +"__"+ year +"__"+ this.monthOfYear +"__"+ monthOfYear +"__"+ this.dayOfMonth +"__"+ dayOfMonth);
+        if (this.year == year && this.monthOfYear == monthOfYear && this.dayOfMonth == dayOfMonth)
+            dpd.setMinTime(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), 0);
+        dpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
+    }
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+
+        String startDateString = monthOfYear+1 + "/" + dayOfMonth + "/" + year + "/" + hourOfDay + "/" + minute;
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy/H/m");
+        Date startDate;
+        try {
+            startDate = df.parse(startDateString);
+            String newDateString = df.format(startDate);
+            System.out.println(newDateString);
+
+            match_time = startDate.getTime() / 1000;
+          //  System.out.println("SelectedTime---" + match_time);
+           long delay= Math.abs(startDate.getTime()-System.currentTimeMillis());
+            //System.out.println("SelectedTime---" + match_time+"__"+startDate.getTime()+"__"+System.currentTimeMillis()+"___"+delay);
+            time.setText(CommanData.getDateCurrentTimeZone(match_time));
+            scheduleNotification(getNotification("30 second delay"), delay);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+//        Date date=new Date();
+//
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss");
+//        String format = simpleDateFormat.format(new Date());
+    }
+
+
+
+    private void scheduleNotification(Notification notification, long delay) {
+
+        Intent notificationIntent = new Intent(getActivity(), NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+       // long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, delay, pendingIntent);
+
+
+
+//        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+//        Intent intent = new Intent("realmstudy.extras.NotificationPublisher");
+//        PendingIntent alarmIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, delay, alarmIntent);
+    }
+
+    private Notification getNotification(String content) {
+        Notification.Builder builder = new Notification.Builder(getActivity());
+        builder.setContentTitle("Scheduled Notification");
+        builder.setContentText(content);
+        builder.setSmallIcon(R.mipmap.logo);
+        return builder.build();
+    }
+
 
 
 //    @Override
