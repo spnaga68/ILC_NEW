@@ -1,6 +1,7 @@
 package realmstudy.adapter;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -68,12 +70,18 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
     Realm realm;
 
     boolean viewer;
+    private MatchDetails onlineMatchID;
+    ProgressDialog progressDialog;
 
     public SavedGameListAdapter(Context context, RealmResults<MatchDetails> data) {
         ((MyApplication) ((Activity) context).getApplication()).getComponent().inject(this);
 
         this.data = realm.copyFromRealm(data);
         this.context = context;
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(context.getString(R.string.processing));
+
     }
 
     public SavedGameListAdapter(Context context, ArrayList<MatchDetails> data) {
@@ -92,7 +100,6 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
-        System.out.println("sujjj" + data.get(position).getmatchShortSummary());
         MatchShortSummaryData matchShortSummaryData = CommanData.fromJson(data.get(position).getmatchShortSummary(), MatchShortSummaryData.class);
         TestViewHolder viewHolder = (TestViewHolder) holder;
         // we need to show the "normal" state
@@ -227,7 +234,6 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                             Bundle b = new Bundle();
                             MainActivity fragment = new MainActivity();
                             b.putInt("match_id", md.getMatch_id());
-                            // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
                             fragment.setArguments(b);
                             ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
                         } else {
@@ -253,31 +259,49 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
             online.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MatchDetails md = RealmDB.getMatchById(context, realm, data.get(getAdapterPosition()).getMatch_id());
+                    onlineMatchID = RealmDB.getMatchById(context, realm, data.get(getAdapterPosition()).getMatch_id());
                     String type = "";
-                    if (md.getToss() == null)
+                    if (onlineMatchID.getToss() == null)
                         type = "upcoming";
-                    else if (md.getMatchStatus() != CommanData.MATCH_COMPLETED)
+                    else if (onlineMatchID.getMatchStatus() != CommanData.MATCH_COMPLETED)
                         type = "ongoing";
                     else
                         type = "recent";
-                    DatabaseReference myRef = database.getReference("matchList/" + type + "/" + md.getMatch_id());
+                    DatabaseReference myRef = database.getReference("matchList/" + type + "/" + onlineMatchID.getMatch_id());
+                    progressDialog.show();
+                    if (onlineMatchID.isOnlineMatch()) {
 
+                        myRef.removeValue(new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                progressDialog.cancel();
+                                if (databaseError == null) {
 
-                    if (md.isOnlineMatch()) {
-                        realm.beginTransaction();
-                        md.setOnlineMatch(false);
-                        realm.commitTransaction();
-                        myRef.removeValue();
-                        online.setImageResource(R.drawable.wifi_off);
+                                    realm.beginTransaction();
+                                    onlineMatchID.setOnlineMatch(false);
+                                    realm.commitTransaction();
+                                    online.setImageResource(R.drawable.wifi_off);
+                                }
+                            }
+                        });
+
                     } else {
 
-                        realm.beginTransaction();
-                        md.setOnlineMatch(true);
-                        realm.commitTransaction();
 
-                        myRef.setValue(md.getmatchShortSummary());
-                        online.setImageResource(R.drawable.wifi_on);
+                        myRef.setValue(onlineMatchID.getmatchShortSummary(), new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                progressDialog.cancel();
+                                if (databaseError == null) {
+                                    realm.beginTransaction();
+                                    onlineMatchID.setOnlineMatch(true);
+                                    realm.commitTransaction();
+                                    online.setImageResource(R.drawable.wifi_on);
+                                }
+                            }
+                        });
+
+
                     }
                 }
             });

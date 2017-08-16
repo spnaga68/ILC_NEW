@@ -121,29 +121,30 @@ public class Signup extends Fragment {
         authResult.addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(getActivity()!=null){
-                Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-                progressDialog.cancel();
-                btn_signup.setEnabled(true);
-                // If sign in fails, display a message to the user. If sign in succeeds
-                // the auth state listener will be notified and logic to handle the
-                // signed in user can be handled in the listener.
-                if (!task.isSuccessful()) {
+                if (getActivity() != null) {
+                    Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+                    progressDialog.cancel();
+                    btn_signup.setEnabled(true);
+                    // If sign in fails, display a message to the user. If sign in succeeds
+                    // the auth state listener will be notified and logic to handle the
+                    // signed in user can be handled in the listener.
+                    if (!task.isSuccessful()) {
 //                    Toast.makeText(getActivity(), R.string.auth_failed,
 //                            Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful() + "__" + task.getResult().getUser().getUid());
-                    task.getResult().getUser().sendEmailVerification()
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d(TAG, "Email sent.");
+                    } else {
+                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful() + "__" + task.getResult().getUser().getUid());
+                        task.getResult().getUser().sendEmailVerification()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, "Email sent.");
+                                        }
                                     }
-                                }
-                            });
+                                });
+                    }
                 }
-            }}
+            }
         });
         authResult.addOnFailureListener(getActivity(), new OnFailureListener() {
             public AlertDialog alert11;
@@ -151,32 +152,33 @@ public class Signup extends Fragment {
             @Override
             public void onFailure(@NonNull Exception e) {
 //                Toast.makeText(getActivity(), e.getLocalizedMessage(),
-                        //Toast.LENGTH_SHORT).show();
-if(getActivity()!=null){
-                btn_signup.setEnabled(true);
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-                builder1.setMessage(e.getLocalizedMessage());
-                builder1.setCancelable(true);
+                //Toast.LENGTH_SHORT).show();
+                if (getActivity() != null) {
+                    btn_signup.setEnabled(true);
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                    builder1.setMessage(e.getLocalizedMessage());
+                    builder1.setCancelable(true);
 
-                builder1.setPositiveButton(
-                        "ok",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-                 alert11 = builder1.create();
+                    builder1.setPositiveButton(
+                            "ok",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    alert11 = builder1.create();
 
 
-                alert11.setOnShowListener(new android.content.DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(android.content.DialogInterface dialogs) {
-                        alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
-                        alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
-                    }
-                });
-                alert11.show();
-            }}
+                    alert11.setOnShowListener(new android.content.DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(android.content.DialogInterface dialogs) {
+                            alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+                            alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+                        }
+                    });
+                    alert11.show();
+                }
+            }
         });
     }
 
@@ -189,7 +191,7 @@ if(getActivity()!=null){
 
     public void onSignupFailed() {
 
-        Toast.makeText(getActivity(), "Login failed", Toast.LENGTH_LONG).show();
+       // Toast.makeText(getActivity(), "Login failed", Toast.LENGTH_LONG).show();
 
         btn_signup.setEnabled(true);
     }
