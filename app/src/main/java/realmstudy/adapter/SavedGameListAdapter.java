@@ -229,7 +229,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                             b.putInt("match_id", md.getMatch_id());
                             // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
                             fragment.setArguments(b);
-                            ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
+                            ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
                         } else {
                             //Toast.makeText(context, context.getString(R.string.game_over), Toast.LENGTH_SHORT).show();
                             Bundle b = new Bundle();

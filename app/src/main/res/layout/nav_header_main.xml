@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="NagaRajan S"
+        android:visibility="gone"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/edit_text_color" />
 
@@ -32,6 +33,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="nagarajan929@gmail.com"
+        android:visibility="gone"
         android:textColor="@color/edit_text_color" />
-
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/nav_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sign in"
+        android:padding="10dp"
+        android:layout_gravity="right"
+        android:textColor="@color/white" />
 </LinearLayout>

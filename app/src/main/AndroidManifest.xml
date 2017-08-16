@@ -43,7 +43,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        TeamPickerActivity
         <activity
             android:name=".TeamPickerActivity"
             android:theme="@style/SingleActivityTheme"

@@ -65,15 +65,17 @@ public class ChartFrag extends Fragment {
         for (int i = 0; i < overAdapterData.size(); i++) {
             if (overAdapterData.get(i).getOver() == 1)
                 if (i != overAdapterData.size() - 1) {
+                    System.out.println("________sss*"+i+"__"+overAdapterData.size());
                     secInningsOverAdapterData = overAdapterData.subList(0, i);
-                    firstInningsOverAdapterData = overAdapterData.subList(i + 1, overAdapterData.size() - 1);
+                    firstInningsOverAdapterData = overAdapterData.subList(i , overAdapterData.size() - 1);
                 } else {
+                    System.out.println("________sss**"+i+"__"+overAdapterData.size());
                     if (secInningsOverAdapterData == null)
-                        firstInningsOverAdapterData = overAdapterData.subList(0, overAdapterData.size() - 1);
+                        firstInningsOverAdapterData = overAdapterData;
                 }
         }
-        System.out.println("________sss" + datas.size());
-        OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
+        System.out.println("________sss" + datas.size()+"_FA"+firstInningsOverAdapterData.size()+"__SA");
+       // OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
         firstBattedTeam = firstBatTeam;
         secBattedTeam = secBatTeam;
         setBarData();
@@ -117,11 +119,11 @@ public class ChartFrag extends Fragment {
         XAxis line_xAxis = l_chart.getXAxis();
         line_xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         LineValue1 = new ArrayList<Entry>();
-        if (firstInningsOverAdapterData != null)
-            for (int i = firstInningsOverAdapterData.size() - 1; i >= 0; i--) {
+        if (firstInningsOverAdapterData != null){LineValue1.add(new Entry(0,0));
+            for (int i = 0; i<firstInningsOverAdapterData.size(); i++) {
                 System.out.println("toototo" + i + "__" + firstInningsOverAdapterData.get(i).getTotal_run());
-                LineValue1.add(new Entry(i, firstInningsOverAdapterData.get(i).getTotal_run()));
-            }
+                LineValue1.add(new Entry(i+1, firstInningsOverAdapterData.get(i).getTotal_run()));
+            }}
         LineValue2 = new ArrayList<Entry>();
         if (secInningsOverAdapterData != null)
             for (int i = 0; i < overAdapterData.size(); i++) {
@@ -174,10 +176,10 @@ public class ChartFrag extends Fragment {
 
     private void setLineStyle() {
         YAxis line_leftAxis = l_chart.getAxisLeft();
-        line_leftAxis.setAxisMaxValue(50);
+        line_leftAxis.setAxisMaxValue(36);
         line_leftAxis.setAxisMinValue(0);
         XAxis xAxis = l_chart.getXAxis();
-        // xAxis.setAxisMaxValue(overAdapterData.length);
+         xAxis.setAxisMaxValue(overAdapterData.size());
 
 
 //
@@ -190,6 +192,7 @@ public class ChartFrag extends Fragment {
 
         ArrayList<ILineDataSet> dataSets1 = new ArrayList<ILineDataSet>();
         dataSets1.add(line1);
+        if(secInningsOverAdapterData!=null)
         dataSets1.add(line2);
         LineData line_data = new LineData(dataSets1);
         l_chart.setTouchEnabled(true);
@@ -267,7 +270,7 @@ public class ChartFrag extends Fragment {
         barValueSet2 = new ArrayList<>();
         if (firstInningsOverAdapterData != null)
             for (int i = firstInningsOverAdapterData.size() - 1; i >= 0; i--) {
-                System.out.println("toototo" + i + "__" + firstInningsOverAdapterData.get(i).getTotal_run());
+                System.out.println("toototo***" + i + "__" + firstInningsOverAdapterData.get(i).getTotal_run());
                 BarEntry v1e1 = new BarEntry(i, firstInningsOverAdapterData.get(i).getTotal_run());
                 barValueSet1.add(v1e1);
             }

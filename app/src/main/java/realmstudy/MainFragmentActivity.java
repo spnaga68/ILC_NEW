@@ -14,8 +14,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
@@ -45,6 +45,7 @@ import realmstudy.fragments.MenuActivity;
 import realmstudy.fragments.PlayerListFragment;
 import realmstudy.fragments.ScheduleNewGame;
 import realmstudy.fragments.TeamListFragment;
+import realmstudy.fragments.regLogin.Signup;
 import realmstudy.interfaces.DialogInterface;
 import realmstudy.interfaces.ItemClickInterface;
 import realmstudy.interfaces.MsgFromDialog;
@@ -56,6 +57,7 @@ import realmstudy.matchList.MatchListMainFragment;
  */
 public class MainFragmentActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, MsgToFragment, MsgFromDialog,
+
         Toolbar.OnMenuItemClickListener, ItemClickInterface {
 
     private FrameLayout content_frame, shadow;
@@ -70,8 +72,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
     private int dialogType;
     public static DialogInterface dialogInterface;
     private DrawerLayout drawer;
-    private ActionBarDrawerToggle mDrawerToggle;
-
+    private AppCompatButton nav_signin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,33 +106,38 @@ public class MainFragmentActivity extends AppCompatActivity implements
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+        setNaviHome();
+        tool_bar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fromFragment = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
+                System.out.println("helloo" + (fromFragment instanceof PlayerListFragment));
+                if (fromFragment != null)
+                    if (fromFragment instanceof PlayerListFragment || fromFragment instanceof GroundListFragment
+                            || fromFragment instanceof MainActivity || fromFragment instanceof MatchDetailActivity
+                            ) {
+                        onBackPressed();
+                    } else {
 
+                        drawer.openDrawer(Gravity.LEFT);
 
-//        tool_bar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Fragment fromFragment = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
-//                System.out.println("helloo" + (fromFragment instanceof PlayerListFragment));
-//                if (fromFragment != null)
-//                    if (fromFragment instanceof PlayerListFragment || fromFragment instanceof GroundListFragment
-//                            || fromFragment instanceof MainActivity
-//                            ) {
-//                        onBackPressed();
-//                    } else {
-//
-//                        drawer.openDrawer(Gravity.LEFT);
-//
-//                    }
-//            }
-//        });
+                    }
+            }
+        });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        navigationView.getHeaderView(0).findViewById(R.id.nav_signin).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new Signup()).commit();
+            }
+        });
         right_icon = (ImageButton) findViewById(realmstudy.R.id.right_icon);
         cancel_b = (TextView) findViewById(realmstudy.R.id.cancel_b);
         switch_right_icon = (android.support.v7.widget.SwitchCompat) findViewById(realmstudy.R.id.switch_right_icon);
         mainFrag = (FrameLayout) findViewById(realmstudy.R.id.mainFrag);
         shadow = (FrameLayout) findViewById(realmstudy.R.id.shadow);
-        setNaviHome();
         //  left_drawer = (LinearLayout) findViewById(realmstudy.R.id.left_drawer);
     }
 
@@ -480,33 +486,13 @@ public class MainFragmentActivity extends AppCompatActivity implements
 //                this, drawer, tool_bar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 //        drawer.addDrawerListener(toggle);
 //        toggle.syncState();
-
-
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                drawer,         /* DrawerLayout object */
-                R.string.navigation_drawer_open,  /* "open drawer" description */
-                R.string.navigation_drawer_close  /* "close drawer" description */
-        ) {
-
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-        };
-
-        // Set the drawer toggle as the DrawerListener
-        drawer.addDrawerListener(mDrawerToggle);
-
+        getSupportActionBar().setHomeButtonEnabled(true);
+        tool_bar.setNavigationIcon(R.drawable.navi_home);
     }
 
     public void removeNaviHome() {
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        tool_bar.setNavigationIcon(R.drawable.navi_back_white);
     }
 }

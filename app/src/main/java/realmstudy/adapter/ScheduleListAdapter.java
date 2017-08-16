@@ -113,7 +113,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter implements SlideRe
                     MainActivity fragment = new MainActivity();
                     b.putInt("match_id", data.get((Integer) view.getTag()).getMatch_id());
                     fragment.setArguments(b);
-                    ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
+                    ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
                 }
             });
         }

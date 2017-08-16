@@ -5,11 +5,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import realmstudy.MainFragmentActivity;
 import realmstudy.R;
 import realmstudy.adapter.Pager;
 import realmstudy.extras.ZoomOutPageTransformer;
@@ -97,5 +99,10 @@ public class MatchListMainFragment extends Fragment implements TabLayout.OnTabSe
             getActivity().setTitle(getString(R.string.match_center));
         else
             getActivity().setTitle(getString(R.string.scorer));
+
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((MainFragmentActivity)getActivity()).setNaviHome();
+
+        }
     }
 }

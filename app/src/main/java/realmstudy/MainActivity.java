@@ -303,7 +303,7 @@ public class MainActivity extends Fragment implements DialogInterface,
                 b.putInt("match_id", matchDetails.getMatch_id());
                 // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
                 fragment.setArguments(b);
-                ((MainFragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
+                ((MainFragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
                 return false;
             }
         });

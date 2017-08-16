@@ -89,7 +89,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.info)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.overs)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.score)));
-       // tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.chart)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.chart)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         viewPager = (ViewPager) v.findViewById(R.id.pager);
         //viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
@@ -159,6 +159,13 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        System.out.println("option selectedr");
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onResume() {
 
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
@@ -214,10 +221,10 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
                 oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
             }
 
-//            else if (fragment instanceof ChartFrag && positionOffsetPixels == 0) {
-//                ChartFrag chartFrag = (ChartFrag) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-//                chartFrag.setData(detailedScoreData.getOverAdapterData(),detailedScoreData.getScoreCardDetailData().getTeamName(),detailedScoreData.getSecscoreCardDetailData().getTeamName());
-//            }
+            else if (fragment instanceof ChartFrag && positionOffsetPixels == 0) {
+                ChartFrag chartFrag = (ChartFrag) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                chartFrag.setData(detailedScoreData.getOverAdapterData(),detailedScoreData.getScoreCardDetailData().getTeamName(),detailedScoreData.getSecscoreCardDetailData().getTeamName());
+            }
         }
     }
 

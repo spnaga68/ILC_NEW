@@ -181,6 +181,7 @@
     <string name="select_striker">Select Striker</string>
     <string name="select_non_striker">Select non striker</string>
     <string name="select_current_bowler">Select Bowler</string>
+    <string name="auth_failed">Authentication failed</string>
 
     <string-array name="run_scored_before_runout">
         <item>0</item>

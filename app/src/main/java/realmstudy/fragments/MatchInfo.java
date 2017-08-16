@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import javax.inject.Inject;
 import io.realm.Realm;
 import realmstudy.GroundPickerActivity;
 import realmstudy.MainActivity;
+import realmstudy.MainFragmentActivity;
 import realmstudy.MyApplication;
 import realmstudy.R;
 import realmstudy.TeamPickerActivity;
@@ -141,6 +143,10 @@ public class MatchInfo extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(getString(R.string.match_info));
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((MainFragmentActivity)getActivity()).setNaviHome();
+
+        }
     }
 
     @Override

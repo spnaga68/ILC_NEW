@@ -24,6 +24,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.LayoutInflater;
@@ -284,6 +285,10 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
     public void onResume() {
         super.onResume();
         getActivity().setTitle(getString(R.string.schedule_game));
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((MainFragmentActivity)getActivity()).setNaviHome();
+
+        }
     }
 
     void shareBitmap(int type) {
