@@ -16,9 +16,16 @@ import realmstudy.databaseFunctions.RealmDB;
  */
 public class CommanData {
 
+
     public static String API_BASE_URL = "http://192.168.1.169:1009/mobileapi117/index/";
 
-    public static final String AddNewTeam = "AddNewTeam";
+//    public static final String USERID = "uid";
+//    public static final String PROFILE_NAME = "pname";
+//    public static final String PH_NO = "ph_no";
+//    public static final String EMAIL_ID = "email_id";
+//    public static final String PROFILE_IMAGE = "p_image";
+   public static final String AddNewTeam = "AddNewTeam";
+    public static final String NEW_GROUND = "NewGround";
 
     public static final int StatusFree = 0;
     public static final int StatusBatting = 1;

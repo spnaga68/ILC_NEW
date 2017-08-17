@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import io.realm.Realm;
 import realmstudy.adapter.GroundListAdapter;
+import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.Ground;
 import realmstudy.fragments.DialogFragment.NewPlayerDialog;
 import realmstudy.fragments.DialogFragment.NewTeamDialog;
@@ -54,14 +55,17 @@ public class GroundPickerActivity extends AppCompatActivity implements ItemClick
         adapter = new GroundListAdapter(this,this, realm.where(Ground.class).findAll());
         list_view.setAdapter(adapter);
         list_view.setLayoutManager(new LinearLayoutManager(this));
-        add.setVisibility(View.GONE);
+        add.setVisibility(View.VISIBLE);
 
-//        add.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                showNewTeamDialog(0, GroundPickerActivity.this, -1);
-//            }
-//        });
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              Intent i =new Intent(GroundPickerActivity.this,MainFragmentActivity.class);
+                i.putExtra("fragmentToLoad", CommanData.NEW_GROUND);
+                startActivityForResult(i,0);
+
+            }
+        });
     }
 
     @Override
@@ -104,5 +108,11 @@ public class GroundPickerActivity extends AppCompatActivity implements ItemClick
     public void onSuccess(String result, boolean success) {
         adapter = new GroundListAdapter(this,this, realm.where(Ground.class).findAll());
         list_view.setAdapter(adapter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
     }
 }

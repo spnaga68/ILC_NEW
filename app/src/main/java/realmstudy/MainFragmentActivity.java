@@ -2,6 +2,7 @@ package realmstudy;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -12,10 +13,10 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
@@ -25,6 +26,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -33,6 +39,8 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.Player;
+import realmstudy.data.SessionSave;
+import realmstudy.fragments.AddNewGround;
 import realmstudy.fragments.DialogFragment.NewPlayerDialog;
 import realmstudy.fragments.DialogFragment.NewTeamDialog;
 import realmstudy.fragments.DialogFragment.OutDialogFragment;
@@ -45,7 +53,7 @@ import realmstudy.fragments.MenuActivity;
 import realmstudy.fragments.PlayerListFragment;
 import realmstudy.fragments.ScheduleNewGame;
 import realmstudy.fragments.TeamListFragment;
-import realmstudy.fragments.regLogin.Signup;
+import realmstudy.fragments.regLogin.SocialLoginCustom;
 import realmstudy.interfaces.DialogInterface;
 import realmstudy.interfaces.ItemClickInterface;
 import realmstudy.interfaces.MsgFromDialog;
@@ -60,6 +68,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
 
         Toolbar.OnMenuItemClickListener, ItemClickInterface {
 
+    public static final int REQUEST_SIGN_UP = 420;
     private FrameLayout content_frame, shadow;
     private android.support.v4.widget.DrawerLayout drawer_layout;
     private android.support.v7.widget.Toolbar tool_bar;
@@ -72,7 +81,11 @@ public class MainFragmentActivity extends AppCompatActivity implements
     private int dialogType;
     public static DialogInterface dialogInterface;
     private DrawerLayout drawer;
-    private AppCompatButton nav_signin;
+    TextView nav_name, nav_email, nav_signin;
+    private ImageView nav_image;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private ProgressDialog mProgressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,6 +93,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
         //  setLocale();
         setContentView(realmstudy.R.layout.home_fragment);
         Realm.init(this);
+        mAuth = FirebaseAuth.getInstance();
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .build();
 
@@ -127,10 +141,36 @@ public class MainFragmentActivity extends AppCompatActivity implements
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        nav_image = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
+
+        nav_name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_name);
+        nav_email = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email);
+        nav_signin = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_signin);
+        setUserNav();
+        // SessionSave.getSession(CommanData.PROFILE_IMAGE, SocialLoginCustom.this)
         navigationView.getHeaderView(0).findViewById(R.id.nav_signin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new Signup()).commit();
+                //   getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new Signup()).commit();
+                if (mAuth.getCurrentUser() == null)
+                    startActivityForResult(new Intent(MainFragmentActivity.this, SocialLoginCustom.class), REQUEST_SIGN_UP);
+                else {
+
+                    mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+                        @Override
+                        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                            if (firebaseAuth != null) {
+                                if (firebaseAuth.getCurrentUser() == null)
+                                    clearSession();
+                            }
+                        }
+                    });
+                    showProgressDialog(getString(R.string.processing));
+                    mAuth.signOut();
+                    hideProgressDialog();
+
+//                    clearSession();
+                }
             }
         });
         right_icon = (ImageButton) findViewById(realmstudy.R.id.right_icon);
@@ -139,6 +179,42 @@ public class MainFragmentActivity extends AppCompatActivity implements
         mainFrag = (FrameLayout) findViewById(realmstudy.R.id.mainFrag);
         shadow = (FrameLayout) findViewById(realmstudy.R.id.shadow);
         //  left_drawer = (LinearLayout) findViewById(realmstudy.R.id.left_drawer);
+    }
+    public void showProgressDialog(String msg) {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(msg);
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+    private void setUserNav() {
+        user = mAuth.getCurrentUser();
+        if (user != null) {
+            if (!user.getPhotoUrl().toString().trim().equals(""))
+                Picasso.with(this).load(user.getPhotoUrl()).error((ContextCompat.getDrawable(this, R.drawable.no_image))).into(nav_image);
+            nav_name.setVisibility(View.VISIBLE);
+            nav_name.setText(user.getDisplayName());
+            nav_email.setText(user.getEmail());
+            nav_signin.setText(getString(R.string.sign_out));
+            nav_signin.setVisibility(View.VISIBLE);
+        } else {
+            clearSession();
+        }
+    }
+
+    private void clearSession() {
+
+        Picasso.with(this).load(R.drawable.no_image).into(nav_image);
+        nav_name.setText(getString(R.string.guest_user));
+        nav_signin.setText(getString(R.string.sign_in));
     }
 
 //    @Override
@@ -175,6 +251,15 @@ public class MainFragmentActivity extends AppCompatActivity implements
             case CommanData.AddNewTeam:
                 getSupportFragmentManager().beginTransaction()
                         .add(realmstudy.R.id.mainFrag, new MatchListMainFragment())
+                        .commit();
+                break;
+            case CommanData.NEW_GROUND:
+                Fragment f=new AddNewGround();
+                Bundle b=new Bundle();
+                b.putInt("type",1);
+                f.setArguments(b);
+                getSupportFragmentManager().beginTransaction()
+                        .add(realmstudy.R.id.mainFrag,f )
                         .commit();
                 break;
         }
@@ -396,13 +481,16 @@ public class MainFragmentActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Fragment ff = getSupportFragmentManager().findFragmentByTag("dialog");
-        System.out.println("_____PP" + 1);
-        if (ff != null)
-            ff.onActivityResult(requestCode, resultCode, data);
-        else if (getSupportFragmentManager().findFragmentById(R.id.mainFrag) != null)
-            getSupportFragmentManager().findFragmentById(R.id.mainFrag).onActivityResult(requestCode, resultCode, data);
-
+        if (requestCode == REQUEST_SIGN_UP) {
+            setUserNav();
+        } else {
+            Fragment ff = getSupportFragmentManager().findFragmentByTag("dialog");
+            System.out.println("_____PP" + 1);
+            if (ff != null)
+                ff.onActivityResult(requestCode, resultCode, data);
+            else if (getSupportFragmentManager().findFragmentById(R.id.mainFrag) != null)
+                getSupportFragmentManager().findFragmentById(R.id.mainFrag).onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

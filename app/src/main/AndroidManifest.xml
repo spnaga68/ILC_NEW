@@ -24,7 +24,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".fragments.regLogin.SocialLoginCustom">
+        <activity android:name=".SplashAct">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -66,6 +66,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".fragments.regLogin.Signup"
+            android:theme="@style/SingleActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+        <activity
+            android:name=".fragments.regLogin.SocialLoginCustom"
+            android:theme="@style/SingleActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
 
         <receiver android:name=".extras.NotificationPublisher" />
         <meta-data

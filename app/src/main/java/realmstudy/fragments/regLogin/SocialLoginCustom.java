@@ -1,5 +1,6 @@
 package realmstudy.fragments.regLogin;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -42,7 +43,10 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import realmstudy.MainFragmentActivity;
 import realmstudy.R;
+import realmstudy.data.CommanData;
+import realmstudy.data.SessionSave;
 
 /**
  * Created by developer on 16/8/17.
@@ -65,6 +69,7 @@ public class SocialLoginCustom extends AppCompatActivity implements
     private TextView mDetailTextView;
     private ProgressDialog mProgressDialog;
     private CallbackManager mCallbackManager;
+    private LoginButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,15 +91,15 @@ public class SocialLoginCustom extends AppCompatActivity implements
 //            e.printStackTrace();
 //        }
         setContentView(R.layout.social_login);
-
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);
         //mDetailTextView = (TextView) findViewById(R.id.detail);
 
         // Button listeners
         findViewById(R.id.google_signup).setOnClickListener(this);
-        //  findViewById(R.id.facebook_signup).setOnClickListener(this);
-//        findViewById(R.id.disconnect_button).setOnClickListener(this);
+        findViewById(R.id.facebook_signup).setOnClickListener(this);
+        findViewById(R.id.email_signup).setOnClickListener(this);
+        findViewById(R.id.link_login).setOnClickListener(this);
 
         // [START config_signin]
         // Configure Google Sign In
@@ -116,7 +121,7 @@ public class SocialLoginCustom extends AppCompatActivity implements
 
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
-        LoginButton loginButton = (LoginButton) findViewById(R.id.button_facebook_login);
+        loginButton = (LoginButton) findViewById(R.id.button_facebook_login);
         loginButton.setReadPermissions("email", "public_profile");
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -150,7 +155,10 @@ public class SocialLoginCustom extends AppCompatActivity implements
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
-
+//        Intent returnIntent = new Intent();
+//        returnIntent.putExtra("result","");
+//        setResult(Activity.RESULT_OK,returnIntent);
+//        finish();
     }
     // [END on_start_check_user]
 
@@ -196,6 +204,10 @@ public class SocialLoginCustom extends AppCompatActivity implements
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra("result","");
+                            setResult(Activity.RESULT_OK,returnIntent);
+                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -231,6 +243,10 @@ public class SocialLoginCustom extends AppCompatActivity implements
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra("result","");
+                            setResult(Activity.RESULT_OK,returnIntent);
+                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -263,7 +279,7 @@ public class SocialLoginCustom extends AppCompatActivity implements
 
     private void signOut() {
         // Firebase sign out
-       // mAuth.signOut();
+        // mAuth.signOut();
         try {
             LoginManager.getInstance().logOut();
             // Google sign out
@@ -294,6 +310,14 @@ public class SocialLoginCustom extends AppCompatActivity implements
     }
 
     private void updateUI(FirebaseUser user) {
+        if (user != null) {
+//            SessionSave.saveSession(CommanData.USERID, user.getUid(), SocialLoginCustom.this);
+//            SessionSave.saveSession(CommanData.PH_NO, user.getPhoneNumber(), SocialLoginCustom.this);
+//            SessionSave.saveSession(CommanData.EMAIL_ID, user.getEmail(), SocialLoginCustom.this);
+//            SessionSave.saveSession(CommanData.PROFILE_NAME,user.getDisplayName(),SocialLoginCustom.this);
+//            SessionSave.saveSession(CommanData.PROFILE_IMAGE, user.getPhotoUrl().toString(), SocialLoginCustom.this);
+//            System.out.println("helloimage" + SessionSave.getSession(CommanData.PROFILE_IMAGE, SocialLoginCustom.this));
+        }
 //        hideProgressDialog();
 //        if (user != null) {
 //            mStatusTextView.setText(getString(R.string.google_status_fmt, user.getEmail()));
@@ -323,12 +347,18 @@ public class SocialLoginCustom extends AppCompatActivity implements
         int i = v.getId();
         if (i == R.id.google_signup) {
             signIn();
-        }
-//        else if (i == R.id.sign_out_button) {
-//            signOut();
-//        } else if (i == R.id.disconnect_button) {
+        } else if (i == R.id.facebook_signup) {
+            loginButton.performClick();
+        } else if (i == R.id.email_signup) {
 //            revokeAccess();
-//        }
+            Intent intent = new Intent(SocialLoginCustom.this, Signup.class);
+            intent.putExtra("type", 0);
+            startActivity(intent);
+        } else if (i == R.id.link_login) {
+            Intent intent = new Intent(SocialLoginCustom.this, Signup.class);
+            intent.putExtra("type", 1);
+            startActivity(intent);
+        }
     }
 
     public void showProgressDialog() {

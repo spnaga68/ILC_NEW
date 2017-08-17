@@ -73,12 +73,15 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
     @Inject
     Realm realm;
     private int groundId;
+    private int type;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
     }
+
+    
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -90,13 +93,18 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
         region = (EditText) view.findViewById(R.id.region);
         save = (AppCompatButton) view.findViewById(R.id.save);
         if (getArguments() != null) {
-            groundId = getArguments().getInt("id");
-            Ground g = realm.where(Ground.class).equalTo("id", groundId).findFirst();
-            if (g != null) {
-                ground_name.setText(g.getGroundName());
-                region.setText(g.getRegionName());
-                groundLatLng = new LatLng(g.getLat(), g.getLng());
-                countryEdit = g.getCountryName();
+            if (getArguments().getInt("id") != 0) {
+                groundId = getArguments().getInt("id");
+                Ground g = realm.where(Ground.class).equalTo("id", groundId).findFirst();
+                if (g != null) {
+                    ground_name.setText(g.getGroundName());
+                    region.setText(g.getRegionName());
+                    groundLatLng = new LatLng(g.getLat(), g.getLng());
+                    countryEdit = g.getCountryName();
+                }
+            }
+            if (getArguments().getInt("type") != 0) {
+                type = 1;
             }
         }
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
@@ -124,7 +132,10 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
                             ground.setLat(groundLatLng.latitude);
                             ground.setLng(groundLatLng.longitude);
                             realm.commitTransaction();
-                            getActivity().onBackPressed();
+                            if (type == 0)
+                                getActivity().onBackPressed();
+                            else
+                                getActivity().finish();
 
                         } else
                             Toast.makeText(getActivity(), getString(R.string.region_valid), Toast.LENGTH_SHORT).show();
@@ -332,8 +343,8 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
             checkLocationPermission();
 
         }
-        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
-            ((MainFragmentActivity)getActivity()).removeNaviHome();
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((MainFragmentActivity) getActivity()).removeNaviHome();
 
         }
 

@@ -3,23 +3,24 @@ package realmstudy.adapter;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -45,8 +46,8 @@ import realmstudy.data.RealmObjectData.InningsData;
 import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.fragments.MatchInfo;
-import realmstudy.fragments.MatchInfo;
-import realmstudy.interfaces.SlideRecyclerView;
+import realmstudy.fragments.regLogin.Signup;
+import realmstudy.fragments.regLogin.SocialLoginCustom;
 
 /**
  * Created by developer on 21/2/17.
@@ -72,6 +73,8 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
     boolean viewer;
     private MatchDetails onlineMatchID;
     ProgressDialog progressDialog;
+    FirebaseAuth auth;
+    private AlertDialog needSignUp;
 
     public SavedGameListAdapter(Context context, RealmResults<MatchDetails> data) {
         ((MyApplication) ((Activity) context).getApplication()).getComponent().inject(this);
@@ -259,49 +262,82 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
             online.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onlineMatchID = RealmDB.getMatchById(context, realm, data.get(getAdapterPosition()).getMatch_id());
-                    String type = "";
-                    if (onlineMatchID.getToss() == null)
-                        type = "upcoming";
-                    else if (onlineMatchID.getMatchStatus() != CommanData.MATCH_COMPLETED)
-                        type = "ongoing";
-                    else
-                        type = "recent";
-                    DatabaseReference myRef = database.getReference("matchList/" + type + "/" + onlineMatchID.getMatch_id());
-                    progressDialog.show();
-                    if (onlineMatchID.isOnlineMatch()) {
+                    if (auth.getCurrentUser() != null) {
+                        onlineMatchID = RealmDB.getMatchById(context, realm, data.get(getAdapterPosition()).getMatch_id());
+                        String type = "";
+                        if (onlineMatchID.getToss() == null)
+                            type = "upcoming";
+                        else if (onlineMatchID.getMatchStatus() != CommanData.MATCH_COMPLETED)
+                            type = "ongoing";
+                        else
+                            type = "recent";
+                        DatabaseReference myRef = database.getReference("matchList/" + type + "/" + onlineMatchID.getMatch_id());
+                        progressDialog.show();
+                        if (onlineMatchID.isOnlineMatch()) {
 
-                        myRef.removeValue(new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                progressDialog.cancel();
-                                if (databaseError == null) {
+                            myRef.removeValue(new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    progressDialog.cancel();
+                                    if (databaseError == null) {
 
-                                    realm.beginTransaction();
-                                    onlineMatchID.setOnlineMatch(false);
-                                    realm.commitTransaction();
-                                    online.setImageResource(R.drawable.wifi_off);
+                                        realm.beginTransaction();
+                                        onlineMatchID.setOnlineMatch(false);
+                                        realm.commitTransaction();
+                                        online.setImageResource(R.drawable.wifi_off);
+                                    }
                                 }
-                            }
-                        });
+                            });
 
+                        } else {
+
+
+                            myRef.setValue(onlineMatchID.getmatchShortSummary(), new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    progressDialog.cancel();
+                                    if (databaseError == null) {
+                                        realm.beginTransaction();
+                                        onlineMatchID.setOnlineMatch(true);
+                                        realm.commitTransaction();
+                                        online.setImageResource(R.drawable.wifi_on);
+                                    }
+                                }
+                            });
+
+
+                        }
                     } else {
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                        builder1.setMessage(context.getString(R.string.need_signup_online));
+                        builder1.setCancelable(true);
+
+                        builder1.setPositiveButton(
+                                context.getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                        ((AppCompatActivity) context).startActivityForResult(new Intent(context, SocialLoginCustom.class), MainFragmentActivity.REQUEST_SIGN_UP);
+                                    }
+                                });
+                        builder1.setNegativeButton(
+                                context.getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        needSignUp = builder1.create();
 
 
-                        myRef.setValue(onlineMatchID.getmatchShortSummary(), new DatabaseReference.CompletionListener() {
+                        needSignUp.setOnShowListener(new android.content.DialogInterface.OnShowListener() {
                             @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                progressDialog.cancel();
-                                if (databaseError == null) {
-                                    realm.beginTransaction();
-                                    onlineMatchID.setOnlineMatch(true);
-                                    realm.commitTransaction();
-                                    online.setImageResource(R.drawable.wifi_on);
-                                }
+                            public void onShow(android.content.DialogInterface dialogs) {
+                                needSignUp.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+                                needSignUp.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
                             }
                         });
-
-
+                        needSignUp.show();
                     }
                 }
             });

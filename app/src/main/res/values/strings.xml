@@ -184,10 +184,16 @@
     <string name="select_current_bowler">Select Bowler</string>
     <string name="auth_failed">Authentication failed</string>
     <string name="processing">Processing</string>
-    <string name="join_with_google">Join with google</string>
+    <string name="join_with_google">Join us with google</string>
     <string name="join_with_facebook">Join us with facebook</string>
     <string name="sign_with_email">Continue with email</string>
-
+    <string name="sign_out">Sign out</string>
+    <string name="sign_in">Sign in</string>
+    <string name="guest_user">Guest user</string>
+    <string name="try_again">Please try again</string>
+    <string name="need_signup_online">One more step! SignIn to make to broadcast your match</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Okay</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>
