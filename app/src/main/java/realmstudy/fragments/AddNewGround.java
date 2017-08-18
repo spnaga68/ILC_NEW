@@ -162,7 +162,7 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mLastLocation == null) {
+                if (mLastLocation == null&&getActivity()!=null) {
                     stopLocationUpdate();
                     locationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
                     startLocUpdate();
