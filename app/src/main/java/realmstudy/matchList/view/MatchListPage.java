@@ -133,10 +133,8 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
                     progress_bar.setVisibility(View.GONE);
                     //datas.clear();
                     if (dataSnapshot.exists()) {
-                        System.out.println("md.getValue()" + dataSnapshot.getChildrenCount());
+                        System.out.println("md.getValue()*" + dataSnapshot.getChildrenCount()+"__"+savedGameListAdapter.getItemCount());
                         for (DataSnapshot md : dataSnapshot.getChildren()) {
-
-
                             if (md.getValue() != null && !md.getValue().equals("")) {
                                 MatchDetails matchDetails = new MatchDetails();
                                 matchDetails.setMatch_id(Integer.parseInt(md.getKey()));
@@ -152,10 +150,12 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
                                 no_data_lay.setVisibility(View.GONE);
                         }
                         page += 1;
-//                        if(datas.size()/10!=0)
+                        //if(datas.size()%10!=0)
                             allItemLoaded=true;
-                        (savedGameListAdapter).addData(datas);
+                        System.out.println("md.getValue()" + dataSnapshot.getChildrenCount()+"__"+datas.size());
+                        savedGameListAdapter.addData(datas);
                         setupPagination(mRecyclerView);
+                        allItemLoaded=true;
                     } else {
 //                        System.out.println("databaseerrorss" );
 //                        no_data_lay.setVisibility(View.VISIBLE);
@@ -212,13 +212,13 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
     @Override
     public void onLoadMore() {
 
-        if (page > 0) {
-            loading = true;
-            System.out.println("Nandu__"+datas.size());
-                Query queryRef = myRef
-                        .startAt(datas.size() - 1).endAt(datas.size() + 5);
-                queryRef.addListenerForSingleValueEvent(valueEventListener);
-        }
+//        if (page > 0) {
+//            loading = true;
+//            System.out.println("Nandu__"+datas.size());
+//                Query queryRef = myRef
+//                        .startAt(datas.size() - 1).endAt(datas.size() + 5);
+//                queryRef.addListenerForSingleValueEvent(valueEventListener);
+//        }
     }
 
     @Override
@@ -238,6 +238,6 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
 
     @Override
     public boolean hasLoadedAllItems() {
-        return allItemLoaded;
+        return true;
     }
 }

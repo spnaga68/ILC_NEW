@@ -267,7 +267,7 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onResume() {
         super.onResume();
-
+        System.out.println("ScoreDetailResume");
     }
 
     @Override

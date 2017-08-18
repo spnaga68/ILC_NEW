@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/appbg"
@@ -16,36 +15,38 @@
             android:layout_width="match_parent"
             android:layout_height="34dp"
             android:layout_gravity="center"
+            android:background="@color/appbg"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
             android:gravity="center"
-            android:textColor="@color/colorPrimaryDark"
+            android:marqueeRepeatLimit="marquee_forever"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:singleLine="true"
-            android:visibility="gone"
-            android:ellipsize="marquee"
-            android:background="@color/appbg"
-            android:fadingEdge="horizontal"
-            android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
-            android:text="HomeTeam Vs d" />
+            android:singleLine="true"
+            android:text="HomeTeam Vs d"
+            android:textColor="@color/colorPrimaryDark"
+            android:visibility="gone" />
 
 
         <FrameLayout
-            android:layout_width="wrap_content"
-            android:background="@color/appbg"
-            android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/appbg">
 
             <realmstudy.lib.customViews.SemiLargeTextView
-                android:text="@string/click_new_team"
+                android:id="@+id/message_data"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:layout_height="wrap_content" />
+                android:padding="10dp" />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/list_view"
                 android:layout_width="match_parent"
-                android:headerDividersEnabled="false"
                 android:layout_height="wrap_content"
                 android:divider="@drawable/divider_listview"
+                android:headerDividersEnabled="false"
 
                 android:scrollbars="none"></android.support.v7.widget.RecyclerView>
         </FrameLayout>
@@ -67,6 +68,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:visibility="gone"
-        android:src="@android:drawable/ic_media_play" />
+        android:src="@android:drawable/ic_media_play"
+        android:visibility="gone" />
 </android.support.design.widget.CoordinatorLayout>

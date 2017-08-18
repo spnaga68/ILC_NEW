@@ -194,6 +194,7 @@
     <string name="need_signup_online">One more step! SignIn to make to broadcast your match</string>
     <string name="cancel">Cancel</string>
     <string name="ok">Okay</string>
+    <string name="create_new_and_enjoy">Create new game and enjoy scoring  :)</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>

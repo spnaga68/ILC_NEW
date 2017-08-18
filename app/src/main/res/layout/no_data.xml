@@ -29,7 +29,7 @@
             android:id="@+id/error_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/no_data_sam" />
+            android:src="@drawable/ic_cricket_player_with_bat" />
 
         <TextView
             android:id="@+id/error_short_description"
@@ -47,8 +47,9 @@
             android:layout_marginTop="10dp"
             android:paddingLeft="@dimen/padding_right_no_internet_connection_text"
             android:paddingRight="@dimen/padding_left_no_internet_connection_text"
-            android:text="Create new game and enjoy scoring"
-            android:textSize="@dimen/content_max" />
+
+            android:text="@string/create_new_and_enjoy"
+            android:textSize="16sp" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/error_action_button"
@@ -56,7 +57,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:text="Create"
-            android:textColor="@color/text_dark" />
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white" />
     </LinearLayout>
 
     <RelativeLayout

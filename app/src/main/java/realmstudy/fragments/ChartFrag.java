@@ -126,7 +126,7 @@ public class ChartFrag extends Fragment {
             }}
         LineValue2 = new ArrayList<Entry>();
         if (secInningsOverAdapterData != null)
-            for (int i = 0; i < overAdapterData.size(); i++) {
+            for (int i = 0; i < secInningsOverAdapterData.size(); i++) {
                 System.out.println("toototo" + i + "__" + secInningsOverAdapterData.get(i).getTotal_run());
                 LineValue2.add(new Entry(i, secInningsOverAdapterData.get(i).getTotal_run() + 3));
             }

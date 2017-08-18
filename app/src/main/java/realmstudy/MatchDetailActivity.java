@@ -169,7 +169,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     public void onResume() {
 
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((MainFragmentActivity)getActivity()).removeNaviHome();
+            ((MainFragmentActivity) getActivity()).removeNaviHome();
 
         }
         super.onResume();
@@ -204,9 +204,17 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         //System.out.println("Selected__vvv" + position+"__"+positionOffset+"__"+positionOffsetPixels);
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+        System.out.println("Selected__" + position);
         if (detailedScoreData != null) {
             Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-            if (fragment instanceof ScorecardDetailFragment && positionOffsetPixels == 0) {
+            //if (fragment instanceof ScorecardDetailFragment && positionOffsetPixels == 0) {
+            if (position == 2) {
                 ScorecardDetailFragment scorecardDetailFragment = (ScorecardDetailFragment) fragment;
                 ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
                 datas.add(detailedScoreData.getScoreCardDetailData());
@@ -216,23 +224,16 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
                     datas.add(detailedScoreData.getSecscoreCardDetailData());
                 }
                 scorecardDetailFragment.setDatas(datas);
-            } else if (fragment instanceof OversFragment && positionOffsetPixels == 0) {
+            } else if (position == 1) {
+                //if (fragment instanceof OversFragment && positionOffsetPixels == 0) {
                 OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
                 oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
-            }
-
-            else if (fragment instanceof ChartFrag && positionOffsetPixels == 0) {
+            } else if (position == 3) {
+                //if (fragment instanceof ChartFrag && positionOffsetPixels == 0) {
                 ChartFrag chartFrag = (ChartFrag) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-                chartFrag.setData(detailedScoreData.getOverAdapterData(),detailedScoreData.getScoreCardDetailData().getTeamName(),detailedScoreData.getSecscoreCardDetailData().getTeamName());
+                chartFrag.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreCardDetailData().getTeamName(), detailedScoreData.getSecscoreCardDetailData().getTeamName());
             }
         }
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-
-        System.out.println("Selected__" + position);
-
     }
 
     @Override

@@ -39,6 +39,7 @@ public class TeamListFragment extends Fragment implements DialogInterface, MsgTo
     @Inject
     Realm realm;
     TextView selected_teams;
+    private TextView message_data;
 
     @Nullable
     @Override
@@ -46,11 +47,15 @@ public class TeamListFragment extends Fragment implements DialogInterface, MsgTo
         View v = inflater.inflate(R.layout.team_list_view, container, false);
         ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
         list_view = (RecyclerView) v.findViewById(R.id.list_view);
+        message_data = (TextView) v.findViewById(R.id.message_data);
+        message_data.setText(getString(R.string.click_new_team));
         add = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.add);
         next = (android.support.design.widget.FloatingActionButton) v.findViewById(R.id.next);
         selected_teams = (TextView) v.findViewById(R.id.selected_teams);
         selected_teams.setSelected(true);
         adapter = new TeamListAdapter(getActivity(), realm.where(Team.class).findAll(), true);
+        if (adapter.getItemCount() != 0)
+            message_data.setVisibility(View.GONE);
         list_view.setAdapter(adapter);
         list_view.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -70,8 +75,8 @@ public class TeamListFragment extends Fragment implements DialogInterface, MsgTo
     public void onResume() {
         super.onResume();
         getActivity().setTitle(getString(R.string.team));
-            if(getActivity() instanceof  MainFragmentActivity)
-            ((MainFragmentActivity)getActivity()).setNaviHome();
+        if (getActivity() instanceof MainFragmentActivity)
+            ((MainFragmentActivity) getActivity()).setNaviHome();
 //            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 //            ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeButtonEnabled(false);
     }

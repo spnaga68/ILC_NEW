@@ -78,7 +78,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
 
     public SavedGameListAdapter(Context context, RealmResults<MatchDetails> data) {
         ((MyApplication) ((Activity) context).getApplication()).getComponent().inject(this);
-auth=FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
         this.data = realm.copyFromRealm(data);
         this.context = context;
         progressDialog = new ProgressDialog(context);
@@ -175,7 +175,9 @@ auth=FirebaseAuth.getInstance();
     }
 
     public void addData(ArrayList<MatchDetails> datas) {
-        data.addAll(datas);
+//        System.out.println("md.getValue()$$" + datas.size() + "__" + data.size());
+//        data.addAll(datas);
+//        System.out.println("md.getValue()$" + datas.size() + "__" + data.size());
         notifyDataSetChanged();
     }
 
