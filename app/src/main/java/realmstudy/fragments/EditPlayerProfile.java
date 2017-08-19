@@ -318,7 +318,7 @@ public class EditPlayerProfile extends Fragment implements AppBarLayout.OnOffset
     @Override
     public void onActivityResult(final int requestcode, final int resultcode, final Intent data) {
         try {
-            System.out.println("CametoEdit"+requestcode);
+            //System.out.println("CametoEdit"+requestcode);
             if (requestcode == UCrop.REQUEST_CROP) {
                 handleCropResult(data);
             } else if (resultcode == getActivity().RESULT_OK) {
