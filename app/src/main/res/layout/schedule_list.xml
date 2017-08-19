@@ -13,6 +13,15 @@
         android:background="@color/white"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/info_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:text="@string/schedule_game_upcoming"
+            android:textColor="#795548"
+            android:padding="10dp"
+            android:textColorHint="@color/edit_hint_color" />
         <LinearLayout
             android:id="@+id/detail_lay"
             android:layout_width="match_parent"
@@ -33,6 +42,7 @@
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:layout_marginRight="10dp"
                     android:src="@mipmap/logo" />
 
                 <TextView

@@ -195,6 +195,7 @@
     <string name="cancel">Cancel</string>
     <string name="ok">Okay</string>
     <string name="create_new_and_enjoy">Create new game and enjoy scoring  :)</string>
+    <string name="schedule_game_upcoming">Scheduled game will be listed in upcoming list</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>
