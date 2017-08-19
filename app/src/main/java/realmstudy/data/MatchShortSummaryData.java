@@ -12,6 +12,33 @@ public class MatchShortSummaryData {
     InningsSummary firstInningsSummary;
     InningsSummary secondInningsSummary;
 
+    public String getLocation() {
+        return Location;
+    }
+
+    public void setLocation(String location) {
+        Location = location;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongtitue() {
+        return longtitue;
+    }
+
+    public void setLongtitue(double longtitue) {
+        this.longtitue = longtitue;
+    }
+
+    String Location;
+    double latitude,longtitue;
+
     public int getStatus() {
         return status;
     }

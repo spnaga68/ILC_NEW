@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ import realmstudy.fragments.DialogFragment.OutDialogFragment;
 import realmstudy.fragments.DialogFragment.SelectMultiPlayerDialog;
 import realmstudy.fragments.DialogFragment.SelectPlayerDialog;
 import realmstudy.fragments.DialogFragment.SelectTeamDialog;
+import realmstudy.fragments.EditPlayerProfile;
 import realmstudy.fragments.GroundListFragment;
 import realmstudy.fragments.MatchInfo;
 import realmstudy.fragments.MenuActivity;
@@ -65,9 +67,7 @@ import realmstudy.matchList.MatchListMainFragment;
  */
 public class MainFragmentActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, MsgToFragment, MsgFromDialog,
-
         Toolbar.OnMenuItemClickListener, ItemClickInterface {
-
     public static final int REQUEST_SIGN_UP = 420;
     private FrameLayout content_frame, shadow;
     private android.support.v4.widget.DrawerLayout drawer_layout;
@@ -86,6 +86,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private ProgressDialog mProgressDialog;
+    private LinearLayout naviHeader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,7 +99,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
                 .build();
 
 
-        Bundle bundle = getIntent().getExtras();
+        final Bundle bundle = getIntent().getExtras();
         if (bundle != null)
             if (bundle.getString("fragmentToLoad") != null)
                 setFragment(bundle.getString("fragmentToLoad"));
@@ -142,7 +143,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
         navigationView.setNavigationItemSelectedListener(this);
 
         nav_image = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
-
+        naviHeader = (LinearLayout) navigationView.getHeaderView(0).findViewById(R.id.naviHeader);
         nav_name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_name);
         nav_email = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email);
         nav_signin = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_signin);
@@ -173,6 +174,19 @@ public class MainFragmentActivity extends AppCompatActivity implements
                 }
             }
         });
+
+        naviHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment f=new EditPlayerProfile();
+                Bundle b=new Bundle();
+                b.putString("type","1");
+                f.setArguments(b);
+                getSupportFragmentManager().beginTransaction()
+                        .add(realmstudy.R.id.mainFrag, f)
+                        .commit();
+            }
+        });
         right_icon = (ImageButton) findViewById(realmstudy.R.id.right_icon);
         cancel_b = (TextView) findViewById(realmstudy.R.id.cancel_b);
         switch_right_icon = (android.support.v7.widget.SwitchCompat) findViewById(realmstudy.R.id.switch_right_icon);
@@ -180,6 +194,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
         shadow = (FrameLayout) findViewById(realmstudy.R.id.shadow);
         //  left_drawer = (LinearLayout) findViewById(realmstudy.R.id.left_drawer);
     }
+
     public void showProgressDialog(String msg) {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
@@ -195,12 +210,14 @@ public class MainFragmentActivity extends AppCompatActivity implements
             mProgressDialog.dismiss();
         }
     }
+
     private void setUserNav() {
         user = mAuth.getCurrentUser();
         if (user != null) {
-            if (!user.getPhotoUrl().toString().trim().equals(""))
+            if (user.getPhotoUrl() != null && !user.getPhotoUrl().toString().trim().equals(""))
                 Picasso.with(this).load(user.getPhotoUrl()).error((ContextCompat.getDrawable(this, R.drawable.no_image))).into(nav_image);
             nav_name.setVisibility(View.VISIBLE);
+            System.out.println("disppppp" + user.getDisplayName() + user.getUid());
             nav_name.setText(user.getDisplayName());
             nav_email.setText(user.getEmail());
             nav_signin.setText(getString(R.string.sign_out));
@@ -254,12 +271,12 @@ public class MainFragmentActivity extends AppCompatActivity implements
                         .commit();
                 break;
             case CommanData.NEW_GROUND:
-                Fragment f=new AddNewGround();
-                Bundle b=new Bundle();
-                b.putInt("type",1);
+                Fragment f = new AddNewGround();
+                Bundle b = new Bundle();
+                b.putInt("type", 1);
                 f.setArguments(b);
                 getSupportFragmentManager().beginTransaction()
-                        .add(realmstudy.R.id.mainFrag,f )
+                        .add(realmstudy.R.id.mainFrag, f)
                         .commit();
                 break;
         }
@@ -481,6 +498,11 @@ public class MainFragmentActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("CametoEditaa"+requestCode);
+        Fragment ffs = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
+        if(ffs!=null){
+            ffs.onActivityResult(requestCode,resultCode,data);
+        }
         if (requestCode == REQUEST_SIGN_UP) {
             setUserNav();
         } else {

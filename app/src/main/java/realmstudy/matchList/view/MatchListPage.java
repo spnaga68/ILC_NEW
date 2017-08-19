@@ -125,7 +125,7 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
             Query queryRef;
 
              queryRef = myRef
-                    .limitToFirst(30);
+                    .limitToFirst(5);
 
             valueEventListener = new ValueEventListener() {
                 @Override
@@ -138,7 +138,7 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
                             if (md.getValue() != null && !md.getValue().equals("")) {
                                 MatchDetails matchDetails = new MatchDetails();
                                 matchDetails.setMatch_id(Integer.parseInt(md.getKey()));
-                                matchDetails.setmatchShortSummary(md.getValue().toString());
+                                matchDetails.setmatchShortSummary(CommanData.toString(md.getValue()));
                                 datas.add(matchDetails);
 
                             }

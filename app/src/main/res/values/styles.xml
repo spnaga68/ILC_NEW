@@ -28,11 +28,19 @@
         <item name="android:headerBackground">@color/colorPrimary</item>
         <item name="android:actionMenuTextColor">@color/button_dialog</item>
         <item name="android:textCursorDrawable">@color/colorPrimary</item>
-        <item name="android:textSelectHandle">@color/colorPrimary</item> // For pointer normal state and copy text state
+        <item name="android:textSelectHandle">@color/colorPrimary</item>
+        // For pointer normal state and copy text state
         <item name="android:textSelectHandleLeft">@color/colorPrimary</item>
         <item name="android:textSelectHandleRight">@color/colorPrimary</item>
         <item name="android:editTextStyle">@style/myEditText</item>
+
+
+
     </style>
+    <style name="MyTextInputLayout" parent="MyMaterialTheme">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
 
 
     <style name="myEditText" parent="@android:style/Widget.Holo.Light.EditText">
@@ -40,7 +48,11 @@
         <item name="android:height">40sp</item>
         <item name="android:cursorVisible">true</item>
         <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorControlNormal">@color/colorPrimaryDark</item>
+        <item name="android:colorActivatedHighlight">@color/colorPrimaryDark</item>
+        <item name="colorControlActivated">@color/colorPrimaryDark</item>
     </style>
+
     <style name="OverFlow" parent="Widget.AppCompat.ActionButton.Overflow">
         <item name="android:src">@drawable/menu_dot_vertical</item>
     </style>
@@ -58,6 +70,14 @@
         <item name="actionMenuTextColor">@android:color/white</item>
         <item name="actionOverflowButtonStyle">@style/OverFlow</item>
 
+    </style>
+
+    <style name="MyEditTextTheme">
+        <!-- Used for the bottom line when not selected / focused -->
+        <item name="colorControlNormal">@color/colorPrimaryDark</item>
+        <item name="android:colorActivatedHighlight">@color/colorPrimaryDark</item>
+        <item name="colorControlActivated">@color/colorPrimaryDark</item>
+        <!-- colorControlActivated & colorControlHighlight use the colorAccent color by default -->
     </style>
 
 

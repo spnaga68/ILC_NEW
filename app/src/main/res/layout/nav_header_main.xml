@@ -8,6 +8,7 @@
     android:orientation="vertical"
     android:paddingBottom="10dp"
     android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:id="@+id/naviHeader"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 

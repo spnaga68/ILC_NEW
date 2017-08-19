@@ -294,7 +294,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                         } else {
 
 
-                            myRef.setValue(onlineMatchID.getmatchShortSummary(), new DatabaseReference.CompletionListener() {
+                            myRef.setValue(CommanData.fromJson(onlineMatchID.getmatchShortSummary(),MatchShortSummaryData.class), new DatabaseReference.CompletionListener() {
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                     progressDialog.cancel();

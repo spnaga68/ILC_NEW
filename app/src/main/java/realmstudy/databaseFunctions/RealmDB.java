@@ -229,6 +229,7 @@ public class RealmDB {
             matchShortSummaryData.setBowlingTeamName(away_team.nick_name);
             matchShortSummaryData.setQuotes(CommanData.getTime(time));
             matchShortSummaryData.setTime(time);
+            matchShortSummaryData.setLocation(md.getLocation());
         }
         md.setmatchShortSummary(CommanData.toString(matchShortSummaryData));
         realm.commitTransaction();

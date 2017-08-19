@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import realmstudy.MainFragmentActivity;
 import realmstudy.R;
@@ -74,6 +75,7 @@ public class Signup extends AppCompatActivity {
         if (type == 1) {
             link_login.setVisibility(View.GONE);
             input_name.setVisibility(View.GONE);
+            btn_signup.setText(getString(R.string.login));
         }
 
         btn_signup.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +90,10 @@ public class Signup extends AppCompatActivity {
             public void onClick(View v) {
                 // Finish the registration screen and return to the Login activity
                 //finish();
+                type = 1;
+                link_login.setVisibility(View.GONE);
+                input_name.setVisibility(View.GONE);
+                btn_signup.setText(getString(R.string.login));
             }
         });
 
@@ -122,7 +128,6 @@ public class Signup extends AppCompatActivity {
 
     public void signup() {
         Log.d(TAG, "Signup");
-
         if (!validate()) {
             onSignupFailed();
             return;
@@ -138,14 +143,22 @@ public class Signup extends AppCompatActivity {
         String name = input_name.getText().toString();
         String email = input_email.getText().toString();
         String password = input_password.getText().toString();
-
-        Task<AuthResult> authResult = mAuth.createUserWithEmailAndPassword(email, password);
+        Task<AuthResult> authResult = null;
+        if (type == 1) {
+            System.out.println("came!!!!!");
+            authResult = mAuth.signInWithEmailAndPassword(email, password);
+        } else {
+            System.out.println("came!!!!!***");
+            authResult = mAuth.createUserWithEmailAndPassword(email, password);
+        }
         authResult.addOnCompleteListener(Signup.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                System.out.println("came!!!!!**");
                 if (Signup.this != null) {
                     Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
                     progressDialog.cancel();
+
                     btn_signup.setEnabled(true);
                     // If sign in fails, display a message to the user. If sign in succeeds
                     // the auth state listener will be notified and logic to handle the
@@ -159,18 +172,13 @@ public class Signup extends AppCompatActivity {
 //                        SessionSave.saveSession(CommanData.PROFILE_NAME,task.getResult().getUser().getDisplayName(),Signup.this);
 //                        SessionSave.saveSession(CommanData.PH_NO,task.getResult().getUser().getPhoneNumber(),Signup.this);
 //                        SessionSave.saveSession(CommanData.EMAIL_ID,task.getResult().getUser().getEmail(),Signup.this);
-                        task.getResult().getUser().sendEmailVerification()
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Log.d(TAG, "Email sent.");
-                                            Intent returnIntent = new Intent(Signup.this, MainFragmentActivity.class);
-                                            startActivity(returnIntent);
-                                            finish();
-                                        }
-                                    }
-                                });
+                        if (type == 0)
+                            createNewUser(task.getResult().getUser());
+                        else {
+                            Intent returnIntent = new Intent(Signup.this, MainFragmentActivity.class);
+                            startActivity(returnIntent);
+                            finish();
+                        }
                     }
                 }
             }
@@ -211,6 +219,52 @@ public class Signup extends AppCompatActivity {
         });
     }
 
+    private void createNewUser(final FirebaseUser userFromRegistration) {
+//        String username = "username";
+//        String email = userFromRegistration.getEmail();
+//        String userId = userFromRegistration.getUid();
+//
+//
+//
+//
+//        String username = "username";
+//        String email = userFromRegistration.getEmail();
+//        String userId = userFromRegistration.getUid();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(input_name.getText().toString())
+                //  .setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
+                .build();
+
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User profile updated.");
+                            userFromRegistration.sendEmailVerification()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d(TAG, "Email sent.");
+                                                Intent returnIntent = new Intent(Signup.this, MainFragmentActivity.class);
+                                                startActivity(returnIntent);
+                                                finish();
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
+
+        //  User user = new User(username, email);
+
+        //mDatabase.child("users").child(userId).setValue(user);
+
+    }
 
     public void onSignupSuccess() {
         btn_signup.setEnabled(true);
@@ -232,7 +286,7 @@ public class Signup extends AppCompatActivity {
         String email = input_email.getText().toString();
         String password = input_password.getText().toString();
 
-        if (name.isEmpty() || name.length() < 3) {
+        if (type == 0 && (name.isEmpty() || name.length() < 3)) {
             input_name.setError("at least 3 characters");
             valid = false;
         } else {

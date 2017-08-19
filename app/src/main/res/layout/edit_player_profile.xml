@@ -83,6 +83,7 @@
                 android:src="@drawable/no_image"
                 app:finalHeight="@dimen/image_final_width"
                 app:finalYPosition="2dp"
+                android:id="@+id/profile_image"
                 app:startHeight="2dp"
                 android:layout_marginBottom="?attr/actionBarSize"
                 app:startToolbarPosition="2dp"

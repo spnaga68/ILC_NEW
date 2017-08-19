@@ -195,6 +195,11 @@
     <string name="cancel">Cancel</string>
     <string name="ok">Okay</string>
     <string name="create_new_and_enjoy">Create new game and enjoy scoring  :)</string>
+    <string name="login">Login</string>
+    <string name="choose_an_image">Choose an Image</string>
+    <string name="camera">Camera</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="gallery">Gallery</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>
