@@ -162,22 +162,49 @@ public class RealmDB {
             md = RealmDB.createNewMatch(c, realm, home_team, away_team, chosse_to, wonToss, overs, location, totalPlayers, time);
         id = (int) tsLong;
         realm.beginTransaction();
+        if (wonToss != null) {
+            MatchShortSummaryData matchShortSummaryData = CommanData.fromJson(md.getmatchShortSummary(), MatchShortSummaryData.class);
 
-//        md.setMatch_id(id);
+            matchShortSummaryData.setToss(wonToss.name);
+            if (home_team!=null)
+            matchShortSummaryData.setHomeTeam(home_team.name);
+            if (away_team!=null)
+            matchShortSummaryData.setAwayTeam(away_team.name);
+            if (!chosse_to.equals(""))
+            matchShortSummaryData.setElectTo(chosse_to);
+            if (!location.equals(""))
+            matchShortSummaryData.setLocation(location);
+            md.setmatchShortSummary(CommanData.toString(matchShortSummaryData));
+        }
+        //        md.setMatch_id(id);
         if (home_team != null)
-            md.setHomeTeam(realm.where(Team.class).equalTo("team_id", home_team.team_id).findFirst());
+            md.setHomeTeam(realm.where(Team.class).
+
+                    equalTo("team_id", home_team.team_id).
+
+                    findFirst());
         if (away_team != null)
-            md.setAwayTeam(realm.where(Team.class).equalTo("team_id", away_team.team_id).findFirst());
+            md.setAwayTeam(realm.where(Team.class).
+
+                    equalTo("team_id", away_team.team_id).
+
+                    findFirst());
         md.setChooseTo(chosse_to);
         if (wonToss != null)
-            md.setToss(realm.where(Team.class).equalTo("team_id", wonToss.team_id).findFirst());
+            md.setToss(realm.where(Team.class).
+
+                    equalTo("team_id", wonToss.team_id).
+
+                    findFirst());
         md.setTime(tsLong);
         md.setMatchStatus(CommanData.MATCH_NOT_YET_STARTED);
         if (!location.equals(""))
             md.setLocation(location);
         if (overs != -1)
             md.setOvers(overs);
-        if (home_team != null && wonToss != null) {
+        if (home_team != null && wonToss != null)
+
+        {
             boolean homeTeamWonToss = wonToss.team_id == home_team.team_id ? true : false;
             md.setHomeTeamBatting((homeTeamWonToss && chosse_to.equals("bat")) || (!homeTeamWonToss && chosse_to.equals("bowl")));
         }
@@ -185,7 +212,11 @@ public class RealmDB {
             md.setTotalPlayers(totalPlayers);
         realm.commitTransaction();
         // System.out.println("_____________vvv" + realm.where(MatchDetails.class).equalTo("match_id", id).findFirst().getHomeTeam().team_id);
-        return realm.where(MatchDetails.class).equalTo("match_id", md.getMatch_id()).findFirst();
+        return realm.where(MatchDetails.class).
+
+                equalTo("match_id", md.getMatch_id()).
+
+                findFirst();
 
     }
 
@@ -911,7 +942,7 @@ public class RealmDB {
     }
 
     public static Ground getGround(Realm realm, int groundId) {
-        return realm.where(Ground.class).equalTo("id",groundId).findAll().first();
+        return realm.where(Ground.class).equalTo("id", groundId).findAll().first();
     }
 }
 

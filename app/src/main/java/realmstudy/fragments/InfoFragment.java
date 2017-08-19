@@ -9,13 +9,18 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.realm.Realm;
 import realmstudy.MyApplication;
 import realmstudy.R;
 import realmstudy.data.CommanData;
+import realmstudy.data.MatchShortSummaryData;
+import realmstudy.data.OverAdapterData;
 import realmstudy.data.RealmObjectData.MatchDetails;
+import realmstudy.data.ScoreBoardData;
 import realmstudy.databaseFunctions.RealmDB;
 
 /**
@@ -25,10 +30,10 @@ public class InfoFragment extends Fragment {
 
     private TextView
             squad_home_team, squad_away_team, info_match_id, info_series, info_date, info_time, info_toss, info_venue, info_umpires, info_third_umpire, info_refree;
-    MatchDetails md;
+    MatchShortSummaryData md;
     LinearLayout series_lay, umpire_lay, third_umpire_lay, refree_lay;
-    @Inject
-    Realm realm;
+//    @Inject
+//    Realm realm;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,18 +45,18 @@ public class InfoFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        int id = getArguments().getInt("match_id");
-        ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
-        md = RealmDB.getMatchById(getActivity(), realm, id);
-
+        String id = getArguments().getString("mss");
+       // ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
+       md= CommanData.fromJson(id, MatchShortSummaryData.class);
+        System.out.println("____"+md+"__"+id);
         if (md != null) {
-            squad_home_team.setText(md.getHomeTeam().name);
-            squad_away_team.setText(md.getAwayTeam().name);
-            info_match_id.setText(String.valueOf(md.getMatchStatus()));
+            squad_home_team.setText(md.getHomeTeam());
+            squad_away_team.setText(md.getAwayTeam());
+            info_match_id.setText(String.valueOf(md.getQuotes()));
             info_series.setText("-");
             info_date.setText(CommanData.getDate(md.getTime()));
             info_time.setText(CommanData.getTime(md.getTime()));
-            info_toss.setText(md.getToss().nick_name);
+            info_toss.setText(md.getToss());
             info_venue.setText(md.getLocation());
             refree_lay.setVisibility(View.GONE);
             third_umpire_lay.setVisibility(View.GONE);
@@ -82,5 +87,9 @@ public class InfoFragment extends Fragment {
         refree_lay = (LinearLayout) v.findViewById(R.id.refree_lay);
 
         return v;
+    }
+
+    public void setData(List<OverAdapterData> overAdapterData, ScoreBoardData scoreBoardData) {
+
     }
 }

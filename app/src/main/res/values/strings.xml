@@ -200,6 +200,7 @@
     <string name="camera">Camera</string>
     <string name="profile_image">Profile Image</string>
     <string name="gallery">Gallery</string>
+    <string name="schedule_game_upcoming">Scheduled game listed in upcoming matches</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>

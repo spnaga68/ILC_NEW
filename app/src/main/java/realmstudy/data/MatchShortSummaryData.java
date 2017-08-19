@@ -11,13 +11,55 @@ public class MatchShortSummaryData {
     String bowlingTeamName;
     InningsSummary firstInningsSummary;
     InningsSummary secondInningsSummary;
+    String toss;
+    String location;
+    double latitude, longtitue;
+    String homeTeam;
+    String awayTeam;
+
+    public String getElectTo() {
+        return electTo;
+    }
+
+    public void setElectTo(String electTo) {
+        this.electTo = electTo;
+    }
+
+    String electTo;
+
+    public String getHomeTeam() {
+        return homeTeam;
+    }
+
+    public void setHomeTeam(String homeTeam) {
+        this.homeTeam = homeTeam;
+    }
+
+    public String getAwayTeam() {
+        return awayTeam;
+    }
+
+    public void setAwayTeam(String awayTeam) {
+        this.awayTeam = awayTeam;
+    }
+
+
+    public String getToss() {
+        return toss;
+    }
+
+    public void setToss(String toss) {
+        this.toss = toss;
+    }
+
+
 
     public String getLocation() {
-        return Location;
+        return location;
     }
 
     public void setLocation(String location) {
-        Location = location;
+        this.location = location;
     }
 
     public double getLatitude() {
@@ -36,8 +78,7 @@ public class MatchShortSummaryData {
         this.longtitue = longtitue;
     }
 
-    String Location;
-    double latitude,longtitue;
+
 
     public int getStatus() {
         return status;
@@ -48,6 +89,7 @@ public class MatchShortSummaryData {
     }
 
     int status;
+
     public long getTime() {
         return time;
     }
@@ -57,6 +99,7 @@ public class MatchShortSummaryData {
     }
 
     long time;
+
     public String getQuotes() {
         return quotes;
     }
@@ -109,11 +152,6 @@ public class MatchShortSummaryData {
     }
 
 
-    public class InningsSummary {
-        public int wicket;
-        public int run;
-        public String overs;
 
-    }
 
 }

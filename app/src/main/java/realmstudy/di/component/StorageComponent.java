@@ -48,7 +48,7 @@ public interface StorageComponent {
 
     void inject(TossFragment tossFragment);
 
-    void inject(InfoFragment infoFragment);
+   // void inject(InfoFragment infoFragment);
 
     void inject(OversFragment oversFragment);
 

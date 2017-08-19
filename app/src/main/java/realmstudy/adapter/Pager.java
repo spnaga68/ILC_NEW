@@ -20,13 +20,15 @@ public class Pager extends FragmentStatePagerAdapter {
     //integer to count number of tabs
     int tabCount;
     int match_id;
+    private String mss;
 
     //Constructor to the class
-    public Pager(FragmentManager fm, int tabCount, int match_id) {
+    public Pager(FragmentManager fm, int tabCount, int match_id,String mss) {
         super(fm);
         //Initializing tab count
         this.tabCount = tabCount;
         this.match_id = match_id;
+        this.mss=mss;
     }
 
     //Overriding method getItem
@@ -39,6 +41,7 @@ public class Pager extends FragmentStatePagerAdapter {
                 InfoFragment frag = new InfoFragment();
                 Bundle b = new Bundle();
                 b.putInt("match_id", match_id);
+                b.putString("mss",mss);
                 frag.setArguments(b);
                 return frag;
             case 1:

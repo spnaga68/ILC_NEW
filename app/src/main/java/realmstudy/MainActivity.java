@@ -41,6 +41,7 @@ import io.realm.Sort;
 import okhttp3.ResponseBody;
 import realmstudy.data.CommanData;
 import realmstudy.data.DetailedScoreData;
+import realmstudy.data.InningsSummary;
 import realmstudy.data.MatchShortSummaryData;
 import realmstudy.data.OverAdapterData;
 import realmstudy.data.RealmObjectData.BatingProfile;
@@ -301,6 +302,7 @@ public class MainActivity extends Fragment implements DialogInterface,
                 Bundle b = new Bundle();
                 MatchDetailActivity fragment = new MatchDetailActivity();
                 b.putInt("match_id", matchDetails.getMatch_id());
+                b.putString("mss",matchDetails.getmatchShortSummary());
                 // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
                 fragment.setArguments(b);
                 ((MainFragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
@@ -363,6 +365,15 @@ public class MainActivity extends Fragment implements DialogInterface,
                         } else {
                             current_bowler = RealmDB.getPlayer(realm, lastInningsDataItem.getCurrentBowler());
                             next_bowler = RealmDB.getPlayer(realm, lastInningsDataItem.getNextBowler());
+                        }
+
+                        //To check last ball is wicket
+                        if(detailedScoreBoardData.getScoreBoardData().getWicket()!=null){
+                            Wicket lwicket=CommanData.fromJson(detailedScoreBoardData.getScoreBoardData().getWicket(),Wicket.class);
+                            if(lwicket.getBatsman()==striker.getpID())
+                                striker=null;
+                            else
+                                non_striker=null;
                         }
                         checkAndUpdateUI();
 
@@ -1449,7 +1460,8 @@ public class MainActivity extends Fragment implements DialogInterface,
         matchShortSummaryData.setBattingTeamName(matchDetails.getCurrentBattingTeam().nick_name);
         matchShortSummaryData.setBowlingTeamName(matchDetails.getCurrentBowlingTeam().nick_name);
         matchShortSummaryData.setFirstInnings(!matchDetails.isFirstInningsCompleted());
-        MatchShortSummaryData.InningsSummary currentInningsSummary = matchShortSummaryData.new InningsSummary();
+
+        InningsSummary currentInningsSummary = new InningsSummary();
         matchShortSummaryData.setQuotes(detailedScoreBoardData.getScoreBoardData().getMatchQuote());
         currentInningsSummary.overs = new DecimalFormat("##.##").format(over);
         currentInningsSummary.run = total_run;

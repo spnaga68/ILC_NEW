@@ -256,6 +256,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                         MatchDetailActivity fragment = new MatchDetailActivity();
                         b.putInt("match_id", data.get(getAdapterPosition()).getMatch_id());
                         b.putBoolean("is_online", true);
+                        b.putString("mss", data.get(getAdapterPosition()).getmatchShortSummary());
                         fragment.setArguments(b);
                         ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
                     }
@@ -273,7 +274,9 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                             type = "ongoing";
                         else
                             type = "recent";
-                        DatabaseReference myRef = database.getReference("matchList/" + type + "/" + onlineMatchID.getMatch_id());
+                        String s="matchList/" + type + "/" + onlineMatchID.getMatch_id();
+                        System.out.println("________*"+onlineMatchID.getmatchShortSummary()+"__"+s);
+                        DatabaseReference myRef = database.getReference(s);
                         progressDialog.show();
                         if (onlineMatchID.isOnlineMatch()) {
 

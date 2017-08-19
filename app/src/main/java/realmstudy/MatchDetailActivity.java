@@ -45,6 +45,7 @@ import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.extras.AnimatedExpandableListView;
 import realmstudy.extras.ZoomOutPageTransformer;
 import realmstudy.fragments.ChartFrag;
+import realmstudy.fragments.InfoFragment;
 import realmstudy.fragments.OversFragment;
 import realmstudy.fragments.ScorecardDetailFragment;
 
@@ -65,6 +66,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     private View v;
     private DatabaseReference myRef;
     private boolean viewer;
+    private String mss;
 
     @Nullable
     @Override
@@ -73,8 +75,10 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         System.out.println("ScoreDataaaaonc");
         try {
             if (getArguments() != null) {
+                mss=getArguments().getString("mss","");
                 match_id = getArguments().getInt("match_id", 0);
                 viewer = getArguments().getBoolean("is_online", false);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,7 +98,8 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         viewPager = (ViewPager) v.findViewById(R.id.pager);
         //viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
-        adapter = new Pager(getChildFragmentManager(), tabLayout.getTabCount(), match_id);
+
+        adapter = new Pager(getChildFragmentManager(), tabLayout.getTabCount(), match_id,mss);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         //Adding adapter to pager
@@ -130,6 +135,10 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
                             scorecardDetailFragment.setDatas(datas);
                         } else if (fragment instanceof OversFragment) {
                             OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                            oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
+                        }
+                        else if (fragment instanceof InfoFragment) {
+                            InfoFragment oversFragment = (InfoFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
                             oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
                         }
                     }
