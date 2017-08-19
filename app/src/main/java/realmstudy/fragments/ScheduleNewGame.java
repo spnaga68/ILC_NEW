@@ -467,8 +467,8 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
         dpd.setAccentColor(ContextCompat.getColor(getActivity(), R.color.black));
         dpd.setCancelColor(ContextCompat.getColor(getActivity(), R.color.black));
         dpd.setOkColor(ContextCompat.getColor(getActivity(), R.color.black));
-        System.out.println(this.year +"__"+ year +"__"+ this.monthOfYear +"__"+ monthOfYear +"__"+ this.dayOfMonth +"__"+ dayOfMonth);
-        if (this.year == year && this.monthOfYear == monthOfYear && this.dayOfMonth == dayOfMonth)
+        System.out.println(this.year +"__"+now.get(Calendar.YEAR) +"__"+ this.monthOfYear +"__"+ monthOfYear +"__"+ this.dayOfMonth +"__"+ dayOfMonth);
+        if (year == now.get(Calendar.YEAR) && monthOfYear == now.get(Calendar.MONTH) && dayOfMonth == now.get(Calendar.DATE))
             dpd.setMinTime(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), 0);
         dpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
     }
