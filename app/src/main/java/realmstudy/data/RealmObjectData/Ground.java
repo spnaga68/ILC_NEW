@@ -50,7 +50,7 @@ public class Ground extends RealmObject {
 @PrimaryKey
     private int id;
     private String groundName, regionName, countryName, description;
-    private  double lat,lng;
+    private  double lat=0.0,lng=0.0;
 
     public double getLat() {
         return lat;

@@ -43,6 +43,7 @@ import realmstudy.data.ScoreCardDetailData;
 import realmstudy.data.SessionSave;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.extras.AnimatedExpandableListView;
+import realmstudy.extras.NetworkStatus;
 import realmstudy.extras.ZoomOutPageTransformer;
 import realmstudy.fragments.ChartFrag;
 import realmstudy.fragments.InfoFragment;
@@ -109,6 +110,8 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         boolean forSecInnings = false;
 
         if (viewer) {
+            if (!NetworkStatus.isOnline(getActivity()))
+                ((MainFragmentActivity) getActivity()).showNetWorkAlert();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             myRef = database.getReference("InningsDetailData/" + match_id);
             tabLayout.addOnTabSelectedListener(this);

@@ -30,6 +30,7 @@ import io.realm.RealmConfiguration;
  * Created by developer on 15/2/17.
  */
 public class NewPlayerDialog extends DialogFragment {
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 222;
     int mNum;
     private static final int PICK_CONTACT = 420;
     private EditText name, ph_no;
@@ -78,13 +79,32 @@ public class NewPlayerDialog extends DialogFragment {
 
         ph_no.setHint(R.string.ph_no);
 
+//        if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
+//                Manifest.permission.READ_CONTACTS)) {
+//
+//            // Show an explanation to the user *asynchronously* -- don't block
+//            // this thread waiting for the user's response! After the user
+//            // sees the explanation, try again to request the permission.
+//
+//        } else {
+//
+//            // No explanation needed, we can request the permission.
+//
+//
+//
+//            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+//            // app-defined int constant. The callback method gets the
+//            // result of the request.
+//        }
         v.findViewById(R.id.from_contacts).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
                         ) {
-
-                    ((MainFragmentActivity) getActivity()).startInstalledAppDetailsActivity(getActivity());
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.READ_CONTACTS},
+                            MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                   // ((MainFragmentActivity) getActivity()).startInstalledAppDetailsActivity(getActivity());
                 } else {
                     //  dismiss();
                     pickFromContacts();

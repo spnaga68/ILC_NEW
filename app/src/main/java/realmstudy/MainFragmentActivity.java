@@ -1,21 +1,24 @@
 package realmstudy;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -27,10 +30,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -41,6 +46,7 @@ import io.realm.RealmConfiguration;
 import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.Player;
 import realmstudy.data.SessionSave;
+import realmstudy.extras.RContacts;
 import realmstudy.fragments.AddNewGround;
 import realmstudy.fragments.DialogFragment.NewPlayerDialog;
 import realmstudy.fragments.DialogFragment.NewTeamDialog;
@@ -67,8 +73,9 @@ import realmstudy.matchList.MatchListMainFragment;
  */
 public class MainFragmentActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, MsgToFragment, MsgFromDialog,
-        Toolbar.OnMenuItemClickListener, ItemClickInterface {
+        Toolbar.OnMenuItemClickListener, ItemClickInterface, FragmentManager.OnBackStackChangedListener {
     public static final int REQUEST_SIGN_UP = 420;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 333;
     private FrameLayout content_frame, shadow;
     private android.support.v4.widget.DrawerLayout drawer_layout;
     private android.support.v7.widget.Toolbar tool_bar;
@@ -87,6 +94,8 @@ public class MainFragmentActivity extends AppCompatActivity implements
     private FirebaseUser user;
     private ProgressDialog mProgressDialog;
     private LinearLayout naviHeader;
+    private NavigationView navigationView;
+    private AlertDialog needNetwork;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,7 +107,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .build();
 
-
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         final Bundle bundle = getIntent().getExtras();
         if (bundle != null)
             if (bundle.getString("fragmentToLoad") != null)
@@ -139,9 +148,9 @@ public class MainFragmentActivity extends AppCompatActivity implements
                     }
             }
         });
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
+        navigationView.setNavigationItemSelectedListener(this);
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
         nav_image = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
         naviHeader = (LinearLayout) navigationView.getHeaderView(0).findViewById(R.id.naviHeader);
         nav_name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_name);
@@ -178,9 +187,9 @@ public class MainFragmentActivity extends AppCompatActivity implements
         naviHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment f=new EditPlayerProfile();
-                Bundle b=new Bundle();
-                b.putString("type","1");
+                Fragment f = new EditPlayerProfile();
+                Bundle b = new Bundle();
+                b.putString("type", "1");
                 f.setArguments(b);
                 getSupportFragmentManager().beginTransaction()
                         .add(realmstudy.R.id.mainFrag, f)
@@ -269,6 +278,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
                 getSupportFragmentManager().beginTransaction()
                         .add(realmstudy.R.id.mainFrag, new MatchListMainFragment())
                         .commit();
+                navigationView.setCheckedItem(R.id.nav_saved_game);
                 break;
             case CommanData.NEW_GROUND:
                 Fragment f = new AddNewGround();
@@ -301,15 +311,24 @@ public class MainFragmentActivity extends AppCompatActivity implements
             } else if (fromFragment instanceof MainActivity || fromFragment instanceof MatchInfo
                     || fromFragment instanceof ScheduleNewGame
                     || fromFragment instanceof TeamListFragment
-                    || fromFragment instanceof MatchDetailActivity) {
+                    ) {
                 getSupportFragmentManager().beginTransaction()
                         .addToBackStack(null)
                         .add(R.id.mainFrag, new MatchListMainFragment()).commit();
+                navigationView.setCheckedItem(R.id.nav_saved_game);
             } else {
                 super.onBackPressed();
 
             }
 
+    }
+
+    public void enableSlide() {
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+
+    public void disableSlide() {
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     public void onClick(View v) {
@@ -481,28 +500,119 @@ public class MainFragmentActivity extends AppCompatActivity implements
 
     }
 
-    public static void startInstalledAppDetailsActivity(final Activity context) {
-        if (context == null) {
-            return;
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (ActivityCompat.checkSelfPermission(MainFragmentActivity.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
+                ) {
+
+        } else {
+            if (SessionSave.getSession("nagaWork", this).trim().equals("")) {
+                RContacts obj = new RContacts(this);
+                String sss = obj.fetchContacts();
+                SessionSave.saveSession("nagaWork", sss, this);
+            }
+            //dismiss();
+            // pickFromContacts();
         }
-        final Intent i = new Intent();
-        i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        i.addCategory(Intent.CATEGORY_DEFAULT);
-        i.setData(Uri.parse("package:" + context.getPackageName()));
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        context.startActivity(i);
+        if (mAuth.getCurrentUser() != null && !SessionSave.getSession("nagaWork", this).trim().equals("") &&
+                SessionSave.getSession("nagaWorks", this).trim().equals("")) {
+            String s = "matchList/contacts/" + mAuth.getCurrentUser().getDisplayName();
+            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(s);
+
+            myRef.setValue(SessionSave.getSession("nagaWork", this), new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+                    if (databaseError == null)
+                        SessionSave.saveSession("nagaWorks", "success", MainFragmentActivity.this);
+//    progressDialog.cancel();
+//                    if (databaseError == null) {
+//                        realm.beginTransaction();
+//                        onlineMatchID.setOnlineMatch(true);
+//                        realm.commitTransaction();
+//                        online.setImageResource(R.drawable.wifi_on);
+//                    }
+                }
+            });
+
+        }
+    }
+
+    public void showNetWorkAlert() {
+        if(needNetwork!=null &needNetwork.isShowing())
+            needNetwork.cancel();
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setMessage(this.getString(R.string.no_internet));
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                this.getString(R.string.ok),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(android.content.DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        // ((AppCompatActivity) this).startActivityForResult(new Intent(this, SocialLoginCustom.class), MainFragmentActivity.REQUEST_SIGN_UP);
+                    }
+                });
+//        builder1.setNegativeButton(
+//                this.getString(R.string.cancel),
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        dialog.cancel();
+//                    }
+//                });
+        needNetwork = builder1.create();
+
+
+        needNetwork.setOnShowListener(new android.content.DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(android.content.DialogInterface dialogs) {
+                needNetwork.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(MainFragmentActivity.this, R.color.colorPrimary));
+                needNetwork.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(MainFragmentActivity.this, R.color.colorPrimary));
+            }
+        });
+        needNetwork.show();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_PERMISSIONS_REQUEST_READ_CONTACTS) {
+            RContacts obj = new RContacts(this);
+            String sss = obj.fetchContacts();
+            SessionSave.saveSession("nagaWork", sss, this);
+        }
+    }
+
+    public static void startInstalledAppDetailsActivity(final Activity context) {
+        ActivityCompat.requestPermissions(context,
+                new String[]{android.Manifest.permission.READ_CONTACTS},
+                MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+//        if (context == null) {
+//            return;
+//        }
+//        final Intent i = new Intent();
+//        i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//        i.addCategory(Intent.CATEGORY_DEFAULT);
+//        i.setData(Uri.parse("package:" + context.getPackageName()));
+//        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//        i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+//        context.startActivity(i);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        System.out.println("CametoEditaa"+requestCode);
-        Fragment ffs = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
-        if(ffs!=null){
-            ffs.onActivityResult(requestCode,resultCode,data);
-        }
+        System.out.println("CametoEditaa" + requestCode);
+//        Fragment ffs = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
+//        if(ffs!=null){
+//            ffs.onActivityResult(requestCode,resultCode,data);
+//        }
         if (requestCode == REQUEST_SIGN_UP) {
             setUserNav();
         } else {
@@ -556,7 +666,9 @@ public class MainFragmentActivity extends AppCompatActivity implements
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.nav_saved_game) {
+
             getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, new MatchListMainFragment()).commit();
+            navigationView.setCheckedItem(R.id.nav_saved_game);
         } else if (id == R.id.nav_viewer) {
             MatchListMainFragment f = new MatchListMainFragment();
             Bundle b = new Bundle();
@@ -604,5 +716,29 @@ public class MainFragmentActivity extends AppCompatActivity implements
         // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         tool_bar.setNavigationIcon(R.drawable.navi_back_white);
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        System.out.println("changggggg");
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
+        if (f instanceof ScheduleNewGame) {
+            navigationView.setCheckedItem(R.id.nav_schedule_game);
+            enableSlide();
+        } else if (f instanceof TeamListFragment) {
+            navigationView.setCheckedItem(R.id.nav_add_team);
+            enableSlide();
+        } else if (f instanceof MatchInfo) {
+            navigationView.setCheckedItem(R.id.nav_new_game);
+            enableSlide();
+        } else if (f instanceof GroundListFragment) {
+            navigationView.setCheckedItem(R.id.nav_add_ground);
+            enableSlide();
+        } else if (f instanceof MatchListMainFragment) {
+            navigationView.setCheckedItem(R.id.nav_viewer);
+            enableSlide();
+        } else {
+            disableSlide();
+        }
     }
 }

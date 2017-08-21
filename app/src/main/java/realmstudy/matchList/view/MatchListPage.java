@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import realmstudy.MainFragmentActivity;
 import realmstudy.MyApplication;
 import realmstudy.R;
 import realmstudy.adapter.SavedGameListAdapter;
@@ -31,6 +32,7 @@ import realmstudy.adapter.recycler.Paginate;
 import realmstudy.data.CommanData;
 import realmstudy.data.MatchShortSummaryData;
 import realmstudy.data.RealmObjectData.MatchDetails;
+import realmstudy.extras.NetworkStatus;
 import realmstudy.fragments.MatchInfo;
 import realmstudy.fragments.ScheduleNewGame;
 
@@ -105,6 +107,7 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
         RealmResults data = null;
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         if (isOnline) {
+
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), OrientationHelper.VERTICAL, false);
             mRecyclerView.setLayoutManager(layoutManager);
             if (getActivity() != null) {
@@ -124,7 +127,7 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
             myRef = database.getReference("matchList/" + typeString);
             Query queryRef;
 
-             queryRef = myRef
+            queryRef = myRef
                     .limitToFirst(5);
 
             valueEventListener = new ValueEventListener() {
@@ -133,7 +136,7 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
                     progress_bar.setVisibility(View.GONE);
                     //datas.clear();
                     if (dataSnapshot.exists()) {
-                        System.out.println("md.getValue()*" + dataSnapshot.getChildrenCount()+"__"+savedGameListAdapter.getItemCount());
+                        System.out.println("md.getValue()*" + dataSnapshot.getChildrenCount() + "__" + savedGameListAdapter.getItemCount());
                         for (DataSnapshot md : dataSnapshot.getChildren()) {
                             if (md.getValue() != null && !md.getValue().equals("")) {
                                 MatchDetails matchDetails = new MatchDetails();
@@ -151,11 +154,11 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
                         }
                         page += 1;
                         //if(datas.size()%10!=0)
-                            allItemLoaded=true;
-                        System.out.println("md.getValue()" + dataSnapshot.getChildrenCount()+"__"+datas.size());
+                        allItemLoaded = true;
+                        System.out.println("md.getValue()" + dataSnapshot.getChildrenCount() + "__" + datas.size());
                         savedGameListAdapter.addData(datas);
                         setupPagination(mRecyclerView);
-                        allItemLoaded=true;
+                        allItemLoaded = true;
                     } else {
 //                        System.out.println("databaseerrorss" );
 //                        no_data_lay.setVisibility(View.VISIBLE);

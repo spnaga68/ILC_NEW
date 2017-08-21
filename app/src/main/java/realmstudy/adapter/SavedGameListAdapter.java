@@ -45,6 +45,7 @@ import realmstudy.data.RealmObjectData.BowlingProfile;
 import realmstudy.data.RealmObjectData.InningsData;
 import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.databaseFunctions.RealmDB;
+import realmstudy.extras.NetworkStatus;
 import realmstudy.fragments.MatchInfo;
 import realmstudy.fragments.regLogin.Signup;
 import realmstudy.fragments.regLogin.SocialLoginCustom;
@@ -233,14 +234,17 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                             b.putString("venue", md.getLocation());
                             b.putString("teamIDs", String.valueOf(md.getHomeTeam().team_id) + "__" + String.valueOf(md.getAwayTeam().team_id));
                             fragment.setArguments(b);
-                            ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
+                            ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
 
                         } else if (md.getMatchStatus() != CommanData.MATCH_COMPLETED) {
-                            Bundle b = new Bundle();
-                            MainActivity fragment = new MainActivity();
-                            b.putInt("match_id", md.getMatch_id());
-                            fragment.setArguments(b);
-                            ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
+                            if ((md.isOnlineMatch() && (auth.getCurrentUser() != null)) || !md.isOnlineMatch()) {
+                                Bundle b = new Bundle();
+                                MainActivity fragment = new MainActivity();
+                                b.putInt("match_id", md.getMatch_id());
+                                fragment.setArguments(b);
+                                ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
+                            } else
+                                showLoginAlert();
                         } else {
                             //Toast.makeText(context, context.getString(R.string.game_over), Toast.LENGTH_SHORT).show();
                             Bundle b = new Bundle();
@@ -248,7 +252,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                             b.putInt("match_id", md.getMatch_id());
                             // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
                             fragment.setArguments(b);
-                            ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
+                            ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
                         }
                     } else {
                         //  MatchDetails matchDetails=data.get(getAdapterPosition());
@@ -258,91 +262,67 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                         b.putBoolean("is_online", true);
                         b.putString("mss", data.get(getAdapterPosition()).getmatchShortSummary());
                         fragment.setArguments(b);
-                        ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
+                        ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
                     }
                 }
             });
             online.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (auth.getCurrentUser() != null) {
-                        onlineMatchID = RealmDB.getMatchById(context, realm, data.get(getAdapterPosition()).getMatch_id());
-                        String type = "";
-                        if (onlineMatchID.getToss() == null)
-                            type = "upcoming";
-                        else if (onlineMatchID.getMatchStatus() != CommanData.MATCH_COMPLETED)
-                            type = "ongoing";
-                        else
-                            type = "recent";
-                        String s="matchList/" + type + "/" + onlineMatchID.getMatch_id();
-                        System.out.println("________*"+onlineMatchID.getmatchShortSummary()+"__"+s);
-                        DatabaseReference myRef = database.getReference(s);
-                        progressDialog.show();
-                        if (onlineMatchID.isOnlineMatch()) {
+                    if (NetworkStatus.isOnline(context)) {
+                        if (auth.getCurrentUser() != null) {
+                            onlineMatchID = RealmDB.getMatchById(context, realm, data.get(getAdapterPosition()).getMatch_id());
+                            String type = "";
+                            if (onlineMatchID.getToss() == null)
+                                type = "upcoming";
+                            else if (onlineMatchID.getMatchStatus() != CommanData.MATCH_COMPLETED)
+                                type = "ongoing";
+                            else
+                                type = "recent";
+                            String s = "matchList/" + type + "/" + onlineMatchID.getMatch_id();
+                            System.out.println("________*" + onlineMatchID.getmatchShortSummary() + "__" + s);
+                            DatabaseReference myRef = database.getReference(s);
+                            progressDialog.show();
+                            if (onlineMatchID.isOnlineMatch()) {
 
-                            myRef.removeValue(new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                    progressDialog.cancel();
-                                    if (databaseError == null) {
+                                myRef.removeValue(new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        progressDialog.cancel();
+                                        if (databaseError == null) {
 
-                                        realm.beginTransaction();
-                                        onlineMatchID.setOnlineMatch(false);
-                                        realm.commitTransaction();
-                                        online.setImageResource(R.drawable.wifi_off);
+                                            realm.beginTransaction();
+                                            onlineMatchID.setOnlineMatch(false);
+                                            realm.commitTransaction();
+                                            online.setImageResource(R.drawable.wifi_off);
+                                        }
                                     }
-                                }
-                            });
+                                });
 
+                            } else {
+
+
+                                myRef.setValue(CommanData.fromJson(onlineMatchID.getmatchShortSummary(), MatchShortSummaryData.class), new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        progressDialog.cancel();
+                                        if (databaseError == null) {
+                                            realm.beginTransaction();
+                                            onlineMatchID.setOnlineMatch(true);
+                                            realm.commitTransaction();
+                                            online.setImageResource(R.drawable.wifi_on);
+                                        }
+                                    }
+                                });
+
+
+                            }
                         } else {
-
-
-                            myRef.setValue(CommanData.fromJson(onlineMatchID.getmatchShortSummary(),MatchShortSummaryData.class), new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                    progressDialog.cancel();
-                                    if (databaseError == null) {
-                                        realm.beginTransaction();
-                                        onlineMatchID.setOnlineMatch(true);
-                                        realm.commitTransaction();
-                                        online.setImageResource(R.drawable.wifi_on);
-                                    }
-                                }
-                            });
-
-
+                            showLoginAlert();
                         }
                     } else {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage(context.getString(R.string.need_signup_online));
-                        builder1.setCancelable(true);
-
-                        builder1.setPositiveButton(
-                                context.getString(R.string.ok),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                        ((AppCompatActivity) context).startActivityForResult(new Intent(context, SocialLoginCustom.class), MainFragmentActivity.REQUEST_SIGN_UP);
-                                    }
-                                });
-                        builder1.setNegativeButton(
-                                context.getString(R.string.cancel),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-                        needSignUp = builder1.create();
-
-
-                        needSignUp.setOnShowListener(new android.content.DialogInterface.OnShowListener() {
-                            @Override
-                            public void onShow(android.content.DialogInterface dialogs) {
-                                needSignUp.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-                                needSignUp.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-                            }
-                        });
-                        needSignUp.show();
+                        if(context instanceof  MainFragmentActivity)
+                            ((MainFragmentActivity)context).showNetWorkAlert();
                     }
                 }
             });
@@ -371,6 +351,42 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
             notifyItemRemoved(position);
         }
 
+    }
+
+
+
+
+    private void showLoginAlert() {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setMessage(context.getString(R.string.need_signup_online));
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                context.getString(R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        ((AppCompatActivity) context).startActivityForResult(new Intent(context, SocialLoginCustom.class), MainFragmentActivity.REQUEST_SIGN_UP);
+                    }
+                });
+        builder1.setNegativeButton(
+                context.getString(R.string.cancel),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        needSignUp = builder1.create();
+
+
+        needSignUp.setOnShowListener(new android.content.DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(android.content.DialogInterface dialogs) {
+                needSignUp.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+                needSignUp.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+            }
+        });
+        needSignUp.show();
     }
 
 }

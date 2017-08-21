@@ -4,7 +4,7 @@
     android:id="@+id/mapView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-android:background="@color/appbg"
+    android:background="@color/appbg"
     android:orientation="vertical">
 
     <android.support.design.widget.TextInputLayout
@@ -59,6 +59,16 @@ android:background="@color/appbg"
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/info_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/region_lay"
+        android:gravity="top"
+        android:padding="10dp"
+        android:text="@string/select_location"
+        android:textColor="#795548"
+        android:textColorHint="@color/edit_hint_color" />
 
     <fragment xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
@@ -66,7 +76,7 @@ android:background="@color/appbg"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/save"
-        android:layout_below="@+id/region_lay"
+        android:layout_below="@+id/info_head"
         android:layout_marginTop="25dp"
         tools:context="com.example.developer.map.AddNewGround" />
 
@@ -75,9 +85,9 @@ android:background="@color/appbg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="@string/save"
         android:layout_margin="5dp"
-        android:textColor="@color/white"
         android:background="@color/colorPrimaryDark"
+        android:text="@string/save"
+        android:textColor="@color/white"
         android:visibility="visible" />
 </RelativeLayout>

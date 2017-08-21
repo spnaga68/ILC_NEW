@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -18,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +48,8 @@ import realmstudy.MyApplication;
 import realmstudy.R;
 import realmstudy.data.RealmObjectData.Player;
 import realmstudy.databaseFunctions.RealmDB;
+
+import static com.facebook.GraphRequest.TAG;
 
 /**
  * Created by developer on 15/6/17.
@@ -134,7 +138,7 @@ public class EditPlayerProfile extends Fragment implements AppBarLayout.OnOffset
         profile_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getCamera();
+                getImage();
             }
         });
         return v;
@@ -314,7 +318,24 @@ public class EditPlayerProfile extends Fragment implements AppBarLayout.OnOffset
         v.startAnimation(alphaAnimation);
     }
 
+    public  boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (getActivity().checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG,"Permission is granted");
+                return true;
+            } else {
 
+                Log.v(TAG,"Permission is revoked");
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG,"Permission is granted");
+            return true;
+        }
+    }
     @Override
     public void onActivityResult(final int requestcode, final int resultcode, final Intent data) {
         try {

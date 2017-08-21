@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import realmstudy.MainFragmentActivity;
 import realmstudy.R;
 import realmstudy.adapter.Pager;
+import realmstudy.extras.NetworkStatus;
 import realmstudy.extras.ZoomOutPageTransformer;
 import realmstudy.matchList.view.MatchListPager;
 
@@ -45,6 +46,8 @@ public class MatchListMainFragment extends Fragment implements TabLayout.OnTabSe
         viewPager = (ViewPager) v.findViewById(R.id.pager);
         // viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
+        if (!NetworkStatus.isOnline(getActivity()) && isOnline)
+            ((MainFragmentActivity) getActivity()).showNetWorkAlert();
         MatchListPager adapter = new MatchListPager(getChildFragmentManager(), tabLayout.getTabCount(),isOnline);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 

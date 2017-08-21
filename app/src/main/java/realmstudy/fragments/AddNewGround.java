@@ -81,7 +81,6 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
         super.onCreate(savedInstanceState);
     }
 
-    
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -99,7 +98,8 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
                 if (g != null) {
                     ground_name.setText(g.getGroundName());
                     region.setText(g.getRegionName());
-                    groundLatLng = new LatLng(g.getLat(), g.getLng());
+                    if (g.getLat() != 0.0)
+                        groundLatLng = new LatLng(g.getLat(), g.getLng());
                     countryEdit = g.getCountryName();
                 }
             }
@@ -114,36 +114,39 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (groundLatLng != null) {
-                    if (ground_name.getText().toString().length() > 5) {
-                        if (region.getText().toString().length() > 3) {
-                            long tsLong;
-                            tsLong = System.currentTimeMillis() / 1000;
+                // if (groundLatLng != null) {
+                if (ground_name.getText().toString().length() >= 5) {
+                    if (region.getText().toString().length() > 3) {
+                        long tsLong;
+                        tsLong = System.currentTimeMillis() / 1000;
 
-                            realm.beginTransaction();
-                            Ground ground;
-                            if (groundId == 0)
-                                ground = realm.createObject(Ground.class, (int) tsLong);
-                            else
-                                ground = realm.where(Ground.class).equalTo("id", groundId).findFirst();
-                            ground.setCountryName(country.getSelectedItem().toString());
-                            ground.setGroundName(ground_name.getText().toString());
-                            ground.setRegionName(region.getText().toString());
+                        realm.beginTransaction();
+                        Ground ground;
+                        if (groundId == 0)
+                            ground = realm.createObject(Ground.class, (int) tsLong);
+                        else
+                            ground = realm.where(Ground.class).equalTo("id", groundId).findFirst();
+                        ground.setCountryName(country.getSelectedItem().toString());
+                        ground.setGroundName(ground_name.getText().toString());
+                        ground.setRegionName(region.getText().toString());
+                        if (groundLatLng != null) {
                             ground.setLat(groundLatLng.latitude);
                             ground.setLng(groundLatLng.longitude);
-                            realm.commitTransaction();
-                            if (type == 0)
-                                getActivity().onBackPressed();
-                            else
-                                getActivity().finish();
+                        }
+                        realm.commitTransaction();
+                        if (type == 0)
+                            getActivity().onBackPressed();
+                        else
+                            getActivity().finish();
 
-                        } else
-                            Toast.makeText(getActivity(), getString(R.string.region_valid), Toast.LENGTH_SHORT).show();
                     } else
-                        Toast.makeText(getActivity(), getString(R.string.ground_name_valid), Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(getActivity(), getString(R.string.region_valid), Toast.LENGTH_SHORT).show();
                 } else
-                    Toast.makeText(getActivity(), getString(R.string.select_location), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.ground_name_valid), Toast.LENGTH_SHORT).show();
+
+                // }
+//                else
+//                    Toast.makeText(getActivity(), getString(R.string.select_location), Toast.LENGTH_SHORT).show();
             }
         });
         return view;
@@ -162,7 +165,7 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mLastLocation == null&&getActivity()!=null) {
+                if (mLastLocation == null && getActivity() != null) {
                     stopLocationUpdate();
                     locationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
                     startLocUpdate();
@@ -293,12 +296,16 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
     void stopLocationUpdate() {
 
 
-        if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
+        try {
+            if (getActivity() != null && PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-            if (apiclient != null) {
-                LocationServices.FusedLocationApi.removeLocationUpdates(apiclient, this);
+                if (apiclient != null) {
+                    LocationServices.FusedLocationApi.removeLocationUpdates(apiclient, this);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

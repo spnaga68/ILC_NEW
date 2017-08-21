@@ -170,7 +170,7 @@
     <string name="region">Region</string>
     <string name="description">Description</string>
     <string name="region_valid">Region should have minimum 3 character</string>
-    <string name="ground_name_valid">Ground name should have minimum 3 character</string>
+    <string name="ground_name_valid">Ground name should have minimum 5 character</string>
     <string name="select_location">Long press on map to mark location</string>
 
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDqLvaMHzY9xFiRskzRICdlgnS-yAFHFAU</string>
@@ -201,6 +201,7 @@
     <string name="profile_image">Profile Image</string>
     <string name="gallery">Gallery</string>
     <string name="schedule_game_upcoming">Scheduled game listed in upcoming matches</string>
+    <string name="no_internet">No Internet Connection Found</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>
