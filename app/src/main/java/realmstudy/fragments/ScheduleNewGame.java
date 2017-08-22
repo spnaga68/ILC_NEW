@@ -287,7 +287,7 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
         super.onResume();
         getActivity().setTitle(getString(R.string.schedule_game));
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((MainFragmentActivity)getActivity()).setNaviHome();
+            ((MainFragmentActivity) getActivity()).setNaviHome();
 
         }
     }
@@ -334,7 +334,8 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(Intent.EXTRA_STREAM, outputUri);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.putExtra(Intent.EXTRA_TEXT, desc.getText());
+                String shareContent = "" + homeTeam.nick_name + " " + getString(R.string.vs) + " " + awayTeam.nick_name + "\n" + time.getText().toString() + "\n" + venue.getText().toString() + "\n" + desc.getText().toString();
+                intent.putExtra(Intent.EXTRA_TEXT, shareContent);
 
                 if (type == WHATSAPP) {
                     intent.setPackage("com.whatsapp");
@@ -467,7 +468,7 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
         dpd.setAccentColor(ContextCompat.getColor(getActivity(), R.color.black));
         dpd.setCancelColor(ContextCompat.getColor(getActivity(), R.color.black));
         dpd.setOkColor(ContextCompat.getColor(getActivity(), R.color.black));
-        System.out.println(this.year +"__"+now.get(Calendar.YEAR) +"__"+ this.monthOfYear +"__"+ monthOfYear +"__"+ this.dayOfMonth +"__"+ dayOfMonth);
+        System.out.println(this.year + "__" + now.get(Calendar.YEAR) + "__" + this.monthOfYear + "__" + monthOfYear + "__" + this.dayOfMonth + "__" + dayOfMonth);
         if (year == now.get(Calendar.YEAR) && monthOfYear == now.get(Calendar.MONTH) && dayOfMonth == now.get(Calendar.DATE))
             dpd.setMinTime(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), 0);
         dpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
@@ -476,7 +477,7 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
 
-        String startDateString = monthOfYear+1 + "/" + dayOfMonth + "/" + year + "/" + hourOfDay + "/" + minute;
+        String startDateString = monthOfYear + 1 + "/" + dayOfMonth + "/" + year + "/" + hourOfDay + "/" + minute;
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy/H/m");
         Date startDate;
         try {
@@ -485,8 +486,8 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
             System.out.println(newDateString);
 
             match_time = startDate.getTime() / 1000;
-          //  System.out.println("SelectedTime---" + match_time);
-           long delay= Math.abs(startDate.getTime()-System.currentTimeMillis());
+            //  System.out.println("SelectedTime---" + match_time);
+            long delay = Math.abs(startDate.getTime() - System.currentTimeMillis());
             //System.out.println("SelectedTime---" + match_time+"__"+startDate.getTime()+"__"+System.currentTimeMillis()+"___"+delay);
             time.setText(CommanData.getDateCurrentTimeZone(match_time));
             scheduleNotification(getNotification(""), delay);
@@ -500,7 +501,6 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
     }
 
 
-
     private void scheduleNotification(Notification notification, long delay) {
 
         Intent notificationIntent = new Intent(getActivity(), NotificationPublisher.class);
@@ -508,10 +508,9 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-       // long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        // long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, delay, pendingIntent);
-
 
 
 //        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
@@ -528,7 +527,6 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
         builder.setDefaults(Notification.DEFAULT_SOUND);
         return builder.build();
     }
-
 
 
 //    @Override

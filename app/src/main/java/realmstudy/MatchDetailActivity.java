@@ -76,7 +76,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         System.out.println("ScoreDataaaaonc");
         try {
             if (getArguments() != null) {
-                mss=getArguments().getString("mss","");
+                mss = getArguments().getString("mss", "");
                 match_id = getArguments().getInt("match_id", 0);
                 viewer = getArguments().getBoolean("is_online", false);
 
@@ -100,7 +100,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         //viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
 
-        adapter = new Pager(getChildFragmentManager(), tabLayout.getTabCount(), match_id,mss);
+        adapter = new Pager(getChildFragmentManager(), tabLayout.getTabCount(), match_id, mss);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         //Adding adapter to pager
@@ -139,8 +139,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
                         } else if (fragment instanceof OversFragment) {
                             OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
                             oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
-                        }
-                        else if (fragment instanceof InfoFragment) {
+                        } else if (fragment instanceof InfoFragment) {
                             InfoFragment oversFragment = (InfoFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
                             oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
                         }
@@ -161,6 +160,14 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
                 InningsData d = realm.where(InningsData.class).equalTo("match_id", match_id).equalTo("firstInnings", !md.isFirstInningsCompleted()).findAllSorted("delivery", Sort.ASCENDING).last();
                 detailedScoreData = CommanData.fromJson(d.getDetailedScoreBoardData(), DetailedScoreData.class);
                 tabLayout.addOnTabSelectedListener(this);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                        oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
+                    }
+                }, 500);
+
                 System.out.println("ScoreDataaaa" + d.getDetailedScoreBoardData());
             } catch (Exception e) {
                 e.printStackTrace();
