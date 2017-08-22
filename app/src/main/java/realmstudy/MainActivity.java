@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -110,8 +111,11 @@ public class MainActivity extends Fragment implements DialogInterface,
     private int firstInningsWicket;
     private String firstInningsOver;
 
-    LinearLayout extras_lay_L, submit_lay,run_lay_L;
+    LinearLayout extras_lay_L, submit_lay, run_lay_L;
     TextView blockEntry;
+    private boolean removedFromUpcoming;
+    /*variable use when two select player dialog opens*/
+    private boolean askBowler;
 
     @Override
     public void msg(String s) {
@@ -184,10 +188,10 @@ public class MainActivity extends Fragment implements DialogInterface,
         legal_ball_txt = (TextView) v.findViewById(realmstudy.R.id.legal_ball_txt);
         submit = (AppCompatButton) v.findViewById(realmstudy.R.id.submit);
         out = (AppCompatButton) v.findViewById(realmstudy.R.id.out);
-        extras_lay_L= (LinearLayout) v.findViewById(realmstudy.R.id.extras_lay_L);
-        submit_lay= (LinearLayout) v.findViewById(realmstudy.R.id.submit_lay);
-        blockEntry= (TextView) v.findViewById(realmstudy.R.id.blockEntry);
-        run_lay_L= (LinearLayout) v.findViewById(realmstudy.R.id.run_lay_L);
+        extras_lay_L = (LinearLayout) v.findViewById(realmstudy.R.id.extras_lay_L);
+        submit_lay = (LinearLayout) v.findViewById(realmstudy.R.id.submit_lay);
+        blockEntry = (TextView) v.findViewById(realmstudy.R.id.blockEntry);
+        run_lay_L = (LinearLayout) v.findViewById(realmstudy.R.id.run_lay_L);
         setInputListner(true);
 
         // groundFragment = (CanvasStudy) getChildFragmentManager().findFragmentById(R.id.ground_frag);
@@ -196,6 +200,8 @@ public class MainActivity extends Fragment implements DialogInterface,
         blockEntry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (askBowler)
+                    current_bowler = null;
                 checkPlayerNotNull();
             }
         });
@@ -302,7 +308,7 @@ public class MainActivity extends Fragment implements DialogInterface,
                 Bundle b = new Bundle();
                 MatchDetailActivity fragment = new MatchDetailActivity();
                 b.putInt("match_id", matchDetails.getMatch_id());
-                b.putString("mss",matchDetails.getmatchShortSummary());
+                b.putString("mss", matchDetails.getmatchShortSummary());
                 // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
                 fragment.setArguments(b);
                 ((MainFragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
@@ -316,12 +322,24 @@ public class MainActivity extends Fragment implements DialogInterface,
 
     private void checkAndUpdateUI() {
 
-        if(detailedScoreBoardData!=null)
+        if (detailedScoreBoardData != null)
             scoreBoardFragment.updateUI(detailedScoreBoardData.getScoreBoardData());
+
         if (checkPlayerNotNull()) {
+
+
             checkUnOrRedo();
+            if (askBowler) {
 
+                assignToPlayer = 2;
 
+                hideEntry(getString(R.string.select_current_bowler));
+                boolean ishome = false;
+                if (!matchDetails.isHomeTeamBatting())
+                    ishome = true;
+                System.out.println("______DDcallinit3" + ishome);
+                ((MainFragmentActivity) getActivity()).showSelectplayer(matchDetails.getMatch_id(), ishome, current_bowler, getString(R.string.current_bowler), assignToPlayer);
+            }
 
             normal_delivery = true;
             runs = 0;
@@ -368,12 +386,12 @@ public class MainActivity extends Fragment implements DialogInterface,
                         }
 
                         //To check last ball is wicket
-                        if(detailedScoreBoardData.getScoreBoardData().getWicket()!=null){
-                            Wicket lwicket=CommanData.fromJson(detailedScoreBoardData.getScoreBoardData().getWicket(),Wicket.class);
-                            if(lwicket.getBatsman()==striker.getpID())
-                                striker=null;
+                        if (detailedScoreBoardData.getScoreBoardData().getWicket() != null) {
+                            Wicket lwicket = CommanData.fromJson(detailedScoreBoardData.getScoreBoardData().getWicket(), Wicket.class);
+                            if (lwicket.getBatsman() == striker.getpID())
+                                striker = null;
                             else
-                                non_striker=null;
+                                non_striker = null;
                         }
                         checkAndUpdateUI();
 
@@ -628,6 +646,7 @@ public class MainActivity extends Fragment implements DialogInterface,
             @Override
             public void onShow(android.content.DialogInterface dialogs) {
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
             }
         });
         // display dialog
@@ -646,6 +665,9 @@ public class MainActivity extends Fragment implements DialogInterface,
                     public void onClick(android.content.DialogInterface dialog, int which) {
 
                         RealmDB.completeMatch(realm, matchDetails);
+                        if (matchDetails.isOnlineMatch())
+                            removeMatchFromOncoming(CommanData.fromJson(matchDetails.getmatchShortSummary(), MatchShortSummaryData.class));
+
                         // SessionSave.saveSession("sdata", CommanData.toString(detailedScoreBoardData.getScoreBoardData()), getActivity());
                         Bundle b = new Bundle();
                         MatchDetailActivity fragment = new MatchDetailActivity();
@@ -674,6 +696,7 @@ public class MainActivity extends Fragment implements DialogInterface,
             @Override
             public void onShow(android.content.DialogInterface dialogs) {
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
             }
         });
         // display dialog
@@ -1021,7 +1044,7 @@ public class MainActivity extends Fragment implements DialogInterface,
             bowlingProfiles = realm.where(BowlingProfile.class)
                     .greaterThan("ballsBowled", 0)
 //                    .equalTo("currentBowlerStatus", CommanData.StatusBowling)
-                    .equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", !matchDetails.isHomeTeamBattingFirst()).findAll();
+                    .equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", matchDetails.isFirstInningsCompleted()).findAll();
 
             fow = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isHomeTeamBattingFirst()).isNotNull("wicket").findAllSorted("delivery", Sort.ASCENDING);
             extraTypes = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isHomeTeamBattingFirst()).notEqualTo("ballType", 0).findAll();
@@ -1360,7 +1383,8 @@ public class MainActivity extends Fragment implements DialogInterface,
                     if (current_overCompleted && over < matchDetails.getOvers()) {
                         // Toast.makeText(getActivity(), "asssssss" + matchDetails.getMatchStatus(), Toast.LENGTH_SHORT).show();
 
-                        next_bowler = current_bowler;
+                        //  next_bowler = current_bowler;
+                        askBowler = true;
                         assignToPlayer = 2;
                         boolean ishome = false;
                         if (!matchDetails.isHomeTeamBatting())
@@ -1414,8 +1438,12 @@ public class MainActivity extends Fragment implements DialogInterface,
             score_data.setFirstIinningsOver(RealmDB.getFirstInningsOver(realm, matchDetails));
             int reqRun = ((scoreBoardData.getFirstInningsTotal() + 1) - total_run);
             int ballrem = ((matchDetails.getOvers() * 6) - CommanData.overToBall(String.valueOf(over)));
-            if (reqRun <= 0)
-                score_data.setMatchQuote(matchDetails.getCurrentBattingTeam().name + " " + getString(R.string.won_by) + " " + (matchDetails.getTotalPlayers() - totalWicket) + " " + getString(R.string.wickets));
+            if (reqRun <= 0) {
+                if (reqRun == 0 && ballrem <= 0)
+                    score_data.setMatchQuote(getString(R.string.match_draw));
+                else
+                    score_data.setMatchQuote(matchDetails.getCurrentBattingTeam().name + " " + getString(R.string.won_by) + " " + (matchDetails.getTotalPlayers() - totalWicket) + " " + getString(R.string.wickets));
+            }
 //            else if(ballrem<=0)
 //                score_data.setMatchQuote(matchDetails.getCurrentBattingTeam().name + " " + getString(R.string.won_by) + " " + (matchDetails.getTotalPlayers() - totalWicket) + " " + getString(R.string.wickets));
             else if (matchDetails.getTotalPlayers() == (totalWicket - 1) || ballrem <= 0)
@@ -1434,6 +1462,8 @@ public class MainActivity extends Fragment implements DialogInterface,
         }
         ss.add(Util.get_delivery_result(runs, wicket, normal_delivery, extraType));
         if (current_overCompleted) {
+            //"haaaaa"
+
             boolean maiden = true;
 //            if (ss.size() >= 6)
 //                for (int i = ss.size() - 1; i >= ss.size() - 6; i--) {
@@ -1471,8 +1501,49 @@ public class MainActivity extends Fragment implements DialogInterface,
         } else {
             matchShortSummaryData.setSecondInningsSummary(currentInningsSummary);
         }
+        if (matchDetails.isOnlineMatch() && current_overCompleted) {
+            String s = "matchList/" + "ongoing" + "/" + matchDetails.getMatch_id();
+            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(s);
+            myRef.setValue(matchShortSummaryData);
+            removeMatchFromUpcoming();
+        }
+
         matchDetails.setmatchShortSummary(CommanData.toString(matchShortSummaryData));
         return score_data;
+    }
+
+    private void removeMatchFromUpcoming() {
+        if (matchDetails.isOnlineMatch() && !removedFromUpcoming) {
+            String s = "matchList/" + "upcoming" + "/" + matchDetails.getMatch_id();
+            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(s);
+            myRef.removeValue(new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError == null)
+                        removedFromUpcoming = true;
+                }
+            });
+        }
+    }
+
+    private void removeMatchFromOncoming(MatchShortSummaryData data) {
+        if (matchDetails.isOnlineMatch()) {
+            System.out.println("callinggg" + data.getQuotes());
+            String s = "matchList/" + "recent" + "/" + matchDetails.getMatch_id();
+            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(s);
+            myRef.setValue(data, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError == null) {
+                        String s = "matchList/" + "ongoing" + "/" + matchDetails.getMatch_id();
+                        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(s);
+                        myRef.removeValue();
+                        System.out.println("callingggvvvv");
+                    } else
+                        System.out.println("callinggg***");
+                }
+            });
+        }
     }
 
 
@@ -1711,10 +1782,11 @@ public class MainActivity extends Fragment implements DialogInterface,
                 } else
                     Toast.makeText(getContext(), getString(R.string.player_in_striker_end), Toast.LENGTH_SHORT).show();
             } else if (assignTo == 2) {
+                askBowler = false;
                 current_bowler = RealmDB.getPlayer(realm, bb.getpID());
-                BowlingProfile bf = RealmDB.getBowlingProfile(realm, current_bowler.getpID(), matchDetails.getMatch_id());
-                if (bf == null)
-                    bf = RealmDB.getBowlingProfile(realm, current_bowler.getpID(), matchDetails.getMatch_id());
+                //  BowlingProfile bf = RealmDB.getBowlingProfile(realm, current_bowler.getpID(), matchDetails.getMatch_id());
+//                if (bf == null)
+//                    bf = RealmDB.getBowlingProfile(realm, current_bowler.getpID(), matchDetails.getMatch_id());
                 realm.beginTransaction();
                 if (matchDetails.isHomeTeamBatting())
                     matchDetails.addAwayPlayer(current_bowler);

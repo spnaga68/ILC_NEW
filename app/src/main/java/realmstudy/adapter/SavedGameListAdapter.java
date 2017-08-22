@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,7 +112,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
         viewHolder.itemView.setBackgroundColor(Color.WHITE);
         viewHolder.titleView.setVisibility(View.VISIBLE);
         // viewHolder.titleView.setText(item);
-        viewHolder.venue.setText(data.get(position).getLocation());
+        viewHolder.venue.setText(matchShortSummaryData.getLocation());
         viewHolder.home_team_name.setText(matchShortSummaryData.getBattingTeamName());
         viewHolder.away_team_name.setText(matchShortSummaryData.getBowlingTeamName());
         viewHolder.status.setText(CommanData.getDateCurrentTimeZone(matchShortSummaryData.getTime()));
@@ -196,7 +198,8 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
         TextView home_team_scr, away_team_scr;
         CardView titleView;
         AppCompatImageView delete_item;
-        ImageView online;
+        ImageView online, share;
+
 
         public TestViewHolder(ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext()).inflate(R.layout.saved_list_item, parent, false));
@@ -211,6 +214,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
             away_team_scr = (TextView) itemView.findViewById(R.id.away_team_scr);
             away_team_image = (ImageView) itemView.findViewById(R.id.away_team_image);
             online = (ImageView) itemView.findViewById(R.id.online);
+            share = (ImageView) itemView.findViewById(R.id.share);
             delete_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -264,6 +268,33 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                         fragment.setArguments(b);
                         ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
                     }
+                }
+            });
+
+            share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MatchShortSummaryData matchShortSummaryData = CommanData.fromJson(data.get(getAdapterPosition()).getmatchShortSummary(), MatchShortSummaryData.class);
+                    final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    //intent.putExtra(Intent.EXTRA_STREAM, outputUri);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    String shareContent = getShareContent(matchShortSummaryData);
+                    intent.putExtra(Intent.EXTRA_TEXT, shareContent);
+
+//                    if (type == WHATSAPP) {
+//                        intent.setPackage("com.whatsapp");
+//                    } else if (type == FACEBOOK) {
+//                        intent.setPackage("com.example.developer.fb");
+//                    } else if (type == GMAIL) {
+//                        intent.setPackage("com.google.android.gm");
+//                    }
+
+
+                    //  intent.putExtra(Intent.EXTRA_TEXT, "Hai");
+                    intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    intent.setType("text/plain");
+                    context.startActivity(Intent.createChooser(intent, "Share image using"));
                 }
             });
             online.setOnClickListener(new View.OnClickListener() {
@@ -321,8 +352,8 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                             showLoginAlert();
                         }
                     } else {
-                        if(context instanceof  MainFragmentActivity)
-                            ((MainFragmentActivity)context).showNetWorkAlert();
+                        if (context instanceof MainFragmentActivity)
+                            ((MainFragmentActivity) context).showNetWorkAlert();
                     }
                 }
             });
@@ -353,7 +384,39 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
 
     }
 
+    private String getShareContent(MatchShortSummaryData matchShortSummaryData) {
+        String shareContent = "" + matchShortSummaryData.getHomeTeam() + " " + context.getString(R.string.vs) + " " +
+                matchShortSummaryData.getAwayTeam() + "\n" + matchShortSummaryData.getLocation() + "\n";
+        if (matchShortSummaryData.getStatus() == CommanData.MATCH_STARTED_FI) {
 
+
+            if (matchShortSummaryData != null) {
+                shareContent += matchShortSummaryData.getBattingTeamName() + "    " + matchShortSummaryData.getFirstInningsSummary().run + " - " + matchShortSummaryData.getFirstInningsSummary().wicket + " (" +
+                        matchShortSummaryData.getFirstInningsSummary().overs + ")" + "\n" + matchShortSummaryData.getQuotes();
+
+
+            }
+        } else if (matchShortSummaryData.getStatus() == CommanData.MATCH_STARTED_SI || matchShortSummaryData.getStatus() == CommanData.MATCH_COMPLETED) {
+
+
+            if (matchShortSummaryData != null) {
+                shareContent += matchShortSummaryData.getBowlingTeamName() + "    " + matchShortSummaryData.getFirstInningsSummary().run + " - " + matchShortSummaryData.getFirstInningsSummary().wicket + " (" +
+                        matchShortSummaryData.getFirstInningsSummary().overs + ")"
+                        + "\n" + matchShortSummaryData.getBattingTeamName() + "  " + matchShortSummaryData.getSecondInningsSummary().run + " - " + matchShortSummaryData.getSecondInningsSummary().wicket + " (" +
+                        matchShortSummaryData.getSecondInningsSummary().overs + ")" + "\n" + matchShortSummaryData.getQuotes();
+//                viewHolder.home_team_name.setText(matchShortSummaryData.getBowlingTeamName());
+//                viewHolder.away_team_name.setText(matchShortSummaryData.getBattingTeamName());
+//                viewHolder.home_team_scr.setText(matchShortSummaryData.getFirstInningsSummary().run + " - " + matchShortSummaryData.getFirstInningsSummary().wicket + " (" +
+//                        matchShortSummaryData.getFirstInningsSummary().overs + ")");
+//                viewHolder.away_team_scr.setText(matchShortSummaryData.getSecondInningsSummary().run + " - " + matchShortSummaryData.getSecondInningsSummary().wicket + " (" +
+//                        matchShortSummaryData.getSecondInningsSummary().overs + ")");
+//                viewHolder.home_team_scr.setVisibility(View.VISIBLE);
+//                viewHolder.away_team_scr.setVisibility(View.VISIBLE);
+//                viewHolder.status.setText(matchShortSummaryData.getQuotes());
+            }
+        }
+        return shareContent;
+    }
 
 
     private void showLoginAlert() {
