@@ -59,6 +59,7 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
     private boolean loading;
     private boolean allItemLoaded;
     private SavedGameListAdapter savedGameListAdapter;
+    private ArrayList<MatchDetails> dummuy_datas = new ArrayList<>();
 
     @Override
     public void onStop() {
@@ -127,38 +128,52 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
             myRef = database.getReference("matchList/" + typeString);
             Query queryRef;
 
-            queryRef = myRef
-                    .limitToFirst(5);
+            queryRef = myRef.orderByKey()
+                    .limitToLast(10);
 
             valueEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     progress_bar.setVisibility(View.GONE);
-                    //datas.clear();
+                    dummuy_datas.clear();
+                    setupPagination(mRecyclerView);
                     if (dataSnapshot.exists()) {
                         System.out.println("md.getValue()*" + dataSnapshot.getChildrenCount() + "__" + savedGameListAdapter.getItemCount());
                         for (DataSnapshot md : dataSnapshot.getChildren()) {
                             if (md.getValue() != null && !md.getValue().equals("")) {
-                                MatchDetails matchDetails = new MatchDetails();
-                                matchDetails.setMatch_id(Integer.parseInt(md.getKey()));
-                                matchDetails.setmatchShortSummary(CommanData.toString(md.getValue()));
-                                datas.add(matchDetails);
+                                if (datas.size() > 0 && datas.get(datas.size() - 1).getMatch_id() == Integer.parseInt(md.getKey())) {
+
+                                    System.out.println("datatacccc");
+                                } else {
+                                    MatchDetails matchDetails = new MatchDetails();
+                                    matchDetails.setMatch_id(Integer.parseInt(md.getKey()));
+                                    matchDetails.setmatchShortSummary(CommanData.toString(md.getValue()));
+
+                                    dummuy_datas.add(matchDetails);
+                                }
 
                             }
 
 
-                            if (datas == null || datas.size() == 0)
-                                no_data_lay.setVisibility(View.VISIBLE);
-                            else
-                                no_data_lay.setVisibility(View.GONE);
                         }
+                        if (dummuy_datas.size() > 0)
+                            for (int i = dummuy_datas.size() - 1; i >= 0; i--) {
+
+                                datas.add(dummuy_datas.get(i));
+                            }
+
+                        if (datas == null || datas.size() == 0)
+                            no_data_lay.setVisibility(View.VISIBLE);
+                        else
+                            no_data_lay.setVisibility(View.GONE);
                         page += 1;
-                        //if(datas.size()%10!=0)
-                        allItemLoaded = true;
+                        if (datas.size() % 10 != 0)
+                            allItemLoaded = true;
+                        loading = false;
+
                         System.out.println("md.getValue()" + dataSnapshot.getChildrenCount() + "__" + datas.size());
                         savedGameListAdapter.addData(datas);
-                        setupPagination(mRecyclerView);
-                        allItemLoaded = true;
+
                     } else {
 //                        System.out.println("databaseerrorss" );
 //                        no_data_lay.setVisibility(View.VISIBLE);
@@ -205,8 +220,7 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
         }
 
         paginate = Paginate.with(recyclerView, this)
-                .setNotifyScrollThreshold(3)
-                .setLoadingTriggerThreshold(8)
+                .setLoadingTriggerThreshold(5)
                 .addLoadingListItem(true)
                 .setLoadingListItemCreator(null)
                 .build();
@@ -215,13 +229,13 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
     @Override
     public void onLoadMore() {
 
-//        if (page > 0) {
-//            loading = true;
-//            System.out.println("Nandu__"+datas.size());
-//                Query queryRef = myRef
-//                        .startAt(datas.size() - 1).endAt(datas.size() + 5);
-//                queryRef.addListenerForSingleValueEvent(valueEventListener);
-//        }
+        if (datas.size() > 0 && page > 0) {
+            loading = true;
+            System.out.println("Nandu__" + datas.size() + "__" + datas.get(datas.size() - 1).getMatch_id());
+            Query queryRef = myRef.orderByKey()
+                    .endAt(String.valueOf(datas.get(datas.size() - 1).getMatch_id())).limitToFirst(10);
+            queryRef.addListenerForSingleValueEvent(valueEventListener);
+        }
     }
 
     @Override
@@ -241,6 +255,6 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
 
     @Override
     public boolean hasLoadedAllItems() {
-        return true;
+        return allItemLoaded;
     }
 }
