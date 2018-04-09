@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/main_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/black"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="true"
+    android:clickable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical">
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/tournament_cover_photo"
+                android:layout_width="match_parent"
+                android:scaleType="fitXY"
+                android:layout_height="180dp" />
+            <LinearLayout
+                android:layout_marginBottom="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_15"
+                android:paddingTop="@dimen/dp_10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/semitransperant"
+                android:gravity="top|bottom|center_vertical|fill_vertical|center|fill"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical">
+
+                    <realmstudy.view.TextView
+                        android:id="@+id/tvTournamentTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        app:asset_font_file_name="@string/font_roboto_slab_bold"
+                        android:text="Avaniyapuram Jallikatu"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14" />
+
+                    <realmstudy.view.TextView
+                        android:id="@+id/tvMatchInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_5"
+                        app:asset_font_file_name="@string/font_sourcesans_pro_semibold"
+                        android:text="Vadivasal"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14" />
+
+                    <realmstudy.view.TextView
+                        android:id="@+id/tvRoundName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_5"
+                        tool:text=""
+                        tool:textAllCaps="true"
+                        tool:textColor="@color/black"
+                        tool:textSize="@dimen/sp_14"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cvMatchStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|bottom|center_vertical|fill_vertical|center|fill"
+                    app:cardElevation="4dp">
+
+                    <realmstudy.view.TextView
+                        android:id="@+id/tvMatchStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="top|bottom|left|right|center_vertical|fill_vertical|center_horizontal|fill_horizontal|center|fill|start|end"
+                        android:paddingBottom="2dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingTop="2dp"
+                        tool:text="Live"
+                        android:visibility="gone"
+                        tool:textColor="@color/black"
+                        tool:textSize="12sp" />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+        </FrameLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:visibility="gone"
+            android:src="@color/match_info_bg_color" />
+
+        <LinearLayout
+            android:id="@+id/bullwon"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_10"
+            android:orientation="horizontal">
+
+            <realmstudy.view.TextView
+                android:id="@+id/tvTeamAName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_weight="1.0"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:asset_font_file_name="@string/font_sourcesans_pro_italic"
+                android:text="@string/bull_won"
+                android:textSize="@dimen/sp_16" />
+
+            <realmstudy.view.TextView
+                android:id="@+id/tvTeamAScore"
+                android:layout_width="0dp"
+                app:asset_font_file_name="@string/font_roboto_slab_bold"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_weight="1.0"
+                
+                android:ellipsize="end"
+                android:gravity="left|right|center_horizontal|fill_horizontal|center|fill|start|end"
+                android:maxLines="1"
+                android:text="228"
+                android:textColor="@color/black"
+                tool:textSize="@dimen/sp_18" />
+
+            <realmstudy.view.TextView
+                android:id="@+id/tvTeamAOvers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:asset_font_file_name="@string/font_sourcesans_pro_bolditalic"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="@dimen/dp_4"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:visibility="gone"
+                tool:text="(82.0 OV)"
+                tool:textColor="@color/header_color"
+                tool:textSize="@dimen/sp_12" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/playerwon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:orientation="horizontal">
+
+            <realmstudy.view.TextView
+                android:id="@+id/tvTeamBName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_weight="1.0"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/tamper_won"
+                app:asset_font_file_name="@string/font_sourcesans_pro_italic"
+                android:textSize="@dimen/sp_16" />
+
+            <realmstudy.view.TextView
+                android:id="@+id/tvTeamBScore"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_weight="1.0"
+                android:ellipsize="end"
+                android:gravity="left|right|center_horizontal|fill_horizontal|center|fill|start|end"
+                android:maxLines="1"
+                android:text="192"
+                app:asset_font_file_name="@string/font_roboto_slab_bold"
+                android:textColor="@color/black"
+                tool:textSize="@dimen/sp_18" />
+
+            <realmstudy.view.TextView
+                android:id="@+id/tvTeamBOvers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="@dimen/dp_4"
+                android:ellipsize="end"
+
+                android:maxLines="1"
+                android:visibility="gone"
+                tool:text="(82.0 OV)"
+                tool:textColor="@color/header_color"
+                tool:textSize="@dimen/sp_12" />
+        </LinearLayout>
+
+        <realmstudy.view.TextView
+            android:id="@+id/bio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_weight="1.0"
+            android:ellipsize="end"
+            android:padding="10dp"
+            android:visibility="gone"
+            android:text="Villagers organizing vadam manjuvirattu for very first time. Tap to know more"
+            app:asset_font_file_name="@string/font_sourcesans_pro_italic"
+            android:textSize="@dimen/sp_16" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_grey_20"
+            android:gravity="top|bottom|center_vertical|fill_vertical|center|fill"
+            android:orientation="horizontal"
+
+            android:paddingLeft="@dimen/dp_15"
+            android:paddingRight="@dimen/dp_15">
+
+            <realmstudy.view.TextView
+                android:id="@+id/tvSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:gravity="top|bottom|center_vertical|fill_vertical|center|fill"
+                android:minLines="2"
+                android:paddingBottom="@dimen/dp_4"
+                app:asset_font_file_name="@string/font_sourcesans_pro_light"
+
+                android:paddingTop="@dimen/dp_4"
+                android:text="29 Jan 2017 9:30 AM"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

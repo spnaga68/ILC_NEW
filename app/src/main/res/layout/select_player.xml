@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/back_ground_dark">-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/back_ground_dark"
     android:orientation="vertical">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/back_ground_dark"
+        android:layout_height="wrap_content"
+
+        android:background="@color/colorPrimary"
         android:orientation="horizontal">
 
         <TextView
@@ -20,15 +29,17 @@
             android:layout_gravity="center_horizontal"
             android:background="#00ffffff"
             android:gravity="center_horizontal"
-            android:padding="15dp"
+            android:paddingLeft="15dp"
             android:text="Title"
-            android:textColor="@color/dialog_text_color"
-            android:textSize="18sp" />
+            android:padding="10dp"
+            android:textColor="@color/yellow_M"
+            android:textSize="25sp" />
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/choose_from_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_centerVertical="true"
             android:layout_gravity="center_horizontal"
             android:layout_marginRight="10dp"
@@ -37,7 +48,7 @@
             android:background="#00ffffff"
             android:gravity="center_horizontal"
             android:padding="10dp"
-            android:src="@drawable/from_list"
+            app:srcCompat="@drawable/from_list"
             android:text="Title"
             android:textColor="@color/dialog_text_color"
             android:textSize="18sp" />
@@ -46,17 +57,18 @@
             android:id="@+id/open_new_player"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
             android:layout_gravity="center_horizontal"
-            android:layout_marginRight="10dp"
             android:background="#00ffffff"
             android:gravity="center_horizontal"
             android:padding="10dp"
-            android:src="@drawable/add_player"
             android:text="Title"
             android:textColor="@color/dialog_text_color"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:srcCompat="@drawable/add_player" />
     </RelativeLayout>
 
 
@@ -64,22 +76,30 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@drawable/background_shadow" />
+<LinearLayout
+    android:orientation="vertical"
+    android:weightSum="2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
 
         android:id="@+id/database_lay"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:gravity="center_vertical"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/light_grey"
+            android:background="@color/white"
             android:padding="10dp"
-            android:text="@string/select_from_list"
-            android:textColor="@color/dialog_text_color"
+            android:visibility="gone"
+            android:text="@string/click_new_player"
+            android:textColor="@color/red_M"
+
             android:textSize="14sp" />
         <!--  <ImageView
               android:id="@+id/list_arrow"
@@ -111,19 +131,24 @@
         <ListView
             android:id="@+id/player_db_spinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/button_card"
             android:spinnerMode="dropdown"
             android:textColor="@color/edit_text_color" />
         <!--     </LinearLayout>-->
 
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
             android:layout_height="wrap_content"
+            android:background="@color/light_grey_20"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="5dp"
-            android:elevation="10dp"
-            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/button_card"
+            card_view:cardBackgroundColor="@color/light_grey_20"
+            android:visibility="visible"
             card_view:cardPreventCornerOverlap="false">
 
             <android.support.v7.widget.AppCompatButton
@@ -132,15 +157,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:background="@color/button_color"
-                android:text="@string/submit"
-                android:textColor="@color/button_text_color" />
+                android:text="@string/enter_new_player"
+
+                android:textColor="@color/colorPrimary" />
         </android.support.v7.widget.CardView>
 
 
-    </LinearLayout>
-
-    <include layout="@layout/create_new_player" />
+    </RelativeLayout>
+    <include
+        android:layout_weight="1"
+        layout="@layout/create_new_player"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"/>
 
 
 </LinearLayout>
+</LinearLayout><!--</ScrollView>-->

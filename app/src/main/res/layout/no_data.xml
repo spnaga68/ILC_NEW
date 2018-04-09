@@ -25,11 +25,11 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/error_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_cricket_player_with_bat" />
+            app:srcCompat="@drawable/ic_safebox" />
 
         <TextView
             android:id="@+id/error_short_description"

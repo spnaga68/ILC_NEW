@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -68,12 +69,16 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     private DatabaseReference myRef;
     private boolean viewer;
     private String mss;
+    private ProgressBar progress_bar;
+    private TabLayout tabLayout;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.match_detail_main, container, false);
         System.out.println("ScoreDataaaaonc");
+        progress_bar = (ProgressBar) v.findViewById(R.id.progress_bar);
+        progress_bar.setVisibility(View.VISIBLE);
         try {
             if (getArguments() != null) {
                 mss = getArguments().getString("mss", "");
@@ -86,7 +91,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         }
 
         ((MyApplication) getActivity().getApplication()).getComponent().inject(this);
-        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tabLayout1);
+        tabLayout = (TabLayout) v.findViewById(R.id.tabLayout1);
 
 //        View bottomSheet = v.findViewById(R.id.bot);
 //        behavior = BottomSheetBehavior.from(bottomSheet);
@@ -94,7 +99,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.info)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.overs)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.score)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.chart)));
+        // tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.chart)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         viewPager = (ViewPager) v.findViewById(R.id.pager);
         //viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
@@ -106,6 +111,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         //Adding adapter to pager
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.addOnPageChangeListener(this);
         boolean forSecInnings = false;
 
@@ -113,13 +119,14 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
             if (!NetworkStatus.isOnline(getActivity()))
                 ((MainFragmentActivity) getActivity()).showNetWorkAlert();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            myRef = database.getReference("InningsDetailData/" + match_id);
+            myRef = database.getReference("InningsDetailData/" + match_id + "/data");
             tabLayout.addOnTabSelectedListener(this);
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
+                    progress_bar.setVisibility(View.GONE);
                     String value = dataSnapshot.getValue(String.class);
                     Log.d("valueee", "Value is: " + value);
                     detailedScoreData = CommanData.fromJson(value, DetailedScoreData.class);
@@ -137,8 +144,14 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
                             }
                             scorecardDetailFragment.setDatas(datas);
                         } else if (fragment instanceof OversFragment) {
-                            OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-                            oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
+                            final OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
+                                }
+                            }, 200);
+
                         } else if (fragment instanceof InfoFragment) {
                             InfoFragment oversFragment = (InfoFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
                             oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
@@ -156,6 +169,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         } else {
 
             try {
+                progress_bar.setVisibility(View.GONE);
                 MatchDetails md = RealmDB.getMatchById(getActivity(), realm, match_id);
                 InningsData d = realm.where(InningsData.class).equalTo("match_id", match_id).equalTo("firstInnings", !md.isFirstInningsCompleted()).findAllSorted("delivery", Sort.ASCENDING).last();
                 detailedScoreData = CommanData.fromJson(d.getDetailedScoreBoardData(), DetailedScoreData.class);
@@ -166,7 +180,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
                         OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
                         oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
                     }
-                }, 500);
+                }, 300);
 
                 System.out.println("ScoreDataaaa" + d.getDetailedScoreBoardData());
             } catch (Exception e) {
@@ -175,6 +189,17 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
         }
 
         return v;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            // load data here
+            System.out.println("came to uservisible");
+        } else {
+            // fragment is no longer visible
+        }
     }
 
     @Override
@@ -207,7 +232,9 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
     public void onTabSelected(TabLayout.Tab tab) {
 
         System.out.println("Selected__rrta");
+        tabLayout.setScrollPosition(tab.getPosition(), 0f, true);
         viewPager.setCurrentItem(tab.getPosition());
+        tab.select();
     }
 
     @Override
@@ -222,7 +249,7 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        //System.out.println("Selected__vvv" + position+"__"+positionOffset+"__"+positionOffsetPixels);
+        System.out.println("Selected__vvv" + position + "__" + positionOffset + "__" + positionOffsetPixels);
 
     }
 
@@ -231,22 +258,37 @@ public class MatchDetailActivity extends Fragment implements TabLayout.OnTabSele
 
         System.out.println("Selected__" + position);
         if (detailedScoreData != null) {
-            Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+
             //if (fragment instanceof ScorecardDetailFragment && positionOffsetPixels == 0) {
             if (position == 2) {
-                ScorecardDetailFragment scorecardDetailFragment = (ScorecardDetailFragment) fragment;
-                ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
-                datas.add(detailedScoreData.getScoreCardDetailData());
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (viewPager.getCurrentItem() ==2) {
+                        Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                        ScorecardDetailFragment scorecardDetailFragment = (ScorecardDetailFragment) fragment;
+                        ArrayList<ScoreCardDetailData> datas = new ArrayList<ScoreCardDetailData>();
+                        datas.add(detailedScoreData.getScoreCardDetailData());
 
-                if (detailedScoreData.getSecscoreCardDetailData().getTeamName() != null) {
-                    System.out.println("not_nulll__" + detailedScoreData.getScoreCardDetailData().getTeamName() + "__" + detailedScoreData.getSecscoreCardDetailData().getTeamName());
-                    datas.add(detailedScoreData.getSecscoreCardDetailData());
-                }
-                scorecardDetailFragment.setDatas(datas);
+                        if (detailedScoreData.getSecscoreCardDetailData().getTeamName() != null) {
+                            System.out.println("not_nulll__" + detailedScoreData.getScoreCardDetailData().getTeamName() + "__" + detailedScoreData.getSecscoreCardDetailData().getTeamName());
+                            datas.add(detailedScoreData.getSecscoreCardDetailData());
+                        }
+                        scorecardDetailFragment.setDatas(datas);
+                    }}
+                }, 500);
             } else if (position == 1) {
                 //if (fragment instanceof OversFragment && positionOffsetPixels == 0) {
-                OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-                oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (viewPager.getCurrentItem() ==1) {
+                            OversFragment oversFragment = (OversFragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                            oversFragment.setData(detailedScoreData.getOverAdapterData(), detailedScoreData.getScoreBoardData());
+                        }
+                    }
+                }, 500);
+
             } else if (position == 3) {
                 //if (fragment instanceof ChartFrag && positionOffsetPixels == 0) {
                 ChartFrag chartFrag = (ChartFrag) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());

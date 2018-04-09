@@ -17,6 +17,15 @@ public class InningsData extends RealmObject {
     boolean legal;
     boolean firstInnings=true;
 
+    public String getExtraDetails() {
+        return extraDetails;
+    }
+
+    public void setExtraDetails(String extraDetails) {
+        this.extraDetails = extraDetails;
+    }
+
+    String extraDetails;
     public boolean isOversCompleted() {
         return oversCompleted;
     }

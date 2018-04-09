@@ -3,6 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/appbg">
 
     <ScrollView
@@ -237,12 +238,12 @@
                     android:background="@color/dots_c"
                     android:orientation="horizontal">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:rotation="180"
-                        android:src="@drawable/ic_arrow_forward_black_24dp" />
+                        app:srcCompat="@drawable/ic_arrow_forward_black_24dp" />
 
                     <TextView
                         android:id="@+id/retoss"

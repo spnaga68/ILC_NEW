@@ -1,6 +1,7 @@
 package realmstudy;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,12 +23,16 @@ import realmstudy.fragments.DialogFragment.NewPlayerDialog;
 import realmstudy.fragments.DialogFragment.NewTeamDialog;
 import realmstudy.interfaces.DialogInterface;
 import realmstudy.interfaces.ItemClickInterface;
+import tourguide.tourguide.Overlay;
+import tourguide.tourguide.Pointer;
+import tourguide.tourguide.ToolTip;
+import tourguide.tourguide.TourGuide;
 
 /**
  * Created by developer on 1/7/17.
  */
 
-public class TeamPickerActivity extends AppCompatActivity implements ItemClickInterface,DialogInterface {
+public class TeamPickerActivity extends AppCompatActivity implements ItemClickInterface, DialogInterface {
 
     private RecyclerView
             list_view;
@@ -36,6 +42,7 @@ public class TeamPickerActivity extends AppCompatActivity implements ItemClickIn
     Realm realm;
     TextView selected_teams;
     String pickerFor;
+    private TourGuide tourGuide;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,12 +60,38 @@ public class TeamPickerActivity extends AppCompatActivity implements ItemClickIn
         adapter = new TeamListAdapter(this, realm.where(Team.class).findAll(), false);
         list_view.setAdapter(adapter);
         list_view.setLayoutManager(new LinearLayoutManager(this));
+        if (adapter.getItemCount() == 0) {
+            ToolTip toolTip = new ToolTip()
+
+                    .setDescription(getString(R.string.tour_add_team))
+                    .setTextColor(Color.parseColor("#bdc3c7"))
+                    .setBackgroundColor(Color.parseColor("#e74c3c"))
+                    .setShadow(true)
+                    .setGravity(Gravity.TOP | Gravity.LEFT);
+
+
+            tourGuide = TourGuide.init(TeamPickerActivity.this).with(TourGuide.Technique.Click)
+                    .setPointer(new Pointer())
+                    .setToolTip(toolTip)
+                    .setOverlay(new Overlay())
+                    .playOn(add);
+        }
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               showNewTeamDialog(0, TeamPickerActivity.this, -1);
+                if (tourGuide != null)
+                    tourGuide.cleanUp();
+                showNewTeamDialog(0, TeamPickerActivity.this, -1);
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        if (tourGuide != null)
+            tourGuide.cleanUp();
+
+        super.onStop();
     }
 
     @Override

@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="visible" />
+
     </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -33,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add" />
+       src="@drawable/ic_add" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_from_contacts"

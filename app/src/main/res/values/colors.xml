@@ -9,8 +9,8 @@
    <!-- <color name="colorPrimary">#F57C00</color>
     <color name="colorPrimaryDark">#E65100</color>
     <color name="colorAccent">#2b333b</color>-->
-    <color name="colorPrimary">#2b333b</color>
-    <color name="colorPrimaryDark">#333</color>
+    <color name="colorPrimary">#455A64</color>
+    <color name="colorPrimaryDark">#37474F</color>
     <color name="colorAccent">#fff</color>
 
     <color name="semi_transperant">#E0E0E0</color>
@@ -26,7 +26,7 @@
     <color name="blue">#f5f5f0</color>
     <color name="red_M">#FF4433</color>
     <color name="green_M">#43A047</color>
-    <color name="yellow_M">#FF8F00</color>
+    <color name="yellow_M">#FFEB3B</color>
 
 
     <color name="shade">#6c6c6c</color>
@@ -37,7 +37,7 @@
     <color name="transperant">#00000000</color>
 
     <color name="light_grey">#e0e0e0</color>
-
+<color name="light_grey_100">#F5F5F5</color>
     <color name="button_dialog">#FAFAFA</color>
     <color name="background_title_dialog">#E0E0E0</color>
     <color name="back_ground_dark">#FFF</color>
@@ -58,6 +58,8 @@
     <color name="extra_c">#DCE775</color>
     <color name="slideTabColor">#6c6c6c</color>
 
+    <color name="dark_grey_text">#757575</color>
+
 
 
     <color name="date">#cfcece</color>
@@ -66,4 +68,58 @@
     <color name="text_dark">#0b0b0b</color>
     <color name="view_line_color">#d3d3d3</color>
 
+
+
+
+
+
+
+
+
+    <color name="style_color_primary">#2d5d82</color>
+    <color name="style_color_primary_dark">#21425d</color>
+    <color name="style_color_accent">#01bcd5</color>
+
+    <color name="fab_color_pressed">#007787</color>
+    <color name="fab_color_shadow">#44000000</color>
+    <color name="semitransperant">#80000000</color>
+    <color name="btn_default_light_normal">#00000000</color>
+    <color name="btn_default_light_pressed">#40ffffff</color>
+    <color name="btn_send_normal">#02c754</color>
+    <color name="btn_send_pressed">#006633</color>
+    <color name="btn_default_shadow">#99000000</color>
+    <color name="btn_context_menu_normal">#ffffff</color>
+    <color name="btn_context_menu_pressed">#40000000</color>
+    <color name="btn_context_menu_text_red">#ffff0000</color>
+
+    <color name="text_like_counter">#2b5a83</color>
+    <color name="bg_comments">#ffffff</color>
+    <color name="divider">#d3d3d3</color>
+    <color name="gray_divider">#232323</color>
+    <color name="match_info_bg_color">#10181f</color>
+    <color name="match_team_a_bg_color">#20282f</color>
+    <color name="header_color">#a1a6aa</color>
+    <color name="title_more_color">#FFC107</color>
+    <color name="title_text_color">#333333</color>
+    <color name="main_title_color">#2c363f</color>
+    <color name="background_color">#eeeeee</color>
+    <color name="light_grey_20">#F5F5F5</color>
+    <color name="green_text">#FFC107</color>
+    <color name="orange_dark">#dc8d00</color>
+    <color name="white_10_opacity">#fff</color>
+    <color name="red_text">#ff0000</color>
+    <color name="offwhite">#fff</color>
+    <color name="gray_text">#72797f</color>
+    <color name="dark_gray">#2a373f</color>
+    <color name="light_green_background_color">#FFCA28</color>
+    <color name="green_background_color">#FFA000</color>
+    <color name="dark_gray_50_opacity">#802a373f</color>
+    <color name="transparent">#00000000</color>
+    <color name="linebottom_light">#d3d3d3</color>
+    <color name="transparent_divider">#40000000</color>
+    <color name="sign_up_text_light">#a1a6aa</color>
+    <color name="sign_up_text_color">#596169</color>
+    <color name="red_link">#ad2112</color>
+    <color name="background_click_color">#b2b4b4</color>
+    <color name="black_text">#000</color>
 </resources>

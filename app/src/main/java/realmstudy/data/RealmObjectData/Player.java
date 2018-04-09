@@ -1,5 +1,6 @@
 package realmstudy.data.RealmObjectData;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -7,7 +8,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by developer on 26/12/16.
  */
 public class Player extends RealmObject {
-    String name,nick_name;
+    String name, nick_name;
 //    BatingProfile recentBatingProfile;
 //    BowlingProfile recentBowlingProfile;
 
@@ -83,7 +84,6 @@ public class Player extends RealmObject {
     }
 
 
-
     public int getStatus() {
         return status;
     }
@@ -129,7 +129,6 @@ public class Player extends RealmObject {
     }
 
 
-
     public String getName() {
         return name;
     }
@@ -141,8 +140,24 @@ public class Player extends RealmObject {
 
     @Override
     public String toString() {
-       // String phno = ph_no != null ? "  (" + ph_no + ")" : "";
+        // String phno = ph_no != null ? "  (" + ph_no + ")" : "";
         String phno = "";
         return name + phno;
     }
+
+
+    public String getExtraDetails() {
+        return extraDetails;
+    }
+
+    public void setExtraDetails(String extraDetails) {
+        this.extraDetails = extraDetails;
+    }
+
+    String extraDetails;
+    String team_profile_image;
+    String birth_place;
+    String bat_ranking, bowl_ranking, all_round_ranking;
+    private RealmList<Team> teams = new RealmList<>();
+    int match_type;
 }

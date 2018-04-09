@@ -14,12 +14,27 @@ public class BatingProfile extends RealmObject {
     String battingProfileID;
     int currentStatus;
     int battedAt;
-    boolean inFirstinnings=true;
+    boolean inFirstinnings = true;
     int match_id;
-    int fours,sixes,ones,twos,threes,dots;
+    int fours, sixes, ones, twos, threes, dots;
     Wicket wicket;
+    int matches;
+    int innings;
+    int highest, not_out;
+    int ducks;
+    float average, strike_rate;
+    int match_type;
+    int no_of_fities,no_of_thirties,no_of_hundreds;
 
+    public String getExtraDetails() {
+        return extraDetails;
+    }
 
+    public void setExtraDetails(String extraDetails) {
+        this.extraDetails = extraDetails;
+    }
+
+    String extraDetails;
 
 
     public int getBattedAt() {
@@ -29,6 +44,7 @@ public class BatingProfile extends RealmObject {
     public void setBattedAt(int battedAt) {
         this.battedAt = battedAt;
     }
+
     public int getFours() {
         return fours;
     }
@@ -48,6 +64,7 @@ public class BatingProfile extends RealmObject {
     public int getOnes() {
         return ones;
     }
+
     public boolean isInFirstinnings() {
         return inFirstinnings;
     }
@@ -55,6 +72,7 @@ public class BatingProfile extends RealmObject {
     public void setInFirstinnings(boolean inFirstinnings) {
         this.inFirstinnings = inFirstinnings;
     }
+
     public void setOnes(int ones) {
         this.ones = ones;
     }
@@ -90,7 +108,6 @@ public class BatingProfile extends RealmObject {
     public void setWicket(Wicket wicket) {
         this.wicket = wicket;
     }
-
 
 
     /**

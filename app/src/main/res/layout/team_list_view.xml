@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/appbg"
     android:orientation="vertical">
 
@@ -60,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add" />
+        app:srcCompat="@drawable/ic_add" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/next"
@@ -68,6 +69,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_media_play"
+        app:srcCompat="@android:drawable/ic_media_play"
         android:visibility="gone" />
 </android.support.design.widget.CoordinatorLayout>

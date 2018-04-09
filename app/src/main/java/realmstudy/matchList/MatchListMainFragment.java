@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,13 +17,15 @@ import realmstudy.R;
 import realmstudy.adapter.Pager;
 import realmstudy.extras.NetworkStatus;
 import realmstudy.extras.ZoomOutPageTransformer;
+import realmstudy.interfaces.BaseListner;
 import realmstudy.matchList.view.MatchListPager;
 
 /**
  * Created by developer on 29/5/17.
  */
 
-public class MatchListMainFragment extends Fragment implements TabLayout.OnTabSelectedListener {
+public class MatchListMainFragment extends Fragment implements
+        TabLayout.OnTabSelectedListener,BaseListner {
     ViewPager viewPager;
     Toolbar tool_bar;
     private int match_id;
@@ -96,6 +99,12 @@ public class MatchListMainFragment extends Fragment implements TabLayout.OnTabSe
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+
+
+       return; }
+
+    @Override
     public void onResume() {
         super.onResume();
         if(isOnline)
@@ -107,5 +116,17 @@ public class MatchListMainFragment extends Fragment implements TabLayout.OnTabSe
             ((MainFragmentActivity)getActivity()).setNaviHome();
 
         }
+    }
+
+    @Override
+    public void onPopDown() {
+
+    }
+
+    @Override
+    public void onPopFront() {
+
+//        System.out.println("naaaacamme");
+//        ((MainFragmentActivity)getActivity()).hideOverFlow();
     }
 }

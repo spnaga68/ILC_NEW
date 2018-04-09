@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/light_grey" />
+
+    <realmstudy.view.TextView
+        android:id="@+id/commentary_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:layout_marginRight="@dimen/pad_5dp"
+        android:paddingTop="10dp"
+        android:paddingRight="@dimen/pad_15dp"
+        android:text="29 sep 2017 5:30 pm" />
+
+    <realmstudy.view.TextView
+        android:id="@+id/commentary_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/dummy_bio"
+        android:textColor="@color/gray_divider" />
+
+</LinearLayout>

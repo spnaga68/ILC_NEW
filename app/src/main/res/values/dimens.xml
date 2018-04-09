@@ -31,4 +31,84 @@
     <dimen name="content_mid">12dp</dimen>
     <dimen name="content_max">13dp</dimen>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <dimen name="btn_fab_size">56dp</dimen>
+    <dimen name="btn_fab_margins">16dp</dimen>
+    <dimen name="default_elevation">8dp</dimen>
+    <dimen name="comment_avatar_size">56dp</dimen>
+    <dimen name="user_profile_avatar_size">88dp</dimen>
+    <dimen name="global_menu_avatar_size">64dp</dimen>
+    <dimen name="publish_photo_thumbnail_size">96dp</dimen>
+
+
+
+
+
+    <dimen name="dp_15">15dp</dimen>
+    <dimen name="common_margin">10dp</dimen>
+    <dimen name="sp_16">16dp</dimen>
+    <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="sp_20">20dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="sp_14">14dp</dimen>
+    <dimen name="dp_5">5dp</dimen>
+    <dimen name="sp_24">24dp</dimen>
+    <dimen name="dp_4">4dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+    <dimen name="sp_18">18sp</dimen>
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="sp_11">11sp</dimen>
+    <dimen name="sp_26">26sp</dimen>
+    <dimen name="dp_7">7sp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
+    <dimen name="x_large_padding">15dp</dimen>
+    <dimen name="x_small_padding">7dp</dimen>
+    <dimen name="x_small_text">16sp</dimen>
+
+
+    <dimen name="pad_20dp">20dp</dimen>
+    <dimen name="pad_40dp">40dp</dimen>
+    <dimen name="pad_16dp">16dp</dimen>
+    <dimen name="pad_5dp">5dp</dimen>
+    <dimen name="pad_15dp">15dp</dimen>
+    <dimen name="pad_20sp">16dp</dimen>
+    <dimen name="pad_2dp">2dp</dimen>
+    <dimen name="pad_30dp">30dp</dimen>
+    <dimen name="pad_100dp">100dp</dimen>
+    <dimen name="pad_3dp">3dp</dimen>
+    <dimen name="pad_10dp">5dp</dimen>
+
+
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="dp_1">1dp</dimen>
+    <dimen name="small_text">14sp</dimen>
+    <dimen name="large_padding">12dp</dimen>
+    <dimen name="medium_padding">10dp</dimen>
+    <dimen name="wide_padding">20dp</dimen>
+    <dimen name="dp_3">3dp</dimen>
+
+
+
+
+
+
+
+
+
 </resources>

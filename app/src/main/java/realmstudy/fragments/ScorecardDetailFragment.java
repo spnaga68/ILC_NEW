@@ -112,7 +112,7 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
         listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
             @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+            public boolean onGroupClick(final ExpandableListView parent, View v, final int groupPosition, long id) {
                 // We call collapseGroupWithAnimation(int) and
                 // expandGroupWithAnimation(int) to animate group
                 // expansion/collapse.
@@ -124,9 +124,23 @@ public class ScorecardDetailFragment extends Fragment implements SwipeRefreshLay
                     ((AnimatedExpandableListView) parent).collapseGroupWithAnimation(groupPosition);
 
                 } else {
-                    ((AnimatedExpandableListView) parent).expandGroupWithAnimation(groupPosition);
-                    if (parent.isGroupExpanded(otherPosition))
-                        ((AnimatedExpandableListView) parent).collapseGroupWithAnimation(otherPosition);
+                    final int finalOtherPosition = otherPosition;
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if (parent.isGroupExpanded(finalOtherPosition))
+//                        ((AnimatedExpandableListView) parent).collapseGroupWithAnimation(finalOtherPosition);
+//                        }
+//                    },2000);
+//
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((AnimatedExpandableListView) parent).expandGroupWithAnimation(groupPosition);
+                            listView.invalidate();
+                        }
+                    },1);
+
 
                 }
                 return true;

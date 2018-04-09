@@ -17,6 +17,7 @@ public class ScoreBoardData {
     public Bowlers curr_bowlers = new Bowlers();
     public Bowlers next_bowlers = new Bowlers();
     boolean isFirstInnings;
+
     public boolean isFirstInnings() {
         return isFirstInnings;
     }
@@ -352,16 +353,27 @@ public class ScoreBoardData {
         return matchQuote;
     }
 
+    public int getTotalBallsAuto() {
+        float overs = Float.parseFloat(total_over);
+        return (int) ((overs / 6 + overs % 6) * 6);
+    }
+
 
     public class Bowlers {
 
-//        public String getOvers() {
+        //        public String getOvers() {
 //            return overs;
 //        }
 //
 //        public void setOvers(String overs) {
 //            this.overs = overs;
 //        }
+        public String getEcnomic_rateAuto() {
+            if (runs > 0)
+                return String.format("%.2f", (((float) runs / Float.parseFloat(getOvers()))));
+            else
+                return "0";
+        }
 
         public int getMaiden() {
             return maiden;
@@ -387,11 +399,11 @@ public class ScoreBoardData {
             this.wicket = wicket;
         }
 
-        public int getEconomic_rate() {
+        public String getEconomic_rate() {
             return economic_rate;
         }
 
-        public void setEconomic_rate(int economic_rate) {
+        public void setEconomic_rate(String economic_rate) {
             this.economic_rate = economic_rate;
         }
 
@@ -423,7 +435,7 @@ public class ScoreBoardData {
 
 
         int balls;
-        int economic_rate;
+        String economic_rate;
     }
 
 
@@ -436,7 +448,11 @@ public class ScoreBoardData {
         int balls;
         int fours;
         int sixes;
-        int strikeRate;
+        String strikeRate;
+
+        public String getStrike_rateAuto() {
+            return String.format("%.2f", (((float) runs / (float) balls) * 100));
+        }
 
         public String getName() {
             return Name;
@@ -478,11 +494,11 @@ public class ScoreBoardData {
             this.sixes = sixes;
         }
 
-        public int getStrikeRate() {
+        public String getStrikeRate() {
             return strikeRate;
         }
 
-        public void setStrikeRate(int strikeRate) {
+        public void setStrikeRate(String strikeRate) {
             this.strikeRate = strikeRate;
         }
     }

@@ -1,5 +1,7 @@
 package realmstudy.data;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 /**
@@ -8,35 +10,69 @@ import java.util.ArrayList;
 public class ScoreCardDetailData {
 
 
-
     String teamName;
-    String TeamRun_over;
-    int total_extras;
-    String extras_detail;
+    public String TeamRun_over;
+    public int total_extras;
+    public String extras_detail;
     float current_run_rate;
-    ArrayList<BatsmanDetail> batsmanDetails=new ArrayList<>();
-    ArrayList<BowlersDetail> bowlersDetails=new ArrayList<>();
-    ArrayList<FOW> fow=new ArrayList<>();
-    ArrayList<PowerPlay> powerPlay=new ArrayList<>();
-    public static class BatsmanDetail{
-        public  String name,outAs;
-        public  int runs,balls,fours,sixes;
-                public String strike_rate="";
-    }
-    public static class BowlersDetail{
-        public String name,outAs,overs,ecnomic_rate;
+    ArrayList<BatsmanDetail> batsmanDetails = new ArrayList<>();
+    ArrayList<BowlersDetail> bowlersDetails = new ArrayList<>();
+    ArrayList<FOW> fow = new ArrayList<>();
+    ArrayList<PowerPlay> powerPlay = new ArrayList<>();
 
-        public   int maiden,runs,wicket;
+    public static class BatsmanDetail {
+        public String name, outAs;
+        public int runs, balls, fours, sixes;
+
+        public String getStrike_rate() {
+            return strike_rate;
+        }
+
+        public void setStrike_rate(String strike_rate) {
+            this.strike_rate = strike_rate;
+        }
+
+        public String strike_rate = "";
+
+        public String getStrike_rateAuto() {
+            return String.format("%.2f", (((float) runs / (float) balls) * 100));
+        }
     }
-    public static class FOW{
-        public   String name,overs;
+
+    public static class BowlersDetail {
+        public String name;
+        public String outAs;
+        public String overs;
+
+        public String getEcnomic_rate() {
+            return ecnomic_rate;
+        }
+
+        public void setEcnomic_rate(String ecnomic_rate) {
+            this.ecnomic_rate = ecnomic_rate;
+        }
+
+        public String ecnomic_rate;
+
+        public int maiden, runs, wicket;
+
+        public String getEcnomic_rateAuto() {
+            if (runs > 0)
+                return String.format("%.2f", (((float) runs / Float.parseFloat(overs))));
+            else
+                return "0";
+        }
+    }
+
+    public static class FOW {
+        public String name, overs;
         public int score;
     }
-    public static class PowerPlay{
-        public String name,overs;
+
+    public static class PowerPlay {
+        public String name, overs;
         public int runs;
     }
-
 
 
     public String getTeamName() {
@@ -111,5 +147,8 @@ public class ScoreCardDetailData {
         this.powerPlay = powerPlay;
     }
 
-
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
+    }
 }

@@ -6,13 +6,13 @@
     android:orientation="vertical">
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="5dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
+        android:paddingTop="5dp"
         android:weightSum="8">
 
         <TextView
@@ -21,19 +21,21 @@
             android:layout_height="20dp"
             android:layout_weight="3"
             android:text="Naga"
-            android:textColor="@color/link_blue" />
+            android:textColor="@color/colorPrimaryDark" />
 
         <TextView
             android:id="@+id/runs_txt"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textColor="@color/colorPrimaryDark"
             android:gravity="bottom|center_horizontal"
             android:text="0" />
 
         <TextView
             android:id="@+id/balls_txt"
             android:layout_width="0dp"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="bottom|center_horizontal"
@@ -41,6 +43,7 @@
 
         <TextView
             android:id="@+id/fours_txt"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.8"
@@ -49,37 +52,45 @@
 
         <TextView
             android:id="@+id/six_txt"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="bottom|center_horizontal"
             android:layout_weight="0.8"
+            android:gravity="bottom|center_horizontal"
             android:text="3" />
 
         <TextView
             android:id="@+id/strike_rate_txt"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.4"
             android:gravity="bottom|center_horizontal"
             android:text="233.33" />
     </LinearLayout>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal"
-        android:paddingRight="5dp"
-        android:paddingLeft="5dp"
         android:paddingBottom="5dp"
-        >
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
 
         <TextView
             android:id="@+id/out_as"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="top"
             android:layout_weight="3"
             android:gravity="top"
-            android:layout_gravity="top"
-            android:text="c Naga b Rajan" /></LinearLayout>
+
+            android:text="c Naga b Rajan"
+            android:textColor="@color/dark_grey_text"
+            android:typeface="serif" />
+    </LinearLayout>
+
     <View
         android:id="@+id/bottom_view"
         android:layout_width="match_parent"

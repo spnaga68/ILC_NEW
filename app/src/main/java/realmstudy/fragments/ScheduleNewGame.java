@@ -14,6 +14,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -28,11 +29,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageButton;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -73,13 +78,19 @@ import realmstudy.data.RealmObjectData.Player;
 import realmstudy.data.RealmObjectData.Team;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.extras.NotificationPublisher;
+import realmstudy.interfaces.BaseListner;
 import realmstudy.interfaces.MsgFromDialog;
+import tourguide.tourguide.Overlay;
+import tourguide.tourguide.Pointer;
+import tourguide.tourguide.ToolTip;
+import tourguide.tourguide.TourGuide;
 
 
 /**
  * Created by developer on 6/3/17.
  */
-public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class ScheduleNewGame extends Fragment
+        implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,BaseListner {
 
     private static final int WHATSAPP = 1;
     private static final int FACEBOOK = 2;
@@ -111,6 +122,7 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
     private int monthOfYear;
     private int dayOfMonth;
     private int year;
+    private TourGuide tourGuide;
 
     @Nullable
     @Override
@@ -141,6 +153,8 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), GroundPickerActivity.class);
                 getActivity().startActivityForResult(i, 30);
+                if (tourGuide != null)
+                    tourGuide.cleanUp();
             }
         });
         players.setOnClickListener(new View.OnClickListener() {
@@ -157,6 +171,8 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
                 Bundle b = new Bundle();
                 i.putExtra("for", "away");
                 getActivity().startActivityForResult(i, 20);
+                if (tourGuide != null)
+                    tourGuide.cleanUp();
             }
         });
         home_team.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +183,8 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
                 Bundle b = new Bundle();
                 i.putExtra("for", "home");
                 getActivity().startActivityForResult(i, 20);
+                if (tourGuide != null)
+                    tourGuide.cleanUp();
             }
         });
 
@@ -174,7 +192,8 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
             @Override
             public void onClick(View view) {
 //                calDatePicker();
-
+                if (tourGuide != null)
+                    tourGuide.cleanUp();
 
                 Calendar now = Calendar.getInstance();
                 DatePickerDialog dpd = DatePickerDialog.newInstance(
@@ -230,12 +249,73 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
                             }
 
 
-                        } else
+                        } else {
                             Toast.makeText(getActivity(), getString(R.string.select_venue), Toast.LENGTH_SHORT).show();
-                    } else
+                            ToolTip toolTip = new ToolTip()
+                                    .setDescription(getString(R.string.tour_venue))
+                                    .setTextColor(Color.parseColor("#bdc3c7"))
+                                    .setBackgroundColor(Color.parseColor("#e74c3c"))
+                                    .setShadow(true)
+                                    .setGravity(Gravity.TOP | Gravity.RIGHT);
+
+
+                            tourGuide = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+                                    .setPointer(new Pointer())
+                                    .setToolTip(toolTip)
+                                    .setOverlay(new Overlay())
+                                    .playOn(venue);
+                        }
+                    } else {
+                        ToolTip toolTip = new ToolTip()
+                                .setDescription(getString(R.string.tour_time))
+                                .setTextColor(Color.parseColor("#bdc3c7"))
+                                .setBackgroundColor(Color.parseColor("#e74c3c"))
+                                .setShadow(true)
+                                .setGravity(Gravity.TOP | Gravity.CENTER);
+
+
+                        tourGuide = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+                                .setPointer(new Pointer())
+                                .setToolTip(toolTip)
+                                .setOverlay(new Overlay())
+                                .playOn(time);
                         Toast.makeText(getActivity(), getString(R.string.select_match_time), Toast.LENGTH_SHORT).show();
-                } else
+                    }
+                } else {
+
+
+
+                    if (homeTeam == null) {
+                        ToolTip toolTip = new ToolTip()
+                                .setDescription(getString(R.string.tour_home_team))
+                                .setTextColor(Color.parseColor("#bdc3c7"))
+                                .setBackgroundColor(Color.parseColor("#e74c3c"))
+                                .setShadow(true)
+                                .setGravity(Gravity.TOP | Gravity.RIGHT);
+
+                        tourGuide = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+                                .setPointer(new Pointer())
+                                .setToolTip(toolTip)
+                                .setOverlay(new Overlay())
+                                .playOn(home_team);
+                    } else {
+                        ToolTip toolTip = new ToolTip()
+                                .setDescription(getString(R.string.tour_away_team))
+                                .setTextColor(Color.parseColor("#bdc3c7"))
+                                .setBackgroundColor(Color.parseColor("#e74c3c"))
+                                .setShadow(true)
+                                .setGravity(Gravity.TOP | Gravity.LEFT);
+
+                        tourGuide = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+                                .setPointer(new Pointer())
+                                .setToolTip(toolTip)
+                                .setOverlay(new Overlay())
+                                .playOn(away_team);
+                    }
+
+
                     Toast.makeText(getActivity(), getString(R.string.select_valid_home_away_team), Toast.LENGTH_SHORT).show();
+                }
             }
         });
         fb_share.setOnClickListener(new View.OnClickListener() {
@@ -269,7 +349,32 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
 
             }
         });
+
+        Animation animation = new TranslateAnimation(0f, 0f, 200f, 0f);
+        animation.setDuration(1000);
+        animation.setFillAfter(true);
+        animation.setInterpolator(new BounceInterpolator());
+
+
+        //mTourGuideHandler.cleanUp();
+
         return v;
+    }
+
+
+    @Override
+    public void onPause() {
+        System.out.println("_*****ONPause");
+
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        System.out.println("_*****ONStop");
+        if (tourGuide != null)
+            tourGuide.cleanUp();
+        super.onStop();
     }
 
     public Bitmap viewToBitmap(View view) {
@@ -285,12 +390,16 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
     @Override
     public void onResume() {
         super.onResume();
+
+
         getActivity().setTitle(getString(R.string.schedule_game));
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((MainFragmentActivity) getActivity()).setNaviHome();
 
         }
     }
+
+
 
     void shareBitmap(int type) {
         // File file = new File(getActivity().getCacheDir(), "fileImage" + ".png");
@@ -332,7 +441,7 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
                 System.out.println("_______PPP" + outputUri);
                 final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(Intent.EXTRA_STREAM, outputUri);
+              //  intent.putExtra(Intent.EXTRA_STREAM, outputUri);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 String shareContent = "" + homeTeam.nick_name + " " + getString(R.string.vs) + " " + awayTeam.nick_name + "\n" + time.getText().toString() + "\n" + venue.getText().toString() + "\n" + desc.getText().toString();
                 intent.putExtra(Intent.EXTRA_TEXT, shareContent);
@@ -348,7 +457,7 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
 
                 //  intent.putExtra(Intent.EXTRA_TEXT, "Hai");
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                intent.setType("image/jpeg");
+                intent.setType("text/plain");
                 startActivity(Intent.createChooser(intent, "Share image using"));
             }
         }
@@ -490,7 +599,7 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
             long delay = Math.abs(startDate.getTime() - System.currentTimeMillis());
             //System.out.println("SelectedTime---" + match_time+"__"+startDate.getTime()+"__"+System.currentTimeMillis()+"___"+delay);
             time.setText(CommanData.getDateCurrentTimeZone(match_time));
-            scheduleNotification(getNotification(""), delay);
+        //    scheduleNotification(getNotification(""), delay);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -526,6 +635,18 @@ public class ScheduleNewGame extends Fragment implements DatePickerDialog.OnDate
         builder.setSmallIcon(R.mipmap.logo);
         builder.setDefaults(Notification.DEFAULT_SOUND);
         return builder.build();
+    }
+
+    @Override
+    public void onPopDown() {
+        System.out.println("popdown");
+        if (tourGuide != null)
+            tourGuide.cleanUp();
+    }
+
+    @Override
+    public void onPopFront() {
+
     }
 
 

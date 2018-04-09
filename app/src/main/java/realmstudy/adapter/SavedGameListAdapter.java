@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -20,13 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +48,6 @@ import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.extras.NetworkStatus;
 import realmstudy.fragments.MatchInfo;
-import realmstudy.fragments.regLogin.Signup;
 import realmstudy.fragments.regLogin.SocialLoginCustom;
 
 /**
@@ -61,7 +59,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
     private FirebaseDatabase database;
     private Context context;
     private static final int PENDING_REMOVAL_TIMEOUT = 1500; // 3sec
-
+    AlertDialog deleteAlert = null;
     //    List<String> items;
 //    List<String> itemsPendingRemoval;
     int lastInsertedIndex; // so we can add some more items for testing purposes
@@ -147,8 +145,9 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                 viewHolder.away_team_name.setText(matchShortSummaryData.getBattingTeamName());
                 viewHolder.home_team_scr.setText(matchShortSummaryData.getFirstInningsSummary().run + " - " + matchShortSummaryData.getFirstInningsSummary().wicket + " (" +
                         matchShortSummaryData.getFirstInningsSummary().overs + ")");
-                viewHolder.away_team_scr.setText(matchShortSummaryData.getSecondInningsSummary().run + " - " + matchShortSummaryData.getSecondInningsSummary().wicket + " (" +
-                        matchShortSummaryData.getSecondInningsSummary().overs + ")");
+                if (matchShortSummaryData.getSecondInningsSummary() != null)
+                    viewHolder.away_team_scr.setText(matchShortSummaryData.getSecondInningsSummary().run + " - " + matchShortSummaryData.getSecondInningsSummary().wicket + " (" +
+                            matchShortSummaryData.getSecondInningsSummary().overs + ")");
                 viewHolder.home_team_scr.setVisibility(View.VISIBLE);
                 viewHolder.away_team_scr.setVisibility(View.VISIBLE);
                 viewHolder.status.setText(matchShortSummaryData.getQuotes());
@@ -218,7 +217,8 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
             delete_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    remove(getAdapterPosition());
+
+                    showDeleteAlert(getAdapterPosition());
                 }
             });
             database = FirebaseDatabase.getInstance();
@@ -241,16 +241,24 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                             ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
 
                         } else if (md.getMatchStatus() != CommanData.MATCH_COMPLETED) {
-                            if ((md.isOnlineMatch() && (auth.getCurrentUser() != null)) || !md.isOnlineMatch()) {
-                                Bundle b = new Bundle();
-                                MainActivity fragment = new MainActivity();
-                                b.putInt("match_id", md.getMatch_id());
-                                fragment.setArguments(b);
-                                ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
+                            if (context instanceof MainFragmentActivity) {
+                                if ((md.isOnlineMatch() && (auth.getCurrentUser() != null)) || !md.isOnlineMatch()) {
+                                    Bundle b = new Bundle();
+                                    MainActivity fragment = new MainActivity();
+                                    b.putInt("match_id", md.getMatch_id());
+                                    fragment.setArguments(b);
+                                    ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
+                                } else {
+                                    Intent i = new Intent(context, MainFragmentActivity.class);
+                                    i.putExtra("fragmentToLoad", "MatchDetailActivity");
+                                    i.putExtra("match_id", md.getMatch_id());
+                                    context.startActivity(i);
+                                }
                             } else
                                 showLoginAlert();
                         } else {
                             //Toast.makeText(context, context.getString(R.string.game_over), Toast.LENGTH_SHORT).show();
+
                             Bundle b = new Bundle();
                             MatchDetailActivity fragment = new MatchDetailActivity();
                             b.putInt("match_id", md.getMatch_id());
@@ -260,13 +268,25 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                         }
                     } else {
                         //  MatchDetails matchDetails=data.get(getAdapterPosition());
-                        Bundle b = new Bundle();
-                        MatchDetailActivity fragment = new MatchDetailActivity();
-                        b.putInt("match_id", data.get(getAdapterPosition()).getMatch_id());
-                        b.putBoolean("is_online", true);
-                        b.putString("mss", data.get(getAdapterPosition()).getmatchShortSummary());
-                        fragment.setArguments(b);
-                        ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
+
+                        if (CommanData.fromJson(data.get(getAdapterPosition()).getmatchShortSummary(), MatchShortSummaryData.class).getToss() != null) {
+                            if (context instanceof MainFragmentActivity) {
+                                Bundle b = new Bundle();
+                                MatchDetailActivity fragment = new MatchDetailActivity();
+                                b.putInt("match_id", data.get(getAdapterPosition()).getMatch_id());
+                                b.putBoolean("is_online", true);
+                                b.putString("mss", data.get(getAdapterPosition()).getmatchShortSummary());
+                                fragment.setArguments(b);
+                                ((MainFragmentActivity) context).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
+                            } else {
+                                Intent i = new Intent(context, MainFragmentActivity.class);
+                                i.putExtra("fragmentToLoad", "MatchDetailActivity");
+                                i.putExtra("match_id", data.get(getAdapterPosition()).getMatch_id());
+                                i.putExtra("mss", data.get(getAdapterPosition()).getmatchShortSummary());
+                                System.out.println("matchhhh_id*" + data.get(getAdapterPosition()).getMatch_id());
+                                context.startActivity(i);
+                            }
+                        }
                     }
                 }
             });
@@ -337,11 +357,13 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                         progressDialog.cancel();
-                                        if (databaseError == null) {
+                                        if (databaseError == null && context != null) {
                                             realm.beginTransaction();
                                             onlineMatchID.setOnlineMatch(true);
                                             realm.commitTransaction();
                                             online.setImageResource(R.drawable.wifi_on);
+
+
                                         }
                                     }
                                 });
@@ -359,9 +381,13 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
             });
         }
 
-        public void remove(int position) {
 
-            int item = data.get(position).getMatch_id();
+    }
+
+    public void remove(int position) {
+        int item = data.get(position).getMatch_id();
+        if (!RealmDB.getMatchById(context, realm, data.get(position).getMatch_id()).isOnlineMatch()) {
+
 
             //  System.out.println("_______________II" + item + "___" + position);
             realm.beginTransaction();
@@ -380,13 +406,52 @@ public class SavedGameListAdapter extends RecyclerView.Adapter {
             realm.commitTransaction();
             data.remove(position);
             notifyItemRemoved(position);
+        } else {
+            Toast.makeText(context, context.getString(R.string.make_online_to_delete), Toast.LENGTH_SHORT).show();
         }
-
     }
 
+    public void showDeleteAlert(final int id) {
+
+        if (deleteAlert != null && deleteAlert.isShowing())
+            deleteAlert.cancel();
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setMessage(context.getString(R.string.delete_alert));
+        builder1.setCancelable(true);
+        builder1.setPositiveButton(
+                context.getString(R.string.ok),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(android.content.DialogInterface dialog, int ids) {
+                        dialog.cancel();
+                        remove(id);
+                        // ((AppCompatActivity) this).startActivityForResult(new Intent(this, SocialLoginCustom.class), MainFragmentActivity.REQUEST_SIGN_UP);
+                    }
+                });
+        builder1.setNegativeButton(
+                context.getString(R.string.cancel),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+
+                    }
+                });
+        deleteAlert = builder1.create();
+
+
+        deleteAlert.setOnShowListener(new android.content.DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(android.content.DialogInterface dialogs) {
+                deleteAlert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+                deleteAlert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+            }
+        });
+        deleteAlert.show();
+    }
+
+
     private String getShareContent(MatchShortSummaryData matchShortSummaryData) {
-        String shareContent = "" + matchShortSummaryData.getHomeTeam() + " " + context.getString(R.string.vs) + " " +
-                matchShortSummaryData.getAwayTeam() + "\n" + matchShortSummaryData.getLocation() + "\n";
+        String shareContent = "" + matchShortSummaryData.getBattingTeamName() + " " + context.getString(R.string.vs) + " " +
+                matchShortSummaryData.getBowlingTeamName() + "\n" + matchShortSummaryData.getLocation() + "\n";
         if (matchShortSummaryData.getStatus() == CommanData.MATCH_STARTED_FI) {
 
 

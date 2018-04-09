@@ -4,6 +4,7 @@ package realmstudy.fragments;
 import android.app.Activity;
 import android.content.Context;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,8 +36,12 @@ import android.widget.Toast;
 
 
 import realmstudy.MyApplication;
+import realmstudy.TeamPickerActivity;
+import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.data.RealmObjectData.Team;
+import realmstudy.data.SessionSave;
+import realmstudy.interfaces.BaseListner;
 import realmstudy.lib.CustomAnimationDrawable;
 import realmstudy.MainActivity;
 import realmstudy.MainFragmentActivity;
@@ -49,9 +55,13 @@ import java.util.EnumMap;
 import javax.inject.Inject;
 
 import io.realm.Realm;
+import tourguide.tourguide.Overlay;
+import tourguide.tourguide.Pointer;
+import tourguide.tourguide.ToolTip;
+import tourguide.tourguide.TourGuide;
 
 
-public class TossFragment extends Fragment {
+public class TossFragment extends Fragment implements BaseListner {
 
     // debugging tag
     private static final String TAG = TossFragment.class.getSimpleName();
@@ -99,6 +109,7 @@ public class TossFragment extends Fragment {
             team_won_toss_radio;
     RadioButton
             team_won_home, team_won_away;
+    private TourGuide tourGuide;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -144,7 +155,7 @@ public class TossFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                            flipCoin();
+                    flipCoin();
 
                 }
             };
@@ -155,32 +166,30 @@ public class TossFragment extends Fragment {
         start_match.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (flipCounter >= 1 || manual_toss.isChecked())
-               {
+                if (flipCounter >= 1 || manual_toss.isChecked()) {
 
 
-                            String chooseTo = "bowl";
-                            if (choose_to_bat_bowl.getCheckedRadioButtonId() == choose_to_bat.getId())
-                                                                chooseTo = "bat";
+                    String chooseTo = "bowl";
+                    if (choose_to_bat_bowl.getCheckedRadioButtonId() == choose_to_bat.getId())
+                        chooseTo = "bat";
 
-                            System.out.println("homeWinnnnnn__________start"+homeWin);
-                            if(manual_toss.isChecked())
-                                homeWin=team_won_home.isChecked();
-                            md = RealmDB.UpdateorCreateMatchDetail(getActivity(), realm, homeTeam, awayTeam, chooseTo, homeWin ? homeTeam : awayTeam, -1, "", -1, 0, match_id);
+                    System.out.println("homeWinnnnnn__________start" + homeWin);
+                    if (manual_toss.isChecked())
+                        homeWin = team_won_home.isChecked();
+                    md = RealmDB.UpdateorCreateMatchDetail(getActivity(), realm, homeTeam, awayTeam, chooseTo, homeWin ? homeTeam : awayTeam, -1, "", -1, 0, match_id);
 
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Bundle b = new Bundle();
-                                    b.putInt("match_id", md.getMatch_id());
-                                    MainActivity mf = new MainActivity();
-                                    mf.setArguments(b);
-                                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, mf).commit();
-                                }
-                            }, 100);
-
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Bundle b = new Bundle();
+                            b.putInt("match_id", md.getMatch_id());
+                            MainActivity mf = new MainActivity();
+                            mf.setArguments(b);
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, mf).commit();
                         }
-                else
+                    }, 100);
+
+                } else
                     Toast.makeText(getActivity(), "coin", Toast.LENGTH_SHORT).show();
 
             }
@@ -516,8 +525,8 @@ public class TossFragment extends Fragment {
         team_won_away = (RadioButton) v.findViewById(R.id.team_won_away);
         manual_toss = (CheckBox) v.findViewById(R.id.manual_toss);
         retoss_lay = (LinearLayout) v.findViewById(R.id.retoss_lay);
-       // overss = (TextView) v.findViewById(R.id.overss);
-       // venues = (TextView) v.findViewById(R.id.venues);
+        // overss = (TextView) v.findViewById(R.id.overss);
+        // venues = (TextView) v.findViewById(R.id.venues);
         toss = (TextView) v.findViewById(R.id.toss);
         team = (TextView) v.findViewById(R.id.team);
         toss_won_detail = (TextView) v.findViewById(R.id.toss_won_detail);
@@ -547,6 +556,22 @@ public class TossFragment extends Fragment {
             }
         });
 
+        if (!SessionSave.getBooleanSession(CommanData.TOUR_TOSS_MANUALLY, getActivity())) {
+            ToolTip toolTip = new ToolTip()
+
+                    .setDescription(getString(R.string.tour_toss_manually))
+                    .setTextColor(Color.parseColor("#bdc3c7"))
+                    .setBackgroundColor(Color.parseColor("#e74c3c"))
+                    .setShadow(true)
+                    .setGravity(Gravity.TOP | Gravity.RIGHT);
+
+
+            tourGuide = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+                    .setPointer(new Pointer())
+                    .setToolTip(toolTip)
+                    .setOverlay(new Overlay())
+                    .playOn(manual_toss);
+        }
         team_ask_home.setText(homeTeam.nick_name);
         team_ask_away.setText(awayTeam.nick_name);
         team_won_home.setText(homeTeam.nick_name);
@@ -554,6 +579,10 @@ public class TossFragment extends Fragment {
         manual_toss.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (tourGuide != null)
+                    tourGuide.cleanUp();
+                SessionSave.saveSession(CommanData.TOUR_TOSS_MANUALLY,true,getActivity());
                 if (isChecked) {
                     auto_toss.setVisibility(View.GONE);
                     after_toss_lay.setVisibility(View.VISIBLE);
@@ -576,9 +605,9 @@ public class TossFragment extends Fragment {
                 if (isChecked)
                     homeWin = true;
                 else
-                    homeWin=false;
+                    homeWin = false;
 
-                System.out.println("homeWinnnnnn__________"+homeWin);
+                System.out.println("homeWinnnnnn__________" + homeWin);
 
 
             }
@@ -612,4 +641,14 @@ public class TossFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onPopDown() {
+        if (tourGuide != null)
+            tourGuide.cleanUp();
+    }
+
+    @Override
+    public void onPopFront() {
+
+    }
 }

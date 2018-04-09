@@ -6,6 +6,10 @@
         <attr name="civ_border_overlay" format="boolean" />
         <attr name="civ_fill_color" format="color" />
     </declare-styleable>
+    <attr name="asset_font_file_name">
 
-
+    </attr>
+    <declare-styleable  name="asset_font_file_names">
+        <attr name="asset_font_file_name"></attr>
+    </declare-styleable>
     </resources>

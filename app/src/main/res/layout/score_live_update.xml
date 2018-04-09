@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/score_lay"
-        android:background="@color/edit_hint_color"
+        android:background="@color/light_grey_100"
         android:orientation="horizontal"
         android:padding="5dp"
         android:weightSum="8">
@@ -271,7 +271,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/non_striker_lay"
-        android:background="@color/edit_hint_color"
+        android:background="@color/light_grey_100"
         android:orientation="horizontal"
         android:padding="5dp"
         android:weightSum="8">
@@ -436,7 +436,7 @@
         android:layout_below="@+id/next_bowler_lay"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:gravity="center"
+        android:gravity="left"
         android:orientation="horizontal" />
 
 </LinearLayout>

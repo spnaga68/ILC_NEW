@@ -7,14 +7,30 @@ ext {
     DAGGER = "2.7"
 }
 android {
+    signingConfigs {
+        config {
+            keyAlias 'key0'
+            keyPassword 'PASUtECH29'
+            storeFile file('D:/androidnaga/ilc.jks')
+            storePassword 'PASUtECH29'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
     dexOptions {
         jumboMode true
     }
     repositories {
+        mavenCentral()
+        maven() {
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+        }
         maven {
             url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo'
+
         }
     }
     splits {
@@ -24,25 +40,44 @@ android {
             include 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'mips', 'x86', 'x86_64'
         }
     }
+    project.ext.versionCodes = ['armeabi': 1, 'armeabi-v7a': 2, 'arm64-v8a': 3, 'mips': 5, 'mips64': 6, 'x86': 8, 'x86_64': 9]
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.versionCodeOverride =
+                    project.ext.versionCodes.get(output.getFilter(
+                            com.android.build.OutputFile.ABI), 0) * 10000000 + android.defaultConfig.versionCode
+        }
+    }
     defaultConfig {
         applicationId "pasu.ilc"
         minSdkVersion 16
-        maxSdkVersion 24
         targetSdkVersion 23
-        versionCode 5
+        versionCode 13
         versionName "1.0"
+        multiDexEnabled true
+
+        vectorDrawables.useSupportLibrary = true
+
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            signingConfig signingConfigs.config
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 
 dependencies {
     // compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.github.yalantis:ucrop:2.2.1"
+    compile 'com.github.yalantis:ucrop:2.2.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:cardview-v7:25.3.1'
@@ -68,9 +103,14 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:11.2.0'
     testCompile 'junit:junit:4.12'
     apt 'com.google.dagger:dagger-compiler:2.7'
+    compile 'com.google.android.exoplayer:exoplayer-ui:r2.5.1'
     compile 'com.google.android.gms:play-services-auth:11.2.0'
     compile 'com.facebook.android:facebook-android-sdk:4.9.0'
-
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'org.jsoup:jsoup:1.11.2'
+    compile('com.github.worker8:tourguide:1.0.17-SNAPSHOT@aar') {
+        transitive = true
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

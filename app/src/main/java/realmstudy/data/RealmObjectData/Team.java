@@ -10,7 +10,16 @@ public class Team extends RealmObject {
     public String nick_name;
     public int team_id;
     String players;
+String team_profile_image;
+    public String getExtraDetails() {
+        return extraDetails;
+    }
 
+    public void setExtraDetails(String extraDetails) {
+        this.extraDetails = extraDetails;
+    }
+
+    String extraDetails;
     public Player addPlayer(Player p) {
         if (players != null) {
             if (players.contains(",")) {

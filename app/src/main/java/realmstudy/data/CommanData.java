@@ -17,6 +17,9 @@ import realmstudy.databaseFunctions.RealmDB;
 public class CommanData {
 
 
+    public static final String TOUR_TOSS_MANUALLY = "manual_toss_tour";
+    public static final String TOUR_S_PLAYER_MENU = "select_player_d_m";
+    public static final String TOUR_EXTRALAY = "tour_extra";
     public static String API_BASE_URL = "http://192.168.1.169:1009/mobileapi117/index/";
 
 //    public static final String USERID = "uid";
@@ -26,6 +29,7 @@ public class CommanData {
 //    public static final String PROFILE_IMAGE = "p_image";
    public static final String AddNewTeam = "AddNewTeam";
     public static final String NEW_GROUND = "NewGround";
+    public static final String MATCH_DETAIL = "MatchDetailActivity";
 
     public static final int StatusFree = 0;
     public static final int StatusBatting = 1;

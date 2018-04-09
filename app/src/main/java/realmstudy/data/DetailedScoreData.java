@@ -3,15 +3,17 @@ package realmstudy.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import realmstudy.extras.Utils;
+
 /**
  * Created by developer on 30/5/17.
  */
 
 public class DetailedScoreData {
-    List<OverAdapterData> overAdapterData=new ArrayList<>();
-    ScoreBoardData scoreBoardData=new ScoreBoardData();
-    ScoreCardDetailData scoreCardDetailData=new ScoreCardDetailData();
-    ScoreCardDetailData secscoreCardDetailData=new ScoreCardDetailData();
+    List<OverAdapterData> overAdapterData = new ArrayList<>();
+    ScoreBoardData scoreBoardData = new ScoreBoardData();
+    ScoreCardDetailData scoreCardDetailData = new ScoreCardDetailData();
+    ScoreCardDetailData secscoreCardDetailData = new ScoreCardDetailData();
 
     public ScoreCardDetailData getSecscoreCardDetailData() {
         return secscoreCardDetailData;
@@ -20,7 +22,6 @@ public class DetailedScoreData {
     public void setSecscoreCardDetailData(ScoreCardDetailData secscoreCardDetailData) {
         this.secscoreCardDetailData = secscoreCardDetailData;
     }
-
 
 
     public List<OverAdapterData> getOverAdapterData() {
@@ -45,5 +46,10 @@ public class DetailedScoreData {
 
     public void setScoreCardDetailData(ScoreCardDetailData scoreCardDetailData) {
         this.scoreCardDetailData = scoreCardDetailData;
+    }
+
+    @Override
+    public String toString() {
+        return Utils.toString(this);
     }
 }

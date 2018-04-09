@@ -12,16 +12,19 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,8 +57,10 @@ import realmstudy.data.RealmObjectData.Wicket;
 import realmstudy.data.ScoreBoardData;
 import realmstudy.data.ScoreCardDetailData;
 import realmstudy.data.SessionSave;
+import realmstudy.data.UpdateDetailScoreData;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.fragments.ScoreBoardFragment;
+import realmstudy.interfaces.BaseListner;
 import realmstudy.interfaces.DialogInterface;
 import realmstudy.interfaces.MsgFromDialog;
 import realmstudy.interfaces.MsgToFragment;
@@ -65,11 +70,14 @@ import realmstudy.service.CoreClient;
 import realmstudy.service.ServiceGenerator;
 import retrofit2.Call;
 import retrofit2.Callback;
+import tourguide.tourguide.Overlay;
+import tourguide.tourguide.ToolTip;
+import tourguide.tourguide.TourGuide;
 
 import static realmstudy.data.CommanData.wicketIdToString;
 
 public class MainActivity extends Fragment implements DialogInterface,
-        MsgToFragment, MsgFromDialog, ScoreBoardViewClickListner, View.OnClickListener {
+        MsgToFragment, MsgFromDialog, ScoreBoardViewClickListner, View.OnClickListener, BaseListner {
 
     private static final int COLOR_SELECT = Color.RED;
     private static final int COLOR_UNSELECT = Color.BLACK;
@@ -116,6 +124,10 @@ public class MainActivity extends Fragment implements DialogInterface,
     private boolean removedFromUpcoming;
     /*variable use when two select player dialog opens*/
     private boolean askBowler;
+    private boolean isGAME_COMPLETE_SHOWING, isGAME_SWITCH_SHOWING;
+    private TourGuide tourGuideExtras, tourGuideRuns;
+    private Menu menu;
+    private TextView bmore;
 
     @Override
     public void msg(String s) {
@@ -155,11 +167,79 @@ public class MainActivity extends Fragment implements DialogInterface,
         return v;
     }
 
+    private void showTourExtra() {
+        if (!SessionSave.getBooleanSession(CommanData.TOUR_EXTRALAY, getActivity())) {
+            //if (true) {
+            ToolTip toolTip = new ToolTip()
+
+                    .setDescription(getString(R.string.tour_extraLay))
+                    .setTextColor(Color.parseColor("#bdc3c7"))
+                    .setBackgroundColor(Color.parseColor("#e74c3c"))
+                    .setShadow(true)
+                    .setGravity(Gravity.TOP);
+            toolTip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (tourGuideExtras != null)
+                        tourGuideExtras.cleanUp();
+                    if (!SessionSave.getBooleanSession(CommanData.TOUR_EXTRALAY, getActivity()) && tourGuideExtras != null) {
+                        SessionSave.saveSession(CommanData.TOUR_EXTRALAY, true, getActivity());
+                        showTourRun();
+                    }
+
+                }
+            });
+            Overlay ol = new Overlay();
+            ol.setStyle(Overlay.Style.Rectangle);
+
+            tourGuideExtras = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+                    .setToolTip(toolTip)
+                    .setOverlay(ol)
+                    .playOn(extras_lay_L);
+//            tourGuideRuns = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+//                    .setPointer(new Pointer())
+//                    .setToolTip(toolTip)
+//                    .setOverlay(new Overlay())
+//                    .playOn(run_lay_L);
+        }
+    }
+
+    private void showTourRun() {
+        //if (true) {
+        ToolTip toolTip = new ToolTip()
+
+                .setDescription(getString(R.string.tour_runLay))
+                .setTextColor(Color.parseColor("#bdc3c7"))
+                .setBackgroundColor(Color.parseColor("#e74c3c"))
+                .setShadow(true)
+                .setGravity(Gravity.TOP);
+        Overlay ol = new Overlay();
+        ol.setStyle(Overlay.Style.Rectangle);
+
+        tourGuideExtras = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+                .setToolTip(toolTip)
+                .setOverlay(ol)
+                .playOn(run_lay_L);
+//            tourGuideRuns = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+//                    .setPointer(new Pointer())
+//                    .setToolTip(toolTip)
+//                    .setOverlay(new Overlay())
+//                    .playOn(run_lay_L);
+    }
+
     public void showEntry() {
         extras_lay_L.setVisibility(View.VISIBLE);
         submit_lay.setVisibility(View.VISIBLE);
         run_lay_L.setVisibility(View.VISIBLE);
         blockEntry.setVisibility(View.GONE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getActivity() != null)
+                    showTourExtra();
+            }
+        }, 200);
+
     }
 
     public void hideEntry(String s) {
@@ -179,7 +259,7 @@ public class MainActivity extends Fragment implements DialogInterface,
         four_run_txt = (TextView) v.findViewById(realmstudy.R.id.four_run_txt);
         bfour_txt = (TextView) v.findViewById(realmstudy.R.id.bfour_txt);
         bSix_txt = (TextView) v.findViewById(realmstudy.R.id.bSix_txt);
-
+        bmore = (TextView) v.findViewById(realmstudy.R.id.bmore);
         wide_txt = (TextView) v.findViewById(realmstudy.R.id.wide_txt);
         no_ball_txt = (TextView) v.findViewById(realmstudy.R.id.no_ball_txt);
         byes_txt = (TextView) v.findViewById(realmstudy.R.id.byes_txt);
@@ -263,6 +343,7 @@ public class MainActivity extends Fragment implements DialogInterface,
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        this.menu = menu;
         swap_batsman = menu.findItem(R.id.swap_batsman);
         undo = menu.findItem(R.id.undo);
 
@@ -278,45 +359,56 @@ public class MainActivity extends Fragment implements DialogInterface,
         swap_batsman.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                swapStriker(true, swapCount % 2 != 0);
-                swapCount += 1;
+                if (MainActivity.this != null) {
+                    swapStriker(true, swapCount % 2 != 0);
+                    swapCount += 1;
+
+                }
                 return false;
             }
         });
         undo.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                undoCount = 1;
-                checkUnOrRedo();
-                scoreBoardFragment.updateUI(detailedScoreBoardData.getScoreBoardData());
+                if (MainActivity.this != null) {
+                    undoCount = 1;
+                    checkUnOrRedo();
+                    scoreBoardFragment.updateUI(detailedScoreBoardData.getScoreBoardData());
+                }
                 return false;
+
             }
         });
         redo.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                redoCount = 1;
-                checkUnOrRedo();
-                scoreBoardFragment.updateUI(detailedScoreBoardData.getScoreBoardData());
+                if (MainActivity.this != null) {
+                    redoCount = 1;
+                    checkUnOrRedo();
+                    scoreBoardFragment.updateUI(detailedScoreBoardData.getScoreBoardData());
+                }
                 return false;
             }
         });
         view_scoreCard.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                SessionSave.saveSession("sdata", CommanData.toString(detailedScoreBoardData.getScoreBoardData()), getActivity());
-                Bundle b = new Bundle();
-                MatchDetailActivity fragment = new MatchDetailActivity();
-                b.putInt("match_id", matchDetails.getMatch_id());
-                b.putString("mss", matchDetails.getmatchShortSummary());
-                // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
-                fragment.setArguments(b);
-                ((MainFragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
+                if (MainActivity.this != null) {
+                    SessionSave.saveSession("sdata", CommanData.toString(detailedScoreBoardData.getScoreBoardData()), getActivity());
+                    Bundle b = new Bundle();
+                    MatchDetailActivity fragment = new MatchDetailActivity();
+                    b.putInt("match_id", matchDetails.getMatch_id());
+                    b.putString("mss", matchDetails.getmatchShortSummary());
+                    // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
+                    fragment.setArguments(b);
+                    ((MainFragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.mainFrag, fragment).commit();
+                }
                 return false;
             }
         });
         getActivity().invalidateOptionsMenu();
         super.onPrepareOptionsMenu(menu);
+
     }
 
 
@@ -649,11 +741,19 @@ public class MainActivity extends Fragment implements DialogInterface,
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
             }
         });
+        isGAME_SWITCH_SHOWING = true;
         // display dialog
         dialog.show();
+        dialog.setOnDismissListener(new android.content.DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(android.content.DialogInterface dialog) {
+                isGAME_SWITCH_SHOWING = false;
+            }
+        });
     }
 
     private void showGameCompleteDailog() {
+        ((MainFragmentActivity) getActivity()).closePrevSelectPlayer();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.confirm));
         builder.setMessage(getString(R.string.match_completed));
@@ -672,6 +772,7 @@ public class MainActivity extends Fragment implements DialogInterface,
                         Bundle b = new Bundle();
                         MatchDetailActivity fragment = new MatchDetailActivity();
                         b.putInt("match_id", matchDetails.getMatch_id());
+                        b.putString("mss", matchDetails.getmatchShortSummary());
                         // Toast.makeText(context,  String.valueOf(md.getMatch_id()), Toast.LENGTH_SHORT).show();
                         fragment.setArguments(b);
                         ((MainFragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.mainFrag, fragment).commit();
@@ -699,14 +800,21 @@ public class MainActivity extends Fragment implements DialogInterface,
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
             }
         });
+        isGAME_COMPLETE_SHOWING = true;
         // display dialog
         dialog.show();
+        dialog.setOnDismissListener(new android.content.DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(android.content.DialogInterface dialog) {
+                isGAME_COMPLETE_SHOWING = false;
+            }
+        });
     }
 
     private boolean checkPlayerNotNull() {
         Log.d("adding Score", "not null");
         boolean ishome = false;
-        if (true) {
+        if (!isGAME_SWITCH_SHOWING && !isGAME_COMPLETE_SHOWING) {
             if (striker == null) {
                 assignToPlayer = 0;
                 if (matchDetails.isHomeTeamBatting())
@@ -807,7 +915,12 @@ public class MainActivity extends Fragment implements DialogInterface,
      */
     @Override
     public void onClick(View v) {
-
+        if (tourGuideExtras != null)
+            tourGuideExtras.cleanUp();
+        if (!SessionSave.getBooleanSession(CommanData.TOUR_EXTRALAY, getActivity()) && tourGuideExtras != null) {
+            SessionSave.saveSession(CommanData.TOUR_EXTRALAY, true, getActivity());
+            showTourRun();
+        }
 
         switch (v.getId()) {
             case realmstudy.R.id.dot_txt:
@@ -847,6 +960,9 @@ public class MainActivity extends Fragment implements DialogInterface,
 
                 submitbuttonClicked(SUBMIT_DELAY);
                 break;
+            case  realmstudy.R.id.bmore:
+                showMoreDialog();
+                break;
             case realmstudy.R.id.wide_txt:
                 normal_delivery = false;
                 extraType = CommanData.typeExtraEnum.WIDE;
@@ -880,6 +996,61 @@ public class MainActivity extends Fragment implements DialogInterface,
         }
 
         ((TextView) v).setTextColor(COLOR_SELECT);
+    }
+
+    private void showMoreDialog() {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        //builder.setTitle(getString(R.string.confirm));
+      //  builder.setMessage(getString(R.string.match_completed));
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.more_run_lay, null);
+        builder.setView(dialogView);
+        final EditText more_run_txt= (EditText) dialogView.findViewById(R.id.more_run);
+        String positiveText = getString(R.string.submit);
+        builder.setPositiveButton(positiveText,
+                new android.content.DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(android.content.DialogInterface dialog, int which) {
+                        if(!more_run_txt.getText().equals("")) {
+                            runs = Integer.parseInt(more_run_txt.getText().toString());
+                            clearRunSelection();
+
+                            submitbuttonClicked(SUBMIT_DELAY);
+                        }
+
+                        //   Toast.makeText(getActivity(), getString(R.string.game_over), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        String negativeText = getString(android.R.string.cancel);
+        builder.setNegativeButton(negativeText,
+                new android.content.DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(android.content.DialogInterface dialog, int which) {
+                        // negative button logic
+                        dialog.dismiss();
+                    }
+                });
+
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new android.content.DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(android.content.DialogInterface dialogs) {
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+            }
+        });
+        // display dialog
+        dialog.show();
+//        dialog.setOnDismissListener(new android.content.DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(android.content.DialogInterface dialog) {
+//                isGAME_COMPLETE_SHOWING = false;
+//            }
+//        });
     }
 
     /**
@@ -1008,12 +1179,24 @@ public class MainActivity extends Fragment implements DialogInterface,
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("InningsDetailData/" + String.valueOf(matchDetails.getMatch_id()));
 
-        myRef.setValue(lastInningsDataItem.getDetailedScoreBoardData());
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if (mAuth != null && matchDetails.isOnlineMatch()) {
+            try {
+                UpdateDetailScoreData jsonObject = new UpdateDetailScoreData();
+                jsonObject.uid= String.valueOf(mAuth.getCurrentUser().getUid());
+                jsonObject.match_id= String.valueOf(matchDetails.getMatch_id());
+                jsonObject.data=lastInningsDataItem.getDetailedScoreBoardData();
+                myRef.setValue(jsonObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         detailedScoreBoardData = CommanData.fromJson(lastInningsDataItem.getDetailedScoreBoardData(), DetailedScoreData.class);
         checkAndUpdateUI();
 
     }
+
 
     public ScoreCardDetailData createScoreDetailData(boolean forCurrentBattingTeam, ScoreBoardData scData) {
         ScoreCardDetailData scoreCardDetailData = new ScoreCardDetailData();
@@ -1046,8 +1229,8 @@ public class MainActivity extends Fragment implements DialogInterface,
 //                    .equalTo("currentBowlerStatus", CommanData.StatusBowling)
                     .equalTo("match_id", matchDetails.getMatch_id()).equalTo("inFirstinnings", matchDetails.isFirstInningsCompleted()).findAll();
 
-            fow = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isHomeTeamBattingFirst()).isNotNull("wicket").findAllSorted("delivery", Sort.ASCENDING);
-            extraTypes = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", !matchDetails.isHomeTeamBattingFirst()).notEqualTo("ballType", 0).findAll();
+            fow = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", matchDetails.isFirstInningsCompleted()).isNotNull("wicket").findAllSorted("delivery", Sort.ASCENDING);
+            extraTypes = realm.where(InningsData.class).equalTo("match_id", matchDetails.getMatch_id()).equalTo("firstInnings", matchDetails.isFirstInningsCompleted()).notEqualTo("ballType", 0).findAll();
             if (firstInningsOver == null) {
                 MatchShortSummaryData matchShortSummaryData = CommanData.fromJson(matchDetails.getmatchShortSummary(), MatchShortSummaryData.class);
                 firstInningsRun = matchShortSummaryData.getFirstInningsSummary().run;
@@ -1126,7 +1309,8 @@ public class MainActivity extends Fragment implements DialogInterface,
             if (extraTypes.get(i).getBallType() == CommanData.BALL_WIDE) {
                 wide += MainActivity.legalRun + extraTypes.get(i).getRun();
             }
-            if (extraTypes.get(i).getBallType() == CommanData.BALL_NO_BALL || extraTypes.get(i).getBallType() == CommanData.BALL_NO_OVER_STEP)
+            if (extraTypes.get(i).getBallType() == CommanData.BALL_NO_BALL
+                    || extraTypes.get(i).getBallType() == CommanData.BALL_NO_OVER_STEP)
                 noball += MainActivity.legalRun + extraTypes.get(i).getRun();
             if (extraTypes.get(i).getBallType() == CommanData.BALL_LEGAL_BYES)
                 b += extraTypes.get(i).getRun();
@@ -1446,7 +1630,10 @@ public class MainActivity extends Fragment implements DialogInterface,
             }
 //            else if(ballrem<=0)
 //                score_data.setMatchQuote(matchDetails.getCurrentBattingTeam().name + " " + getString(R.string.won_by) + " " + (matchDetails.getTotalPlayers() - totalWicket) + " " + getString(R.string.wickets));
-            else if (matchDetails.getTotalPlayers() == (totalWicket - 1) || ballrem <= 0)
+            else if (matchDetails.getTotalPlayers() == (totalWicket + (wicket != null ? 1 : 0)) || ballrem <= 0)
+                if (reqRun == 0)
+                    score_data.setMatchQuote(getString(R.string.match_draw));
+                else
                 score_data.setMatchQuote(matchDetails.getCurrentBowlingTeam().name + " " + getString(R.string.won_by) + " " + (reqRun - 1) + " " + getString(R.string.runs));
             else
                 score_data.setMatchQuote(matchDetails.getCurrentBattingTeam().name + " " + getString(R.string.needs) + " " + reqRun + " " + getString(R.string.runs_in) + " " + ballrem + " " + getString(R.string.balls));
@@ -1974,6 +2161,20 @@ public class MainActivity extends Fragment implements DialogInterface,
         AlertDialog dialog = builder.create();
         // display dialog
         dialog.show();
+    }
+
+    @Override
+    public void onPopDown() {
+        if (tourGuideExtras != null)
+            tourGuideExtras.cleanUp();
+        if (menu != null)
+            menu.setGroupVisible(R.id.menu_settings, false);
+        ((MainFragmentActivity) getActivity()).hideOverFlow();
+    }
+
+    @Override
+    public void onPopFront() {
+
     }
 }
 

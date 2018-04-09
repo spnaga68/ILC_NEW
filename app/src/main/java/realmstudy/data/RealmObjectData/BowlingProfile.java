@@ -25,8 +25,22 @@ public class BowlingProfile extends RealmObject {
     int maiden;
     boolean inFirstinnings;
     RealmList<Wicket> wickets =new RealmList<>();
+int match_types;
+    float average;
+    float economy;
+    float strikeRate;
+    String BBI,BBM;
+    int noOfFourWicket,noOfFiveWicket,noOfTenWicket;
 
+    public String getExtraDetails() {
+        return extraDetails;
+    }
 
+    public void setExtraDetails(String extraDetails) {
+        this.extraDetails = extraDetails;
+    }
+
+    String extraDetails;
 
     public int getMaiden() {
         return maiden;

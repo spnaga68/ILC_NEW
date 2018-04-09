@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ import realmstudy.data.OverAdapterData;
 import realmstudy.data.RealmObjectData.MatchDetails;
 import realmstudy.data.ScoreBoardData;
 import realmstudy.databaseFunctions.RealmDB;
+import realmstudy.extras.Utils;
 
 /**
  * Created by developer on 12/4/17.
@@ -54,8 +56,8 @@ public class InfoFragment extends Fragment {
             squad_away_team.setText(md.getAwayTeam());
             info_match_id.setText(String.valueOf(md.getQuotes()));
             info_series.setText("-");
-            info_date.setText(CommanData.getDate(md.getTime()));
-            info_time.setText(CommanData.getTime(md.getTime()));
+            info_date.setText(Utils.getDateOnly(md.getTime()));
+            info_time.setText(Utils.getTimeOnly(md.getTime()));
             info_toss.setText(md.getToss());
             info_venue.setText(md.getLocation());
             refree_lay.setVisibility(View.GONE);
@@ -85,6 +87,18 @@ public class InfoFragment extends Fragment {
         umpire_lay = (LinearLayout) v.findViewById(R.id.umpire_lay);
         third_umpire_lay = (LinearLayout) v.findViewById(R.id.third_umpire_lay);
         refree_lay = (LinearLayout) v.findViewById(R.id.refree_lay);
+        squad_home_team.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), getString(R.string.comming_soon), Toast.LENGTH_SHORT).show();
+            }
+        });
+        squad_away_team.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), getString(R.string.comming_soon), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return v;
     }

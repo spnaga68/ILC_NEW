@@ -1,48 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/naviHeader"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    android:background="@color/white"
+    android:background="@drawable/ilclogo"
     android:gravity="bottom"
     android:orientation="vertical"
     android:paddingBottom="10dp"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:id="@+id/naviHeader"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <realmstudy.lib.customViews.CircleImageView
-        android:id="@+id/imageView"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:paddingTop="10dp"
-        app:srcCompat="@drawable/no_image" />
-
-    <TextView
-        android:id="@+id/nav_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:text="NagaRajan S"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@color/edit_text_color"
-        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/nav_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="nagarajan929@gmail.com"
-        android:textColor="@color/edit_text_color"
+        android:textColor="@color/colorPrimary"
         android:visibility="gone" />
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/nav_signin"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_gravity="right"
-        android:background="@color/colorPrimaryDark"
-        android:text="sign in"
-        android:textColor="@color/white" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content">
+
+        <realmstudy.lib.customViews.CircleImageView
+            android:id="@+id/imageView"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_above="@+id/nav_name"
+            android:layout_alignParentLeft="true"
+            app:srcCompat="@drawable/no_image" />
+
+        <TextView
+            android:id="@+id/nav_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:paddingTop="10dp"
+            android:text="NagaRajan S"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/nav_signin"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:background="@color/colorPrimary"
+            android:text="sign in"
+            android:textColor="@color/white" />
+    </RelativeLayout>
 </LinearLayout>

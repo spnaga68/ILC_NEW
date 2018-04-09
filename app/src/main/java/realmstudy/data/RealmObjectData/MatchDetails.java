@@ -421,11 +421,11 @@ public class MatchDetails extends RealmObject {
     private String chooseTo;
     private boolean firstInningsCompleted;
     private boolean homeTeamBatting;
-
+    private Ground venue;
     private RealmList<Player> homeTeamPlayers = new RealmList<>();
     private RealmList<Player> awayTeamPlayers = new RealmList<>();
     private RealmList<Player> notAssignedPlayers = new RealmList<>();
-
+long startTime,endTime;
     public String getmatchShortSummary() {
 
         return matchShortSummary;
@@ -443,7 +443,7 @@ public class MatchDetails extends RealmObject {
 
     public void setMatchStatus(int matchStatus) {
         if (!matchShortSummary.equals("")) {
-            System.out.println("SSSSSSHH"+matchShortSummary);
+            System.out.println("SSSSSSHH" + matchShortSummary);
             MatchShortSummaryData shortSummaryData = CommanData.fromJson(matchShortSummary, MatchShortSummaryData.class);
 
             shortSummaryData.setStatus(matchStatus);
@@ -465,5 +465,16 @@ public class MatchDetails extends RealmObject {
     }
 
     private int matchStatus;
+
+
+    public String getExtraDetails() {
+        return extraDetails;
+    }
+
+    public void setExtraDetails(String extraDetails) {
+        this.extraDetails = extraDetails;
+    }
+
+    String extraDetails;
 
 }

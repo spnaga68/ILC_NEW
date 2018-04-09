@@ -119,13 +119,15 @@ public class MatchListPage extends Fragment implements Paginate.Callbacks {
 
             }
             if (type == 0) {
-                typeString = "upcoming";
+                typeString = "matchList/upcoming";
             } else if (type == 1) {
-                typeString = "ongoing";
-            } else {
-                typeString = "recent";
+                typeString = "matchList/ongoing";
+            } else if(type==2) {
+                typeString = "matchList/recent";
+            }else{
+                typeString = "tournament_new/matches";
             }
-            myRef = database.getReference("matchList/" + typeString);
+            myRef = database.getReference("" + typeString);
             Query queryRef;
 
             queryRef = myRef.orderByKey()

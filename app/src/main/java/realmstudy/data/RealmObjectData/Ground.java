@@ -47,10 +47,21 @@ public class Ground extends RealmObject {
     public void setDescription(String description) {
         this.description = description;
     }
-@PrimaryKey
+
+    @PrimaryKey
     private int id;
-    private String groundName, regionName, countryName, description;
-    private  double lat=0.0,lng=0.0;
+    private String groundName, regionName, countryName, description, Area;
+    private double lat = 0.0, lng = 0.0;
+
+    public String getExtraDetails() {
+        return extraDetails;
+    }
+
+    public void setExtraDetails(String extraDetails) {
+        this.extraDetails = extraDetails;
+    }
+
+    String extraDetails;
 
     public double getLat() {
         return lat;

@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/light_grey_100"
         android:orientation="horizontal"
         android:padding="5dp"
-        android:background="@color/edit_hint_color"
         android:weightSum="8">
 
         <TextView
@@ -174,7 +174,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/edit_hint_color"
+        android:background="@color/light_grey_100"
         android:orientation="horizontal"
         android:padding="5dp"
         android:weightSum="8">
@@ -236,7 +236,7 @@
         android:id="@+id/fow_head_lay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/edit_hint_color"
+        android:background="@color/light_grey_100"
         android:orientation="horizontal"
         android:padding="5dp"
         android:weightSum="5">
@@ -286,7 +286,7 @@
         android:id="@+id/power_play_head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/edit_hint_color"
+        android:background="@color/light_grey_100"
         android:orientation="horizontal"
         android:padding="5dp"
         android:weightSum="5">

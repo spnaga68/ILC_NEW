@@ -5,12 +5,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,22 +40,27 @@ import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.BatingProfile;
 import realmstudy.data.RealmObjectData.BowlingProfile;
 import realmstudy.data.RealmObjectData.MatchDetails;
+import realmstudy.data.SessionSave;
 import realmstudy.databaseFunctions.RealmDB;
 import realmstudy.R;
 import realmstudy.data.RealmObjectData.Player;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import tourguide.tourguide.Overlay;
+import tourguide.tourguide.Pointer;
+import tourguide.tourguide.ToolTip;
+import tourguide.tourguide.TourGuide;
 
 /**
  * This dialog creates/add existing player to the current match and set its recent batting/bowling profile
  */
 public class SelectPlayerDialog extends DialogFragment {
-    private static final int PICK_CONTACT = 420;
+    public static final int PICK_CONTACT = 420;
     int mNum;
     private boolean ishomeTeam;
     private boolean toAddForBattingTeam;
-
+    ArrayAdapter<Player> adapter;
     Realm realm;
     private MatchDetails matchDetails;
     private String title_txt;
@@ -64,6 +75,8 @@ public class SelectPlayerDialog extends DialogFragment {
     //private LinearLayout new_player_dialog_title_lay;
     private ImageView choose_from_list;
     private ArrayList<Player> otherPlayers;
+    private TourGuide tourGuide;
+    TextView new_player_dialog_title;
 
     public static SelectPlayerDialog newInstance(int match_id, boolean ishomeTeam, int current_bowler_id, String title, int assignTo) {
         if (f != null)
@@ -153,7 +166,7 @@ public class SelectPlayerDialog extends DialogFragment {
     private void selectPlayerDialog(View selectPlayerDialog, final Realm realm, final String title_txt) {
         TextView
                 title, submit_new_player, submit_from_db;
-        final LinearLayout database_lay;
+        final RelativeLayout database_lay;
         final ListView player_db_spinner;
         final EditText name;
         final EditText ph_no;
@@ -183,7 +196,7 @@ public class SelectPlayerDialog extends DialogFragment {
             //   players = realm.where(MatchDetails.class).equalTo("match_id", matchDetails.getMatch_id()).findFirst().getAwayTeamPlayers();
         }
         //   System.out.println("______________" + home_team_players.size() + "__" + away_team_players.size() + "___" + otherPlayer.size() + "___" + otherPlayers.size());
-        final ArrayAdapter<Player> adapter;
+
         adapter = new ArrayAdapter<>(
                 getActivity(), R.layout.player_spinner_item, otherPlayers);
 
@@ -191,7 +204,7 @@ public class SelectPlayerDialog extends DialogFragment {
 
 
         title = (TextView) selectPlayerDialog.findViewById(R.id.title);
-        database_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.database_lay);
+        database_lay = (RelativeLayout) selectPlayerDialog.findViewById(R.id.database_lay);
         player_db_spinner = (ListView) selectPlayerDialog.findViewById(R.id.player_db_spinner);
         name = (EditText) selectPlayerDialog.findViewById(R.id.name);
         ph_no = (EditText) selectPlayerDialog.findViewById(R.id.time);
@@ -200,7 +213,10 @@ public class SelectPlayerDialog extends DialogFragment {
         submit_new_player = (AppCompatButton) selectPlayerDialog.findViewById(R.id.submit_new_player);
         submit_from_db = (AppCompatButton) selectPlayerDialog.findViewById(R.id.submit_from_db);
         TextView from_contacts = (TextView) selectPlayerDialog.findViewById(R.id.from_contacts);
-
+        new_player_dialog_title=(TextView)selectPlayerDialog.findViewById(R.id.new_player_dialog_title);
+        new_player_dialog_title.setText(getString(R.string.click_list_player));
+        new_player_dialog_title.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.white));
+        new_player_dialog_title.setTextColor(ContextCompat.getColor(getActivity(),R.color.red_M));
         // list_player_dialog_title_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.list_player_dialog_title_lay);
         new_player_dialog_lay = (LinearLayout) selectPlayerDialog.findViewById(R.id.create_new_player);
         new_player_arrow = (ImageView) selectPlayerDialog.findViewById(R.id.new_player_arrow);
@@ -222,7 +238,7 @@ public class SelectPlayerDialog extends DialogFragment {
                     new_player_dialog_lay.setVisibility(View.GONE);
                     database_lay.setVisibility(View.VISIBLE);
                     v.setVisibility(View.GONE);
-                    open_new_player.setVisibility(View.VISIBLE);
+                    open_new_player.setVisibility(View.GONE);
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.no_player), Toast.LENGTH_SHORT).show();
                 }
@@ -231,9 +247,12 @@ public class SelectPlayerDialog extends DialogFragment {
         open_new_player.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                database_lay.setVisibility(View.GONE);
+                SessionSave.saveSession(CommanData.TOUR_S_PLAYER_MENU, true, getActivity());
+                if (tourGuide != null)
+                    tourGuide.cleanUp();
+//                database_lay.setVisibility(View.GONE);
                 v.setVisibility(View.GONE);
-                choose_from_list.setVisibility(View.VISIBLE);
+                choose_from_list.setVisibility(View.GONE);
                 new_player_dialog_lay.setVisibility(View.VISIBLE);
             }
         });
@@ -275,11 +294,11 @@ public class SelectPlayerDialog extends DialogFragment {
         //set value
         title.setText(title_txt);
         player_db_spinner.setAdapter(adapter);
-        if (adapter.getCount() > 0) {
-            choose_from_list.performClick();
-        } else {
+//        if (adapter.getCount() > 0) {
+//            choose_from_list.performClick();
+//        } else {
             open_new_player.performClick();
-        }
+       // }
 
         if (otherPlayers.size() <= 0)
             database_lay.setVisibility(View.GONE);
@@ -317,10 +336,10 @@ public class SelectPlayerDialog extends DialogFragment {
         submit_from_db.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Player bb;
-                bb = (Player) player_db_spinner.getSelectedItem();
-                submitFromList(bb.getpID());
+//
+//                Player bb;
+//                bb = (Player) player_db_spinner.getSelectedItem();
+//                submitFromList(bb.getpID());
 
 
             }
@@ -384,6 +403,7 @@ public class SelectPlayerDialog extends DialogFragment {
                         System.out.println("_________________dd2" + batStatus);
                         if (id == battingTeamPlayers.get(i).getpID() && (batStatus == CommanData.StatusOut || batStatus == CommanData.StatusBatting)) {
                             eligible = false;
+
                             Toast.makeText(getActivity(), getString(R.string.player_already_batted), Toast.LENGTH_SHORT).show();
                             //Toast.makeText(getActivity(), "Player already batted/batting", Toast.LENGTH_SHORT).show();
                         }
@@ -441,6 +461,40 @@ public class SelectPlayerDialog extends DialogFragment {
 
 
         return eligible;
+    }
+
+    @Override
+    public void onAttachFragment(Fragment childFragment) {
+        super.onAttachFragment(childFragment);
+        if (adapter.getCount() == 1) {
+            showTour();
+        }
+    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        pickFromContacts();
+//    }
+
+    private void showTour() {
+        //  if (!SessionSave.getBooleanSession(CommanData.TOUR_S_PLAYER_MENU, getActivity())) {
+        if (true) {
+            ToolTip toolTip = new ToolTip()
+
+                    .setDescription(getString(R.string.tour_add_team))
+                    .setTextColor(Color.parseColor("#bdc3c7"))
+                    .setBackgroundColor(Color.parseColor("#e74c3c"))
+                    .setShadow(true)
+                    .setGravity(Gravity.TOP | Gravity.LEFT);
+
+
+            tourGuide = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+                    .setPointer(new Pointer())
+                    .setToolTip(toolTip)
+                    .setOverlay(new Overlay())
+                    .playOn(getView().findFocus());
+        }
     }
 
 
@@ -518,14 +572,14 @@ public class SelectPlayerDialog extends DialogFragment {
         }
     }
 
+    @Override
+    public void onStop() {
+        if (tourGuide != null)
+            tourGuide.cleanUp();
+        super.onStop();
+    }
 
-
-
-
-
-
-
-   /* int newPlayerAdded(String name, String ph_no, Dialog dialog) {
+/* int newPlayerAdded(String name, String ph_no, Dialog dialog) {
         Player dummy = null;
         if (isEligible(ph_no,ishomeTeam)) {
 

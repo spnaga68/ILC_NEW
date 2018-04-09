@@ -19,13 +19,13 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="end"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/cricket_equipments" />
+                app:srcCompat="@drawable/cricket_equipments" />
 
             <ImageView
                 android:id="@+id/main.imageview.placeholder"

@@ -52,7 +52,7 @@
     <string name="add_player_desc">Add a new player</string>
     <string name="add_player">Add player</string>
     <string name="add_team_desc">Add a new team</string>
-    <string name="add_team">Add Team</string>
+    <string name="add_team">Team</string>
     <string name="menu">Menu</string>
     <string name="select_valid_home_away_team">Please select valid home and away team</string>
     <string name="click_new_team">Click add button to create new Team</string>
@@ -157,7 +157,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="match_center">Match Center</string>
-    <string name="add_ground">Add Ground</string>
+    <string name="add_ground">Ground</string>
     <string name="Scoring">Scoring</string>
     <string name="team">Team</string>
     <string name="match_info">Match Details</string>
@@ -191,7 +191,7 @@
     <string name="sign_in">Sign in</string>
     <string name="guest_user">Guest user</string>
     <string name="try_again">Please try again</string>
-    <string name="need_signup_online">One more step! SignIn to make to broadcast your match</string>
+    <string name="need_signup_online">One more step! SignIn to broadcast your match</string>
     <string name="cancel">Cancel</string>
     <string name="ok">Okay</string>
     <string name="create_new_and_enjoy">Create new game and enjoy scoring  :)</string>
@@ -203,6 +203,20 @@
     <string name="schedule_game_upcoming">Scheduled game listed in upcoming matches</string>
     <string name="no_internet">No Internet Connection Found</string>
     <string name="match_draw">Match Drawn</string>
+    <string name="tour_add_team">Click here to add new team</string>
+    <string name="tour_extraLay">Select the type of delivery (such as Legal,Wide,NoBall,Byes,LegByes)</string>
+    <string name="tour_runLay">Select the run scored for the delivery.</string>
+    <string name="click_list_player">** To Select player already added click list icon on top</string>
+    <string name="click_new_player">** To Create new player click add icon on top</string>
+    <string name="tour_add_ground">Click to add new ground</string>
+    <string name="tour_venue">Click to select venue</string>
+    <string name="tour_time">Click to enter match time</string>
+    <string name="tour_home_team">Click here to select home team</string>
+    <string name="tour_away_team">Click here to select away team</string>
+    <string name="comming_soon">Comming soon</string>
+    <string name="tour_toss_manually">Check this to toss manually\\</string>
+    <string name="delete_alert">Are you sure! You want to delete this match.?</string>
+    <string name="make_online_to_delete">Make match Offline to delete</string>
     <string-array name="run_scored_before_runout">
         <item>0</item>
         <item>1</item>
@@ -524,6 +538,215 @@
         <item>Zimbabwe </item>
 
     </string-array>
+
+
+
+
+
+
+
+
+<!-- Jallikattu -->
+
+    <plurals name="likes_count">
+        <item quantity="one">%d like</item>
+        <item quantity="other">%d likes</item>
+    </plurals>
+    <string name="user_profile_photo">http://igcdn-photos-f-a.akamaihd.net/hphotos-ak-xpa1/t51.2885-19/929118_455075441302693_1605108410_a.jpg</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="thirukural_sec">வெள்ளத் தனைய மலர்நீட்டம் மாந்தர்தம் \nஉள்ளத் தனைய துயர்வு.</string>
+    <string name="thirukural_main">உள்ளுவ தெல்லாம் உயர்வுள்ளல் மற்றது \nதள்ளினுந் தள்ளாமை நீர்த்து.</string>
+    <string name="trends">Trend</string>
+    <string name="tap_to_check">Tap here to know more</string>
+    <string name="btn_more">MORE</string>
+    <string name="thirukural_head">Thirukural</string>
+    <string name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="tournament">Tournament</string>
+    <string name="super_cric_heroes">Manjuvirattu Heros</string>
+    <string name="heroes_msg">Tap to check their profile</string>
+    <string name="super_bull_heroes">Stunning bull Tampering</string>
+    <string name="bull_heroes_msg">Tap to check their profile</string>
+    <string name="error_icon"></string>
+    <string name="right_icon"></string>
+    <string name="warning_icon"></string>
+    <string name="error_msg_please_select_any_player">Select any player</string>
+    <string name="btn_title_add">Add</string>
+    <string name="no_media_found">No media found</string>
+    <string name="remove_me">Remove me</string>
+
+    <string name="tab_title_Cricheroes">Cricheroes</string>
+    <string name="tab_title_Leaderboard">Leaderboard</string>
+    <string name="tab_title_about_us">About Us</string>
+    <string name="tab_title_awards">Awards</string>
+    <string name="tab_title_badges">Badges</string>
+    <string name="tab_title_boundary_tracker">Boundary Tracker</string>
+    <string name="tab_title_commentary">COMMENTARY</string>
+    <string name="tab_title_connections">Connections</string>
+    <string name="tab_title_graph">ANALYSIS</string>
+    <string name="tab_title_heroes">HEROES</string>
+    <string name="tab_title_info">Info</string>
+    <string name="tab_title_location">Location</string>
+    <string name="tab_title_matches">Matches</string>
+    <string name="tab_title_media">GALLERY</string>
+    <string name="tab_title_member">Members</string>
+    <string name="tab_title_photos">Photos</string>
+    <string name="tab_title_profile">Profile</string>
+    <string name="tab_title_scorecard">SCORECARD</string>
+    <string name="tab_title_sponsor">Sponsors</string>
+    <string name="tab_title_standings">Standings</string>
+    <string name="tab_title_stats">Stats</string>
+    <string name="tab_title_status">Status</string>
+    <string name="tab_title_summary">SUMMARY</string>
+    <string name="tab_title_teams">Teams</string>
+    <string name="tab_tournament">Tournaments</string>
+    <string name="msg_under_development">Under development</string>
+    <string name="loading">Loading</string>
+    <string name="load_failed">End of list</string>
+    <string name="load_end">End of the list</string>
+    <string name="follow">Follow</string>
+    <string name="followers">Followers</string>
+    <string name="followings">Following</string>
+
+    <string name="click_write_mesg">Write message</string>
+    <string name="contact_phone_number">+91 8667730776</string>
+    <string name="speak_mesg">If you need urgent help, call following number</string>
+
+    <string name="font_roboto_slab_bold">RobotoSlab_Bold.ttf</string>
+    <string name="font_roboto_slab_light">RobotoSlab_Light.ttf</string>
+    <string name="font_roboto_slab_regular">RobotoSlab_Regular.ttf</string>
+    <string name="font_sourcesans_pro_bolditalic">SourceSansPro_BoldItalic.ttf</string>
+    <string name="font_sourcesans_pro_extralight">SOURCESANSPRO_EXTRALIGHT.TTF</string>
+    <string name="font_sourcesans_pro_italic">SourceSansPro_Italic.ttf</string>
+    <string name="font_sourcesans_pro_light">SourceSansPro_Light.ttf</string>
+    <string name="font_sourcesans_pro_regular">SourceSansPro_Regular.ttf</string>
+    <string name="font_sourcesans_pro_semibold">SourceSansPro_Semibold.ttf</string>
+    <string name="title_contact">Contact us</string>
+
+    <string name="tab_write">WRITE</string>
+    <string name="tab_speak">SPEAK</string>
+    <string name="words">0/200 (words)</string>
+    <string name="write_mesg">If you want to score a tournament, please give us your details. We will call you back.</string>
+    <string name="_0_200_words">0/200 (words)</string>
+    <string name="btn_send">Send</string>
+
+
+    <string name="error_please_enter_name">Please Enter Name</string>
+    <string name="error_please_enter_phone_number">Please Enter Phone Number</string>
+    <string name="error_please_enter_pin">Please enter PIN</string>
+    <string name="error_please_enter_valid__phone_number">Please Enter Valid Phone Number</string>
+    <string name="alert_no_internet_found">No internet found</string>
+    <string name="comment_limit">Comment should not be greater then 200 words.</string>
+    <string name="hint_write_comment">Comment*</string>
+    <string name="hint_write_mobile_number">Mobile Number*</string>
+    <string name="hint_write_name">Name*</string>
+    <string name="error_please_enter_valid_email">Kindly enter valid email</string>
+    <string name="title_update">Update</string>
+
+    <string name="hint_enter_number">Enter Number</string>
+    <string name="hint_enter_referral_code">Enter Referral Code</string>
+    <string name="hint_enter_your_phone_number">Phone Number</string>
+    <string name="hint_full_name">Enter Full Name*</string>
+    <string name="hint_ground">Ground *</string>
+    <string name="hint_location">location *</string>
+    <string name="hint_mobile_number">Mobile number</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_no_of_overs_html">No. of Overs *</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_phone_number">Phone Number</string>
+    <string name="hint_team_name">Team Name *</string>
+    <string name="hint_date_and_time">Date and Time</string>
+    <string name="hint_date_of_birth">Date of Birth</string>
+    <string name="hint_email_address">Email address</string>
+    <string name="dummy_bio">Mahendra Singh Dhoni (About this sound pronunciation (help·info); commonly known as MS Dhoni; born 7 July 1981) is an Indian cricketer who captained the Indian team in limited-overs formats from 11th of September 2007 to 4th of January 2017 and in Test cricket from 2008 to 28th of December 2014. An attacking right-handed middle-order batsman and wicket-keeper, he is widely regarded as one of the greatest finishers in limited-overs cricket.[2][3][4][5] He is also regarded to be one of the best wicket-keepers in world cricket and is known to have very fast hands.[6][7] He made his One Day International (ODI) debut in December 2004 against Bangladesh, and played his first Test a year later against Sri Lanka.</string>
+    <string name="lorem">asdmfknnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn akjsdbnfkjcv kaswdjfb     kajdbfkjdsbjkfbksdbffs</string>
+    <string name="following">Following</string>
+    <string name="unfollow">UnFollow</string>
+    <string name="btn_positive">Okay</string>
+    <string name="btn_negative">Cancel</string>
+    <string name="unfollow_alert">Are you sure you want to unfollow</string>
+
+
+    <string name="Save">Save</string>
+    <string name="Enter_your_display_name">Enter your display name</string>
+    <string name="Enter_a_short_bio">Enter a short bio</string>
+    <string name="bulls">bulls</string>
+    <string name="City">City</string>
+    <string name="about">About</string>
+
+
+    <string name="english">English</string>
+    <string name="tamil">தமிழ்</string>
+    <string name="title_more">More</string>
+    <string name="title_tournament">Tournament</string>
+    <string name="hi">Hai</string>
+    <string name="player_data_issue">Selected player info is hidden temporarily. Kindly try after sometimes</string>
+    <string name="tournament_host_mesg">Host Message</string>
+    <string name="contact_us">Contact us</string>
+    <string name="permission_not_granted">Permission not granted</string>
+    <string name="website_link">www.naga.com</string>
+    <string name="btn_share">SHARE</string>
+    <string name="filter">filter</string>
+    <string name="tournament_total_view_of_match_message">Total Message</string>
+    <string name="challenge">Challenge</string>
+    <string name="no_data_value">No data available</string>
+    <string name="no_media_title">No media found</string>
+    <string name="no_media_message">No media to show</string>
+    <string name="organizer_s_detail">organizer detail</string>
+    <string name="tournament_s_detail">Tournament detail</string>
+    <string name="likes">Likes</string>
+    <string name="top_batsman">Top Batsmans</string>
+    <string name="top_bowler">Top Bowlers</string>
+    <string name="tab_title_statistics">Staistics</string>
+    <string name="tampers">Tampers</string>
+    <string name="prizes">Prizes</string>
+    <string name="tab_title_about">About</string>
+    <string name="title_newsfeed">News</string>
+    <string name="label_please_confirm_your_country_code_and_enter_your_phone_number">Please confirm your country code and enter your phone number.</string>
+    <string name="login_by">Login By</string>
+    <string name="send_otp">Send OTP</string>
+    <string name="pin">PIN</string>
+    <string name="label_existing_user">Existing user?</string>
+    <string name="btn_login">Login</string>
+    <string name="why_phone_number_text">Why my mobile number?</string>
+    <string name="btn_maybe_later">May be later</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_forgot_password">Forgot password</string>
+    <string name="show_pin">Show pin</string>
+    <string name="enter_pin">Enter pin number</string>
+    <string name="btn_edit">Edit</string>
+    <string name="btn_yes">Yes</string>
+    <string name="number_correct">Is your phone number correct?</string>
+    <string name="why_need_user_number"><![CDATA[<b> I Love Jallikattu </b>]]>  use phone number to uniquely identify players. Others would never have access to your phone numbers without your consent.\\n\\nWE DON\'T SPAM OR SELL YOUR DATA.</string>
+    <string name="msg_verify_phone">Verifying %s</string>
+    <string name="hint_code">code</string>
+    <string name="btn_login_via_otp">Login</string>
+    <string name="i_m_done">Done</string>
+    <string name="didn_t_receive_the_code">Didn\'t receive the code?</string>
+    <string name="btn_resend_otp">Resend OTP</string>
+    <string name="label_smssendacknowledge">We have sent you an SMS with a code to the number above.</string>
+    <string name="label_enter6digit">To complete your phone number verification, please enter the 5-digit activation code.</string>
+    <string name="maximum_limit_reached">Maximum limit reached</string>
+    <string name="verify_number">Verify Mobile Number</string>
+    <string name="verify_otp_msg">Please enter OTP received via SMS to verify your mobile number.</string>
+    <string name="error_valid_code">Enter valid code</string>
+    <string name="please_wait">Please wait</string>
+    <string name="j_fan">Jallikattu Fan</string>
+    <string name="Tamper_or_bullowner">Tamper/Bull Owner</string>
+    <string name="jallikattu_photographer">Jallikattu Photographer</string>
+    <string name="otp_verification">Verify my number</string>
+    <string name="trending_photos">Trending Photos</string>
+    <string name="tap_to_see">Tap to view</string>
+    <string name="commentary_empty">News will be updated soon</string>
+    <string name="statistics_empty">Statistics will be updated few hours after the match. Stay tuned :).</string>
+    <string name="tamper_won">Tampers won</string>
+    <string name="bull_won">Bulls won</string>
+    <string name="tab_video">Video</string>
+    <string name="no_tournament">No tournament to show. Stay tuned.</string>
+    <string name="enter_custom_run">Enter custom runs</string>
+    <string name="new_player_name">New player name</string>
+    <string name="enter_new_player">Create new player</string>
 
 
 </resources>

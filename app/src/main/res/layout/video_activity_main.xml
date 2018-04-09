@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+  >
+
+
+
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+        android:id="@+id/player_view"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:focusable="true"
+        app:controller_layout_id="@layout/custom_controls"
+        app:resize_mode="fill" />
+
+    <realmstudy.view.TextView
+        android:id="@+id/video_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/player_view"
+        android:padding="5dp"
+        app:asset_font_file_name="@string/font_sourcesans_pro_semibold"
+        android:text="A stunning stunt when tampering and caught"
+        android:textColor="#000"
+        android:textSize="15dp" />
+
+    <realmstudy.view.TextView
+        android:id="@+id/more_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/video_desc"
+        android:padding="5dp"
+        app:asset_font_file_name="@string/font_sourcesans_pro_light"
+
+        android:text="More Videos"
+        android:textSize="12sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/more_video"
+        android:padding="10dp"></android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

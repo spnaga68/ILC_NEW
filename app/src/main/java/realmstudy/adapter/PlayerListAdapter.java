@@ -92,11 +92,11 @@ public class PlayerListAdapter extends RealmRecyclerViewAdapter<Player, PlayerLi
                 @Override
                 public void onClick(View v) {
 
-                    Bundle b = new Bundle();
-                    b.putInt("id", getData().get(getAdapterPosition()).getpID());
-                    EditPlayerProfile f = new EditPlayerProfile();
-                    f.setArguments(b);
-                    ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction().add(R.id.mainFrag, f).addToBackStack(null).commit();
+//                    Bundle b = new Bundle();
+//                    b.putInt("id", getData().get(getAdapterPosition()).getpID());
+//                    EditPlayerProfile f = new EditPlayerProfile();
+//                    f.setArguments(b);
+//                    ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction().add(R.id.mainFrag, f).addToBackStack(null).commit();
                 }
             });
             view.setOnLongClickListener(this);

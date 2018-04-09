@@ -91,10 +91,11 @@ public class OversFragment extends Fragment {
 
 
         System.out.println("________sss" + datas.size());
+        if(overs_rv!=null){
         OverRvAdapter adapter = new OverRvAdapter(getActivity(), datas);
         overs_rv.setAdapter(adapter);
 
-        scoreBoardFragment.updateUI(current_score_data);
+        scoreBoardFragment.updateUI(current_score_data);}
     }
 
     @Override
@@ -112,23 +113,23 @@ public class OversFragment extends Fragment {
         scoreBoardFragment.showPreviousDelivery(false);
 //        scoreBoardFragment.updateUI(current_score_data);
 
-        if (md != null) {
-            String firstInningsScore = RealmDB.getFirstInningsTotal(realm, md) + "/" + RealmDB.noOfWicket(getActivity(), realm, md.getMatch_id(), true) + "  (" + RealmDB.getFirstInningsOver(realm, md) + ")";
-            if (md.isFirstInningsCompleted()) {
-                String secInningsScore = RealmDB.getSecInningsTotal(realm, md) + "/" + RealmDB.noOfWicket(getActivity(), realm, md.getMatch_id(), false) + "  (" + RealmDB.getsecInningsOver(realm, md) + ")";
-                // overs_away_score.setText(secInningsScore);
-            }
-//            overs_home_team.setText(md.getHomeTeam().nick_name);
-//            over_home_score.setText(firstInningsScore);
-//            overs_away.setText(md.getAwayTeam().nick_name);
-
-           // overs_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-
-            //  overs_match_quote.setText(md.);
-
-
-        }
+//        if (md != null) {
+//            String firstInningsScore = RealmDB.getFirstInningsTotal(realm, md) + "/" + RealmDB.noOfWicket(getActivity(), realm, md.getMatch_id(), true) + "  (" + RealmDB.getFirstInningsOver(realm, md) + ")";
+//            if (md.isFirstInningsCompleted()) {
+//                String secInningsScore = RealmDB.getSecInningsTotal(realm, md) + "/" + RealmDB.noOfWicket(getActivity(), realm, md.getMatch_id(), false) + "  (" + RealmDB.getsecInningsOver(realm, md) + ")";
+//                // overs_away_score.setText(secInningsScore);
+//            }
+////            overs_home_team.setText(md.getHomeTeam().nick_name);
+////            over_home_score.setText(firstInningsScore);
+////            overs_away.setText(md.getAwayTeam().nick_name);
+//
+//           // overs_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+//
+//
+//            //  overs_match_quote.setText(md.);
+//
+//
+//        }
     }
 
 

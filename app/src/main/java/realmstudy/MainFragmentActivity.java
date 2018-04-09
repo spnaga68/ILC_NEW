@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -43,9 +44,11 @@ import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import realmstudy.cricketTest.DummyActivity;
 import realmstudy.data.CommanData;
 import realmstudy.data.RealmObjectData.Player;
 import realmstudy.data.SessionSave;
+import realmstudy.extras.AppConstants;
 import realmstudy.extras.RContacts;
 import realmstudy.fragments.AddNewGround;
 import realmstudy.fragments.DialogFragment.NewPlayerDialog;
@@ -62,11 +65,13 @@ import realmstudy.fragments.PlayerListFragment;
 import realmstudy.fragments.ScheduleNewGame;
 import realmstudy.fragments.TeamListFragment;
 import realmstudy.fragments.regLogin.SocialLoginCustom;
+import realmstudy.interfaces.BaseListner;
 import realmstudy.interfaces.DialogInterface;
 import realmstudy.interfaces.ItemClickInterface;
 import realmstudy.interfaces.MsgFromDialog;
 import realmstudy.interfaces.MsgToFragment;
 import realmstudy.matchList.MatchListMainFragment;
+import realmstudy.tournament.TournamentMatchesActivity;
 
 /**
  * Created by developer on 26/12/16.
@@ -74,7 +79,7 @@ import realmstudy.matchList.MatchListMainFragment;
 public class MainFragmentActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, MsgToFragment, MsgFromDialog,
         Toolbar.OnMenuItemClickListener, ItemClickInterface, FragmentManager.OnBackStackChangedListener {
-    public static final int REQUEST_SIGN_UP = 420;
+    public static final int REQUEST_SIGN_UP = 421;
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 333;
     private FrameLayout content_frame, shadow;
     private android.support.v4.widget.DrawerLayout drawer_layout;
@@ -135,7 +140,7 @@ public class MainFragmentActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 Fragment fromFragment = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
-                System.out.println("helloo" + (fromFragment instanceof PlayerListFragment));
+                System.out.println("helloo" + (fromFragment instanceof ScheduleNewGame));
                 if (fromFragment != null)
                     if (fromFragment instanceof PlayerListFragment || fromFragment instanceof GroundListFragment
                             || fromFragment instanceof MainActivity || fromFragment instanceof MatchDetailActivity
@@ -162,40 +167,46 @@ public class MainFragmentActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 //   getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new Signup()).commit();
-                if (mAuth.getCurrentUser() == null)
-                    startActivityForResult(new Intent(MainFragmentActivity.this, SocialLoginCustom.class), REQUEST_SIGN_UP);
-                else {
+                Intent i = new Intent(MainFragmentActivity.this, DummyActivity.class);
+                i.putExtra("fragmentToLoad", "AddNewTeam");
+                startActivity(i);
+                finish();
 
-                    mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-                        @Override
-                        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                            if (firebaseAuth != null) {
-                                if (firebaseAuth.getCurrentUser() == null)
-                                    clearSession();
-                            }
-                        }
-                    });
-                    showProgressDialog(getString(R.string.processing));
-                    mAuth.signOut();
-                    hideProgressDialog();
 
-//                    clearSession();
-                }
+//                if (mAuth.getCurrentUser() == null)
+//                    startActivityForResult(new Intent(MainFragmentActivity.this, SocialLoginCustom.class), REQUEST_SIGN_UP);
+//                else {
+//
+//                    mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+//                        @Override
+//                        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                            if (firebaseAuth != null) {
+//                                if (firebaseAuth.getCurrentUser() == null)
+//                                    clearSession();
+//                            }
+//                        }
+//                    });
+//                    showProgressDialog(getString(R.string.processing));
+//                    mAuth.signOut();
+//                    hideProgressDialog();
+//
+////                    clearSession();
+//                }
             }
         });
 
-        naviHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment f = new EditPlayerProfile();
-                Bundle b = new Bundle();
-                b.putString("type", "1");
-                f.setArguments(b);
-                getSupportFragmentManager().beginTransaction()
-                        .add(realmstudy.R.id.mainFrag, f)
-                        .commit();
-            }
-        });
+//        naviHeader.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Fragment f = new EditPlayerProfile();
+//                Bundle b = new Bundle();
+//                b.putString("type", "1");
+//                f.setArguments(b);
+//                getSupportFragmentManager().beginTransaction()
+//                        .add(realmstudy.R.id.mainFrag, f)
+//                        .commit();
+//            }
+//        });
         right_icon = (ImageButton) findViewById(realmstudy.R.id.right_icon);
         cancel_b = (TextView) findViewById(realmstudy.R.id.cancel_b);
         switch_right_icon = (android.support.v7.widget.SwitchCompat) findViewById(realmstudy.R.id.switch_right_icon);
@@ -276,9 +287,9 @@ public class MainFragmentActivity extends AppCompatActivity implements
         switch (id) {
             case CommanData.AddNewTeam:
                 getSupportFragmentManager().beginTransaction()
-                        .add(realmstudy.R.id.mainFrag, new MatchListMainFragment())
+                        .add(realmstudy.R.id.mainFrag, new realmstudy.tournament.MatchListMainFragment())
                         .commit();
-                navigationView.setCheckedItem(R.id.nav_saved_game);
+                navigationView.setCheckedItem(R.id.nav_tournament);
                 break;
             case CommanData.NEW_GROUND:
                 Fragment f = new AddNewGround();
@@ -289,14 +300,34 @@ public class MainFragmentActivity extends AppCompatActivity implements
                         .add(realmstudy.R.id.mainFrag, f)
                         .commit();
                 break;
+            case CommanData.MATCH_DETAIL:
+                Fragment af = new MatchDetailActivity();
+                Bundle bf = new Bundle();
+                System.out.println("matchhhh_id" + getIntent().getStringExtra("mss"));
+                bf.putInt("match_id", getIntent().getIntExtra("match_id", 0));
+                bf.putString("mss", getIntent().getStringExtra("mss"));
+                bf.putBoolean("is_online", true);
+                af.setArguments(bf);
+                getSupportFragmentManager().beginTransaction()
+                        .add(realmstudy.R.id.mainFrag, af)
+                        .commit();
+                break;
         }
     }
 
 
     public void homePage_title(String title) {
         setSupportActionBar(tool_bar);
-        tool_bar.setTitle("ILC");
-        tool_bar.hideOverflowMenu();
+//        tool_bar.setTitle("ILC");
+//       tool_bar.hideOverflowMenu();
+
+
+    }
+
+    public void hideOverFlow() {
+        // setSupportActionBar(tool_bar);
+
+        // tool_bar.hideOverflowMenu();
 
 
     }
@@ -305,17 +336,24 @@ public class MainFragmentActivity extends AppCompatActivity implements
     public void onBackPressed() {
 
         Fragment fromFragment = getSupportFragmentManager().findFragmentById(R.id.mainFrag);
+        if (fromFragment instanceof BaseListner)
+            ((BaseListner) fromFragment).onPopDown();
         if (fromFragment != null)
-            if (fromFragment instanceof MatchListMainFragment) {
+            if (fromFragment instanceof realmstudy.tournament.MatchListMainFragment) {
                 finish();
-            } else if (fromFragment instanceof MainActivity || fromFragment instanceof MatchInfo
+            } else if (fromFragment instanceof MainActivity) {
+                getSupportFragmentManager().beginTransaction()
+                        .addToBackStack(null)
+                        .add(R.id.mainFrag, new MatchListMainFragment()).commit();
+                navigationView.setCheckedItem(R.id.nav_saved_game);
+            } else if (fromFragment instanceof MatchInfo
                     || fromFragment instanceof ScheduleNewGame
                     || fromFragment instanceof TeamListFragment
                     ) {
                 getSupportFragmentManager().beginTransaction()
                         .addToBackStack(null)
-                        .add(R.id.mainFrag, new MatchListMainFragment()).commit();
-                navigationView.setCheckedItem(R.id.nav_saved_game);
+                        .add(R.id.mainFrag, new realmstudy.tournament.MatchListMainFragment()).commit();
+                navigationView.setCheckedItem(R.id.nav_tournament);
             } else {
                 super.onBackPressed();
 
@@ -508,46 +546,44 @@ public class MainFragmentActivity extends AppCompatActivity implements
                 ) {
 
         } else {
-            if (SessionSave.getSession("nagaWork", this).trim().equals("")) {
-                RContacts obj = new RContacts(this);
-                String sss = obj.fetchContacts();
-                SessionSave.saveSession("nagaWork", sss, this);
-            }
+//            if (SessionSave.getSession("nagaWork", this).trim().equals("")) {
+//                RContacts obj = new RContacts(this);
+//                String sss = obj.fetchContacts();
+//                SessionSave.saveSession("nagaWork", sss, this);
+//            }
             //dismiss();
             // pickFromContacts();
         }
-        if (mAuth.getCurrentUser() != null && !SessionSave.getSession("nagaWork", this).trim().equals("") &&
-                SessionSave.getSession("nagaWorks", this).trim().equals("")) {
-            String s = "matchList/contacts/" + mAuth.getCurrentUser().getDisplayName();
-            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(s);
-
-            myRef.setValue(SessionSave.getSession("nagaWork", this), new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-
-                    if (databaseError == null)
-                        SessionSave.saveSession("nagaWorks", "success", MainFragmentActivity.this);
-//    progressDialog.cancel();
-//                    if (databaseError == null) {
-//                        realm.beginTransaction();
-//                        onlineMatchID.setOnlineMatch(true);
-//                        realm.commitTransaction();
-//                        online.setImageResource(R.drawable.wifi_on);
-//                    }
-                }
-            });
-
-        }
+//        if (mAuth.getCurrentUser() != null && !SessionSave.getSession("nagaWork", this).trim().equals("") &&
+//                SessionSave.getSession("nagaWorks", this).trim().equals("")) {
+//            String s = "matchList/contacts/" + mAuth.getCurrentUser().getDisplayName();
+//            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(s);
+//
+//            myRef.setValue(SessionSave.getSession("nagaWork", this), new DatabaseReference.CompletionListener() {
+//                @Override
+//                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//
+//                    if (databaseError == null)
+//                        SessionSave.saveSession("nagaWorks", "success", MainFragmentActivity.this);
+////    progressDialog.cancel();
+////                    if (databaseError == null) {
+////                        realm.beginTransaction();
+////                        onlineMatchID.setOnlineMatch(true);
+////                        realm.commitTransaction();
+////                        online.setImageResource(R.drawable.wifi_on);
+////                    }
+//                }
+//            });
+//
+//        }
     }
 
     public void showNetWorkAlert() {
-        if(needNetwork!=null &needNetwork.isShowing())
+        if (needNetwork != null && needNetwork.isShowing())
             needNetwork.cancel();
-
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
         builder1.setMessage(this.getString(R.string.no_internet));
         builder1.setCancelable(true);
-
         builder1.setPositiveButton(
                 this.getString(R.string.ok),
                 new android.content.DialogInterface.OnClickListener() {
@@ -576,14 +612,19 @@ public class MainFragmentActivity extends AppCompatActivity implements
         needNetwork.show();
     }
 
+    private void pickFromContacts() {
+        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        startActivityForResult(intent, SelectPlayerDialog.PICK_CONTACT);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_CONTACTS) {
-            RContacts obj = new RContacts(this);
-            String sss = obj.fetchContacts();
-            SessionSave.saveSession("nagaWork", sss, this);
+//            RContacts obj = new RContacts(this);
+//            String sss = obj.fetchContacts();
+//            SessionSave.saveSession("nagaWork", sss, this);
+            pickFromContacts();
         }
     }
 
@@ -686,6 +727,12 @@ public class MainFragmentActivity extends AppCompatActivity implements
         } else if (id == R.id.nav_add_ground) {
 
             getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new GroundListFragment()).commit();
+        } else if (id == R.id.nav_tournament) {
+
+            getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.mainFrag, new realmstudy.tournament.MatchListMainFragment()).commit();
+//            Intent i=new Intent(MainFragmentActivity.this, TournamentMatchesActivity.class);
+//            i.putExtra(AppConstants.TourID,"-L-4rXQ2LK0vlB6haYq5");
+//            startActivity(i);
         }
 
 
@@ -708,13 +755,13 @@ public class MainFragmentActivity extends AppCompatActivity implements
 //                this, drawer, tool_bar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 //        drawer.addDrawerListener(toggle);
 //        toggle.syncState();
-        getSupportActionBar().setHomeButtonEnabled(true);
+        // getSupportActionBar().setHomeButtonEnabled(true);
         tool_bar.setNavigationIcon(R.drawable.navi_home);
     }
 
     public void removeNaviHome() {
         // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        // getSupportActionBar().setHomeButtonEnabled(true);
         tool_bar.setNavigationIcon(R.drawable.navi_back_white);
     }
 
@@ -735,7 +782,10 @@ public class MainFragmentActivity extends AppCompatActivity implements
             navigationView.setCheckedItem(R.id.nav_add_ground);
             enableSlide();
         } else if (f instanceof MatchListMainFragment) {
-            navigationView.setCheckedItem(R.id.nav_viewer);
+            System.out.println("naaaacamme");
+            hideOverFlow();
+            invalidateOptionsMenu();
+            // navigationView.setCheckedItem(R.id.nav_viewer);
             enableSlide();
         } else {
             disableSlide();

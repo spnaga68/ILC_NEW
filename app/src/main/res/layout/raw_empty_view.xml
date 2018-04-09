@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_20">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/ivImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerInside"
+            srcCompat="@drawable/ic_safebox"
+            android:visibility="visible" />
+
+        <realmstudy.view.TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_40"
+            app:asset_font_file_name="@string/font_sourcesans_pro_regular"
+            android:gravity="center"
+            android:text="@string/no_media_title"
+            android:textColor="@color/dark_gray"
+            android:textSize="@dimen/sp_18"
+            android:visibility="visible" />
+
+        <realmstudy.view.TextView
+            android:id="@+id/tvDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin"
+            app:asset_font_file_name="@string/font_sourcesans_pro_regular"
+            android:gravity="center"
+            android:text="@string/no_media_message"
+            android:textColor="@color/dark_gray"
+            android:textSize="@dimen/sp_16"
+            android:visibility="visible" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/ivAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_add_black_24dp" />
+    </LinearLayout>
+</RelativeLayout>

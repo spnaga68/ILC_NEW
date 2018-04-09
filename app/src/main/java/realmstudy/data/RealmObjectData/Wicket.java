@@ -18,9 +18,18 @@ public class Wicket extends RealmObject {
     @PrimaryKey
     String wicket_id;
     boolean isStrikerOut=true;
-    
-    
-    
+
+
+
+    public String getExtraDetails() {
+        return extraDetails;
+    }
+
+    public void setExtraDetails(String extraDetails) {
+        this.extraDetails = extraDetails;
+    }
+
+    String extraDetails;
     public void setStrikerOut(boolean strikerOut) {
         isStrikerOut = strikerOut;
     }

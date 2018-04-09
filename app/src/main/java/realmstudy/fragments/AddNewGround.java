@@ -107,48 +107,55 @@ public class AddNewGround extends Fragment implements OnMapReadyCallback, Google
                 type = 1;
             }
         }
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
-
-        save.setOnClickListener(new View.OnClickListener() {
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onClick(View v) {
-                // if (groundLatLng != null) {
-                if (ground_name.getText().toString().length() >= 5) {
-                    if (region.getText().toString().length() > 3) {
-                        long tsLong;
-                        tsLong = System.currentTimeMillis() / 1000;
+            public void run() {
+                SupportMapFragment mapFragment = (SupportMapFragment) AddNewGround.this.getChildFragmentManager().findFragmentById(R.id.map);
+                mapFragment.getMapAsync(AddNewGround.this);
 
-                        realm.beginTransaction();
-                        Ground ground;
-                        if (groundId == 0)
-                            ground = realm.createObject(Ground.class, (int) tsLong);
-                        else
-                            ground = realm.where(Ground.class).equalTo("id", groundId).findFirst();
-                        ground.setCountryName(country.getSelectedItem().toString());
-                        ground.setGroundName(ground_name.getText().toString());
-                        ground.setRegionName(region.getText().toString());
-                        if (groundLatLng != null) {
-                            ground.setLat(groundLatLng.latitude);
-                            ground.setLng(groundLatLng.longitude);
-                        }
-                        realm.commitTransaction();
-                        if (type == 0)
-                            getActivity().onBackPressed();
-                        else
-                            getActivity().finish();
 
-                    } else
-                        Toast.makeText(getActivity(), getString(R.string.region_valid), Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getActivity(), getString(R.string.ground_name_valid), Toast.LENGTH_SHORT).show();
+                save.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // if (groundLatLng != null) {
+                        if (ground_name.getText().toString().length() >= 5) {
+                            if (region.getText().toString().length() > 3) {
+                                long tsLong;
+                                tsLong = System.currentTimeMillis() / 1000;
 
-                // }
+                                realm.beginTransaction();
+                                Ground ground;
+                                if (groundId == 0)
+                                    ground = realm.createObject(Ground.class, (int) tsLong);
+                                else
+                                    ground = realm.where(Ground.class).equalTo("id", groundId).findFirst();
+                                ground.setCountryName(country.getSelectedItem().toString());
+                                ground.setGroundName(ground_name.getText().toString());
+                                ground.setRegionName(region.getText().toString());
+                                if (groundLatLng != null) {
+                                    ground.setLat(groundLatLng.latitude);
+                                    ground.setLng(groundLatLng.longitude);
+                                }
+                                realm.commitTransaction();
+                                if (type == 0)
+                                    getActivity().onBackPressed();
+                                else
+                                    getActivity().finish();
+
+                            } else
+                                Toast.makeText(getActivity(), getString(R.string.region_valid), Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(getActivity(), getString(R.string.ground_name_valid), Toast.LENGTH_SHORT).show();
+
+                        // }
 //                else
 //                    Toast.makeText(getActivity(), getString(R.string.select_location), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
-        });
+        },200);
+
         return view;
     }
 
